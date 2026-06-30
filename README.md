@@ -1,5 +1,14 @@
 # Setup OS
 
+[![License](https://img.shields.io/github/license/setup-os/setup-os)](LICENSE)
+[![CI](https://github.com/setup-os/setup-os/actions/workflows/ci.yml/badge.svg)](https://github.com/setup-os/setup-os/actions/workflows/ci.yml)
+[![GitHub stars](https://img.shields.io/github/stars/setup-os/setup-os?style=social)](https://github.com/setup-os/setup-os/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/setup-os/setup-os?style=social)](https://github.com/setup-os/setup-os/forks)
+[![GitHub issues](https://img.shields.io/github/issues/setup-os/setup-os)](https://github.com/setup-os/setup-os/issues)
+[![GitHub release](https://img.shields.io/github/v/release/setup-os/setup-os?display_name=tag)](https://github.com/setup-os/setup-os/releases)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
+[![Local first](https://img.shields.io/badge/local--first-default-2ea44f)](docs/architecture-principles.md)
+
 Setup OS turns finalized AI planning conversations into local, self-hosted operating systems.
 
 It is not another agent framework. It is an AI systems architect: it extracts intent from a planning conversation, checks whether existing tools can solve the problem, selects open-source components, proposes an architecture, generates a local repo, and keeps future changes behind reviewable evolution proposals.
