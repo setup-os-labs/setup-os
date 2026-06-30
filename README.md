@@ -1,11 +1,11 @@
 # Setup OS
 
-[![License](https://img.shields.io/github/license/setup-os/setup-os)](LICENSE)
-[![CI](https://github.com/setup-os/setup-os/actions/workflows/ci.yml/badge.svg)](https://github.com/setup-os/setup-os/actions/workflows/ci.yml)
-[![GitHub stars](https://img.shields.io/github/stars/setup-os/setup-os?style=social)](https://github.com/setup-os/setup-os/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/setup-os/setup-os?style=social)](https://github.com/setup-os/setup-os/forks)
-[![GitHub issues](https://img.shields.io/github/issues/setup-os/setup-os)](https://github.com/setup-os/setup-os/issues)
-[![GitHub release](https://img.shields.io/github/v/release/setup-os/setup-os?display_name=tag)](https://github.com/setup-os/setup-os/releases)
+[![License](https://img.shields.io/github/license/setup-os-labs/setup-os)](LICENSE)
+[![CI](https://github.com/setup-os-labs/setup-os/actions/workflows/ci.yml/badge.svg)](https://github.com/setup-os-labs/setup-os/actions/workflows/ci.yml)
+[![GitHub stars](https://img.shields.io/github/stars/setup-os-labs/setup-os?style=social)](https://github.com/setup-os-labs/setup-os/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/setup-os-labs/setup-os?style=social)](https://github.com/setup-os-labs/setup-os/forks)
+[![GitHub issues](https://img.shields.io/github/issues/setup-os-labs/setup-os)](https://github.com/setup-os-labs/setup-os/issues)
+[![GitHub release](https://img.shields.io/github/v/release/setup-os-labs/setup-os?display_name=tag)](https://github.com/setup-os-labs/setup-os/releases)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
 [![Local first](https://img.shields.io/badge/local--first-default-2ea44f)](docs/architecture-principles.md)
 
