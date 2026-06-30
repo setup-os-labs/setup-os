@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/brand/setup-os-logo.svg" alt="Setup OS" width="760">
+</p>
+
 # Setup OS
 
 [![License](https://img.shields.io/github/license/setup-os-labs/setup-os)](LICENSE)
@@ -12,6 +16,8 @@
 Setup OS turns finalized AI planning conversations into local, self-hosted operating systems.
 
 It is not another agent framework. It is an AI systems architect: it extracts intent from a planning conversation, checks whether existing tools can solve the problem, selects open-source components, proposes an architecture, generates a local repo, and keeps future changes behind reviewable evolution proposals.
+
+Brand assets are in [docs/brand.md](docs/brand.md).
 
 ## Product Thesis
 
@@ -80,6 +86,10 @@ See [docs/roadmap.md](docs/roadmap.md) and [TASKS.md](TASKS.md).
 
 ## Repository Layout
 
+The repo is intentionally a monorepo through MVP. Use it for the actual system while the architecture is still evolving; split repos only when a folder becomes a product, API, or community surface of its own.
+
+Current layout:
+
 ```text
 setup-os/
   .github/                  GitHub issue, PR, and CI configuration
@@ -91,6 +101,30 @@ setup-os/
   CHANGELOG.md              release history
   CODEX.md                  AI-native development workflow
 ```
+
+Target MVP layout:
+
+```text
+setup-os/
+  apps/
+    desktop/
+    web/
+    cli/
+  packages/
+    core/
+    schemas/
+    agent-runtime/
+    conversation-import/
+    blueprint-engine/
+    component-registry/
+    policy/
+  templates/
+  docs/
+  examples/
+  research/
+```
+
+See [ADR 0001](docs/adr/0001-open-core-monorepo.md) for the eventual repo split policy.
 
 ## Development Workflow
 
