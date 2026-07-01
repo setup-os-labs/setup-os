@@ -40,7 +40,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-022 | review | Codex | `codex/evolution-notification-foundation` | Add capability dependency graph | Portfolio architecture proposal includes capability dependencies and affected surfaces |
 | SO-023 | review | Codex | `codex/evolution-notification-foundation` | Add generated-agent release snapshots | Create/evolve can preserve versioned release metadata for future rollback |
 | SO-024 | review | Codex | `codex/evolution-notification-foundation` | Add first non-portfolio vertical skeleton | Health OS planning conversation produces a generated health scaffold with local reports and no medical-action automation |
-| SO-025 | todo | Codex | `codex/generated-verification` | Add generated repo verification command | `create` emits instructions and a machine-checkable command for validating generated systems |
+| SO-025 | review | Codex | `codex/evolution-notification-foundation` | Add generated repo verification command | `create` emits instructions and a machine-checkable command for validating generated systems |
+| SO-026 | todo | Codex | `codex/apply-evolution` | Add explicit approve/apply command for safe evolution | Approved proposal can create a candidate release without mutating the current release silently |
 
 ## Backlog Rules
 

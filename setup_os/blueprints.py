@@ -48,6 +48,52 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path, approval_required_fo
         output_dir / "agent_dna.json",
         json.dumps(agent_dna(spec), indent=2, sort_keys=True) + "\n",
     )
+    write_verifier(output_dir)
+
+
+def write_verifier(output_dir: Path) -> None:
+    _write(
+        output_dir / "verify.py",
+        """from __future__ import annotations
+
+from pathlib import Path
+
+
+ROOT = Path(__file__).parent
+REQUIRED_PATHS = [
+    "README.md",
+    "agent_spec.json",
+    "architecture.md",
+    "agent_dna.json",
+    "config.json",
+    "report.py",
+    ".setup_os",
+    "memory/raw",
+    "memory/structured",
+    "memory/policy",
+    "notifications",
+    "evolution",
+    "audit",
+    "deployment",
+]
+
+
+def main() -> int:
+    missing = [path for path in REQUIRED_PATHS if not (ROOT / path).exists()]
+    if missing:
+        print("Verification failed. Missing:")
+        for path in missing:
+            print(f"- {path}")
+        return 1
+
+    print("Verification passed.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
 
 
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:

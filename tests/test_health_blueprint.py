@@ -51,6 +51,16 @@ class HealthBlueprintTests(unittest.TestCase):
             self.assertIn("not medical advice", report_text)
             self.assertIn("NOTIFY[info]:", report.stdout)
 
+            verify = subprocess.run(
+                [sys.executable, "verify.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(verify.returncode, 0)
+            self.assertIn("Verification passed.", verify.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -82,6 +82,12 @@ python -m setup_os.cli create examples/portfolio_conversation.md
 python -m setup_os.cli evolve examples/portfolio_update.md
 ```
 
+Generated systems include `verify.py` so the scaffold can be checked with:
+
+```bash
+python verify.py
+```
+
 See [docs/roadmap.md](docs/roadmap.md) and [TASKS.md](TASKS.md).
 
 For conversation structure and vertical planning templates, see [docs/conversation-planning-guide.md](docs/conversation-planning-guide.md) and [templates/conversation-guides/](templates/conversation-guides/). For the long-term update loop, see [docs/evolution-model.md](docs/evolution-model.md), [docs/notification-os.md](docs/notification-os.md), and [docs/agnostic-architecture.md](docs/agnostic-architecture.md).

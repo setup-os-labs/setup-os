@@ -32,6 +32,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "agent_dna.json").exists())
             self.assertTrue((output / "data" / "holdings.csv").exists())
             self.assertTrue((output / "report.py").exists())
+            self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "memory" / "raw").is_dir())
             self.assertTrue((output / "evolution").is_dir())
 
@@ -47,6 +48,16 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "reports" / "daily_report.md").exists())
             self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
             self.assertIn("NOTIFY[info]:", report.stdout)
+
+            verify = subprocess.run(
+                [sys.executable, "verify.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(verify.returncode, 0)
+            self.assertIn("Verification passed.", verify.stdout)
 
 
 if __name__ == "__main__":
