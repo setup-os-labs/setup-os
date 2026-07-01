@@ -54,13 +54,14 @@ export function App() {
   const [cliStatus, setCliStatus] = useState("Not checked");
   const [cliOutput, setCliOutput] = useState("");
   const [actionStatus, setActionStatus] = useState("Ready");
-  const [conversationPath, setConversationPath] = useState("../../examples/portfolio_update.md");
+  const [portfolioOutputPath, setPortfolioOutputPath] = useState("generated/desktop-portfolio-os");
+  const [conversationPath, setConversationPath] = useState("examples/portfolio_update.md");
   const [dataImportPaths, setDataImportPaths] = useState({
-    holdings: "../../examples/portfolio_snapshot.csv",
-    transactions: "../../examples/portfolio_transactions.csv",
-    cash: "../../examples/portfolio_cash.csv",
-    watchlist: "../../examples/portfolio_watchlist.csv",
-    marketData: "../../examples/portfolio_market_data.csv",
+    holdings: "examples/portfolio_snapshot.csv",
+    transactions: "examples/portfolio_transactions.csv",
+    cash: "examples/portfolio_cash.csv",
+    watchlist: "examples/portfolio_watchlist.csv",
+    marketData: "examples/portfolio_market_data.csv",
   });
 
   async function checkCli() {
@@ -77,9 +78,9 @@ export function App() {
 
   async function createPortfolioAgent() {
     setActionStatus("Generating");
-    setCliOutput("Creating Portfolio Management OS in generated/desktop-portfolio-os...");
+    setCliOutput(`Creating Portfolio Management OS in ${portfolioOutputPath}...`);
     try {
-      const output = await createPortfolioExample();
+      const output = await createPortfolioExample(portfolioOutputPath);
       setCliOutput(output);
       setActionStatus("Generated");
       setCliStatus("Ready");
@@ -93,7 +94,7 @@ export function App() {
     setActionStatus("Running report");
     setCliOutput("Running generated Portfolio Management OS report...");
     try {
-      const output = await runPortfolioReport();
+      const output = await runPortfolioReport(portfolioOutputPath);
       setCliOutput(output);
       setActionStatus("Report ready");
       setCliStatus("Ready");
@@ -107,7 +108,7 @@ export function App() {
     setActionStatus("Checking health");
     setCliOutput("Running generated Portfolio Management OS health check...");
     try {
-      const output = await checkPortfolioHealth();
+      const output = await checkPortfolioHealth(portfolioOutputPath);
       setCliOutput(output);
       setActionStatus("Healthy");
       setCliStatus("Ready");
@@ -121,7 +122,7 @@ export function App() {
     setActionStatus("Importing conversation");
     setCliOutput(`Importing ${conversationPath} into raw Portfolio memory...`);
     try {
-      const output = await importPortfolioConversationFile(conversationPath);
+      const output = await importPortfolioConversationFile(portfolioOutputPath, conversationPath);
       setCliOutput(output);
       setActionStatus("Conversation imported");
       setCliStatus("Ready");
@@ -151,7 +152,7 @@ export function App() {
     setActionStatus(`Importing ${labels[kind]}`);
     setCliOutput(`Importing ${path} into Portfolio ${labels[kind]}...`);
     try {
-      const output = await actions[kind](path);
+      const output = await actions[kind](portfolioOutputPath, path);
       setCliOutput(output);
       setActionStatus(`${labels[kind]} imported`);
       setCliStatus("Ready");
@@ -169,7 +170,7 @@ export function App() {
     setActionStatus("Extracting memory");
     setCliOutput("Extracting review-only Portfolio memory drafts...");
     try {
-      const output = await extractPortfolioMemory();
+      const output = await extractPortfolioMemory(portfolioOutputPath);
       setCliOutput(output);
       setActionStatus("Memory drafts ready");
       setCliStatus("Ready");
@@ -182,7 +183,7 @@ export function App() {
   async function refreshPortfolioStatus() {
     setActionStatus("Refreshing status");
     try {
-      const output = await getPortfolioStatus();
+      const output = await getPortfolioStatus(portfolioOutputPath);
       setCliOutput(output);
       setActionStatus("Status refreshed");
     } catch (error) {
@@ -195,7 +196,7 @@ export function App() {
     setActionStatus("Running full flow");
     setCliOutput("Running the full local Portfolio Management OS flow...");
     try {
-      const output = await runPortfolioDemoFlow();
+      const output = await runPortfolioDemoFlow(portfolioOutputPath);
       setCliOutput(output);
       setActionStatus("Full flow complete");
       setCliStatus("Ready");
@@ -262,6 +263,14 @@ export function App() {
               <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
                 <RefreshCcw size={17} /> Refresh status
               </button>
+              <label className="path-field">
+                <span>Output</span>
+                <input
+                  value={portfolioOutputPath}
+                  onChange={(event) => setPortfolioOutputPath(event.target.value)}
+                  aria-label="Portfolio output path"
+                />
+              </label>
               <label className="path-field">
                 <span>Conversation</span>
                 <input

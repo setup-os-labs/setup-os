@@ -12,6 +12,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop ICO asset now has matching ICO directory and embedded PNG dimensions for macOS icon conversion during release packaging.
 - Manual desktop release workflow for unsigned Linux, Windows, and macOS Tauri bundle artifacts.
 - Verified manual desktop release workflow uploads Linux, Windows, and macOS unsigned bundle artifacts from `main`.
+- Desktop Portfolio launcher now accepts an editable generated-agent output path for create, import, extract, health, report, status, and demo flow actions.
 - Cross-platform native desktop CI matrix for Linux, Windows, and macOS Tauri compile checks.
 - Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
 - Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.

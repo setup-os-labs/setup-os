@@ -79,13 +79,16 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("setup_os_extract_portfolio_memory", lib_rs)
         self.assertIn("setup_os_portfolio_status", lib_rs)
         self.assertIn("setup_os_run_portfolio_demo_flow", lib_rs)
+        self.assertIn("agent_dir: String", lib_rs)
+        self.assertIn("resolve_agent_dir", lib_rs)
+        self.assertIn("resolve_user_path", lib_rs)
+        self.assertIn("agent output path is required", lib_rs)
         self.assertIn("setup_os_repo_dir", lib_rs)
         self.assertIn("SETUP_OS_REPO_DIR", lib_rs)
         self.assertIn('"setup_os.cli"', lib_rs)
         self.assertIn('"--help"', lib_rs)
         self.assertIn('"create"', lib_rs)
         self.assertIn('"examples/portfolio_conversation.md"', lib_rs)
-        self.assertIn('"generated/desktop-portfolio-os"', lib_rs)
         self.assertIn('"report.py"', lib_rs)
         self.assertIn('"health.py"', lib_rs)
         self.assertIn('"import_conversation.py"', lib_rs)
@@ -101,6 +104,20 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Portfolio Management OS status", lib_rs)
         self.assertIn("Create Portfolio Management OS", lib_rs)
         self.assertIn("Run daily report", lib_rs)
+
+    def test_desktop_ui_accepts_portfolio_output_path(self) -> None:
+        app = (DESKTOP / "src" / "App.tsx").read_text(encoding="utf-8")
+        setup_os = (DESKTOP / "src" / "lib" / "setupOs.ts").read_text(encoding="utf-8")
+
+        self.assertIn("portfolioOutputPath", app)
+        self.assertIn('aria-label="Portfolio output path"', app)
+        self.assertIn('"generated/desktop-portfolio-os"', app)
+        self.assertIn('"examples/portfolio_update.md"', app)
+        self.assertIn('"examples/portfolio_snapshot.csv"', app)
+        self.assertIn("createPortfolioExample(portfolioOutputPath)", app)
+        self.assertIn("runPortfolioDemoFlow(portfolioOutputPath)", app)
+        self.assertIn("agentDir: string", setup_os)
+        self.assertIn('"setup_os_create_portfolio_example", { agentDir }', setup_os)
 
         result = subprocess.run(
             [sys.executable, "-m", "setup_os.cli", "--help"],

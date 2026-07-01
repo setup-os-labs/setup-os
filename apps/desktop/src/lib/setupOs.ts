@@ -4,50 +4,50 @@ export async function getSetupOsHelp(): Promise<string> {
   return invoke<string>("setup_os_help");
 }
 
-export async function createPortfolioExample(): Promise<string> {
-  return invoke<string>("setup_os_create_portfolio_example");
+export async function createPortfolioExample(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_create_portfolio_example", { agentDir });
 }
 
-export async function runPortfolioReport(): Promise<string> {
-  return invoke<string>("setup_os_run_portfolio_report");
+export async function runPortfolioReport(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_run_portfolio_report", { agentDir });
 }
 
-export async function checkPortfolioHealth(): Promise<string> {
-  return invoke<string>("setup_os_check_portfolio_health");
+export async function checkPortfolioHealth(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_check_portfolio_health", { agentDir });
 }
 
-export async function importPortfolioConversation(conversationPath: string): Promise<string> {
-  return invoke<string>("setup_os_import_portfolio_conversation", { conversationPath });
+export async function importPortfolioConversation(agentDir: string, conversationPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_conversation", { agentDir, conversationPath });
 }
 
-export async function importPortfolioHoldings(holdingsPath: string): Promise<string> {
-  return invoke<string>("setup_os_import_portfolio_holdings", { holdingsPath });
+export async function importPortfolioHoldings(agentDir: string, holdingsPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_holdings", { agentDir, holdingsPath });
 }
 
-export async function importPortfolioTransactions(transactionsPath: string): Promise<string> {
-  return invoke<string>("setup_os_import_portfolio_transactions", { transactionsPath });
+export async function importPortfolioTransactions(agentDir: string, transactionsPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_transactions", { agentDir, transactionsPath });
 }
 
-export async function importPortfolioCash(cashPath: string): Promise<string> {
-  return invoke<string>("setup_os_import_portfolio_cash", { cashPath });
+export async function importPortfolioCash(agentDir: string, cashPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_cash", { agentDir, cashPath });
 }
 
-export async function importPortfolioWatchlist(watchlistPath: string): Promise<string> {
-  return invoke<string>("setup_os_import_portfolio_watchlist", { watchlistPath });
+export async function importPortfolioWatchlist(agentDir: string, watchlistPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_watchlist", { agentDir, watchlistPath });
 }
 
-export async function importPortfolioMarketData(marketDataPath: string): Promise<string> {
-  return invoke<string>("setup_os_import_portfolio_market_data", { marketDataPath });
+export async function importPortfolioMarketData(agentDir: string, marketDataPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_market_data", { agentDir, marketDataPath });
 }
 
-export async function extractPortfolioMemory(): Promise<string> {
-  return invoke<string>("setup_os_extract_portfolio_memory");
+export async function extractPortfolioMemory(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_extract_portfolio_memory", { agentDir });
 }
 
-export async function getPortfolioStatus(): Promise<string> {
-  return invoke<string>("setup_os_portfolio_status");
+export async function getPortfolioStatus(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_portfolio_status", { agentDir });
 }
 
-export async function runPortfolioDemoFlow(): Promise<string> {
-  return invoke<string>("setup_os_run_portfolio_demo_flow");
+export async function runPortfolioDemoFlow(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_run_portfolio_demo_flow", { agentDir });
 }
