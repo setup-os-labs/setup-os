@@ -42,7 +42,7 @@ class BlueprintTests(unittest.TestCase):
 
             self.assertEqual(report.returncode, 0)
             self.assertTrue((output / "reports" / "daily_report.md").exists())
-            self.assertIn("NOTIFY:", report.stdout)
+            self.assertIn("NOTIFY[info]:", report.stdout)
 
 
 if __name__ == "__main__":

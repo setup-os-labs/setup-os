@@ -84,6 +84,10 @@ DATA_PATH = ROOT / "data" / "holdings.csv"
 REPORT_PATH = ROOT / "reports" / "daily_report.md"
 
 
+def notify(title: str, body: str, severity: str = "info") -> None:
+    print(f"NOTIFY[{severity}]: {title} - {body}")
+
+
 def load_holdings() -> list[dict[str, str]]:
     with DATA_PATH.open(newline="", encoding="utf-8") as file:
         return list(csv.DictReader(file))
@@ -121,7 +125,11 @@ def main() -> int:
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
     print(f"Wrote {REPORT_PATH}")
-    print("NOTIFY: Portfolio report generated. Manual review required before trades.")
+    notify(
+        "Portfolio report generated",
+        "Manual review required before trades.",
+        "info",
+    )
     return 0
 
 
