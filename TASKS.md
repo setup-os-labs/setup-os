@@ -36,6 +36,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-014 | todo | Codex | `codex/docs-site` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
 | SO-019 | review | Codex | `codex/evolution-notification-foundation` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
 | SO-020 | todo | Codex | `codex/vertical-health-template` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
+| SO-021 | review | Codex | `codex/evolution-notification-foundation` | Add agnostic architecture and Agent DNA | Docs define provider-neutral layers; generated portfolio agent includes `agent_dna.json` and quality score |
+| SO-022 | todo | Codex | `codex/capability-graph` | Add capability dependency graph | Portfolio architecture proposal includes capability dependencies and affected surfaces |
 
 ## Backlog Rules
 

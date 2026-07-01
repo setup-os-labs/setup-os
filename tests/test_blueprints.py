@@ -29,8 +29,11 @@ class BlueprintTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0)
             self.assertTrue((output / "README.md").exists())
             self.assertTrue((output / "config.json").exists())
+            self.assertTrue((output / "agent_dna.json").exists())
             self.assertTrue((output / "data" / "holdings.csv").exists())
             self.assertTrue((output / "report.py").exists())
+            self.assertTrue((output / "memory" / "raw").is_dir())
+            self.assertTrue((output / "evolution").is_dir())
 
             report = subprocess.run(
                 [sys.executable, "report.py"],

@@ -6,10 +6,25 @@ import json
 from pathlib import Path
 from textwrap import dedent
 
+from setup_os.quality import agent_dna
 from setup_os.spec import AgentSpec
 
 
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:
+    for directory in [
+        "agents",
+        "memory/raw",
+        "memory/structured",
+        "memory/policy",
+        "tools",
+        "notifications",
+        "scheduler",
+        "config",
+        "evolution",
+        "audit",
+        "deployment",
+    ]:
+        (output_dir / directory).mkdir(parents=True, exist_ok=True)
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
     (output_dir / "reports").mkdir(parents=True, exist_ok=True)
 
@@ -59,6 +74,10 @@ python report.py
             sort_keys=True,
         )
         + "\n",
+    )
+    _write(
+        output_dir / "agent_dna.json",
+        json.dumps(agent_dna(spec), indent=2, sort_keys=True) + "\n",
     )
 
     _write(
