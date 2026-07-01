@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Branch history policy for retained archival branches such as `codex/setup-os-brand`.
 - Native Tauri CI validation with Linux prerequisites and `tauri build --no-bundle`.
 - Desktop Rust dependency pin for reproducible native Tauri builds.
 - Desktop Tauri icon asset required by the native build context.
