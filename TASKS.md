@@ -73,9 +73,10 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-055 | done | Codex | `codex/desktop-portfolio-data-imports` | Add desktop Portfolio CSV import actions | Desktop shell can import holdings, transactions, cash, watchlist, and market snapshot CSV files into the generated Portfolio OS |
 | SO-056 | done | Codex | `codex/desktop-portfolio-full-flow` | Add desktop Portfolio demo flow | Desktop shell can run the full local Portfolio OS demo loop from create through report and status |
 | SO-057 | done | Codex | `codex/cross-platform-native-ci` | Add cross-platform native desktop CI | GitHub Actions compiles the Tauri desktop shell on Linux, Windows, and macOS without producing installers |
-| SO-058 | review | Codex | `codex/desktop-release-workflow` | Add manual desktop release workflow | GitHub Actions can manually build unsigned Linux, Windows, and macOS Tauri bundle artifacts for release testing |
-| SO-059 | review | Codex | `codex/fix-desktop-release-icons` | Fix desktop release bundle icons | Manual release workflow can package Linux AppImage and Windows MSI artifacts with configured Tauri icon assets |
-| SO-060 | review | Codex | `codex/fix-macos-release-icon` | Fix macOS desktop release icon conversion | Manual release workflow can package macOS app artifacts with an ICO asset whose directory metadata matches its embedded PNG |
+| SO-058 | done | Codex | `codex/desktop-release-workflow` | Add manual desktop release workflow | GitHub Actions can manually build unsigned Linux, Windows, and macOS Tauri bundle artifacts for release testing |
+| SO-059 | done | Codex | `codex/fix-desktop-release-icons` | Fix desktop release bundle icons | Manual release workflow can package Linux AppImage and Windows MSI artifacts with configured Tauri icon assets |
+| SO-060 | done | Codex | `codex/fix-macos-release-icon` | Fix macOS desktop release icon conversion | Manual release workflow can package macOS app artifacts with an ICO asset whose directory metadata matches its embedded PNG |
+| SO-061 | review | Codex | `codex/verify-desktop-release-workflow` | Verify desktop release workflow artifacts | Manual release workflow run `28546192396` passed on Linux, Windows, and macOS and uploaded unsigned desktop artifacts |
 
 ## Backlog Rules
 

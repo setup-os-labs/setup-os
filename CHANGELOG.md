@@ -11,6 +11,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop release workflow now uses explicit Tauri bundle icons so Linux AppImage and Windows MSI packaging can find required icon assets.
 - Desktop ICO asset now has matching ICO directory and embedded PNG dimensions for macOS icon conversion during release packaging.
 - Manual desktop release workflow for unsigned Linux, Windows, and macOS Tauri bundle artifacts.
+- Verified manual desktop release workflow uploads Linux, Windows, and macOS unsigned bundle artifacts from `main`.
 - Cross-platform native desktop CI matrix for Linux, Windows, and macOS Tauri compile checks.
 - Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
 - Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.
