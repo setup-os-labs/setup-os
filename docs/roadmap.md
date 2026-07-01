@@ -61,7 +61,7 @@ Each new vertical must reuse the same ingestion, architecture, approval, generat
 ## v1: Public Open-Core Launch
 
 - stable CLI
-- docs site decision
+- docs site decision recorded in ADR 0005
 - public examples
 - GitHub release process
 - contribution guidelines

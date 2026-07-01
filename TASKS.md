@@ -31,9 +31,9 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 
 | ID | Status | Owner | Branch | Task | Acceptance |
 | --- | --- | --- | --- | --- | --- |
-| SO-012 | review | Codex | `codex/ntfy-adapter` | Add optional ntfy adapter | Adapter is disabled by default and documented |
+| SO-012 | done | Codex | `codex/ntfy-adapter` | Add optional ntfy adapter | Adapter is disabled by default and documented |
 | SO-013 | done | Codex | `codex/adr-index` | Add ADR index generator or convention | ADRs are easy to discover and link from PRs |
-| SO-014 | todo | Codex | `codex/docs-site` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
+| SO-014 | review | Codex | `codex/docs-site-decision` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
 | SO-019 | done | Codex | `codex/evolution-notification-foundation` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
 | SO-020 | done | Codex | `codex/evolution-notification-foundation` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
 | SO-021 | done | Codex | `codex/evolution-notification-foundation` | Add agnostic architecture and Agent DNA | Docs define provider-neutral layers; generated portfolio agent includes `agent_dna.json` and quality score |
