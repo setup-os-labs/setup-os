@@ -5,8 +5,10 @@ Use this blueprint for the first generated vertical after Setup OS.
 ## Inputs
 
 - finalized portfolio planning conversation
-- local holdings CSV
-- local transactions CSV
+- saved ChatGPT financial discussions
+- Robinhood read-only portfolio import
+- local holdings CSV fallback
+- local transactions CSV fallback
 - strategy notes
 - approval policy
 
@@ -31,6 +33,7 @@ Use this blueprint for the first generated vertical after Setup OS.
 | Reports | Markdown | dashboard export |
 | Notifications | console + local inbox | ntfy + Apprise |
 | Market data | sample/local CSV | yfinance, SEC EDGAR, broker read-only |
+| Broker data | manual/CSV fallback | Robinhood Agentic/MCP-style read-only import |
 | Evolution | proposal Markdown | candidate release + tests |
 | Policy | alert-only | approval execution |
 
@@ -44,3 +47,5 @@ python verify.py
 ## Safety
 
 The generated system must remain advisory until the user explicitly approves a higher maturity level.
+
+Robinhood access must start read-only. Execution, credentials, and automated trading are out of scope for the first Portfolio Management OS.

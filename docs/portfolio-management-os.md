@@ -1,6 +1,6 @@
 # Portfolio Management OS
 
-Portfolio Management OS is the first serious generated vertical after Setup OS itself is ready.
+Portfolio Management OS is the first serious generated vertical after the Setup OS desktop app is ready.
 
 It should prove the whole Setup OS promise:
 
@@ -24,7 +24,8 @@ It is a local, advisory, alert-first investing assistant.
 ## v0 Scope
 
 - import portfolio planning conversations
-- read local/sample holdings and transactions
+- import saved ChatGPT financial conversations
+- import Robinhood portfolio data in read-only mode
 - produce daily Markdown portfolio reports
 - emit structured local notifications
 - track strategy and policy through Agent DNA
@@ -87,6 +88,8 @@ Portfolio Management OS should eventually normalize:
 - holdings
 - transactions
 - cash
+- Robinhood read-only account snapshots
+- imported financial conversations
 - watchlist
 - allocation targets
 - risk rules
@@ -107,10 +110,22 @@ Default policy:
 
 ## Future Phases
 
-1. CSV holdings and local reports.
-2. Allocation drift and concentration alerts.
-3. Price/news/event enrichment.
-4. Optional ntfy or Apprise notifications.
-5. Broker read-only connectors.
-6. Human-approved execution through a supported broker interface.
-7. Limited automation only for pre-approved rules.
+1. Setup OS desktop app can import saved conversations and launch verticals.
+2. Robinhood read-only import and local reports.
+3. ChatGPT financial discussion import into raw/structured memory.
+4. Allocation drift and concentration alerts.
+5. Price/news/event enrichment.
+6. Optional ntfy or Apprise notifications.
+7. Human-approved execution through a supported broker interface.
+8. Limited automation only for pre-approved rules.
+
+## Robinhood Direction
+
+Use Robinhood only in read-only mode at first.
+
+Preferred path:
+
+- official Robinhood Agentic/MCP-style read-only access if available to the user
+- otherwise manual export or user-provided account snapshots
+
+Do not use unofficial trading APIs as the default. Do not store credentials until there is a reviewed connector and explicit user approval.
