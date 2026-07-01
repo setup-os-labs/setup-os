@@ -11,6 +11,7 @@ Codex should:
 - keep changes scoped to one task or one vertical slice
 - prefer squash merges for iterative Codex PRs unless commits are intentionally structured for long-term history
 - keep merged remote branches unless the user explicitly asks to delete them
+- treat restored old branches as archival unless comparison shows unique work not already represented on `main`
 - update docs and task status in the same PR as the code
 - update `CHANGELOG.md` in every PR before merge, even for documentation-only changes
 - add tests for extraction, generation, evolution, or safety behavior changes
@@ -28,6 +29,22 @@ Codex should:
 7. Open a PR with the template in `.github/PULL_REQUEST_TEMPLATE.md`.
 8. Squash merge iterative PRs to keep `main` readable; use normal merge only when each commit is intentionally reviewed and meaningful on its own.
 9. Do not delete the remote branch after merge unless explicitly requested.
+10. Before opening a PR from an old or restored branch, compare it against `main`; do not merge it only because it was recently pushed.
+
+## Branch History
+
+Some remote branches are retained after squash merges for traceability. A retained branch can look recently active if it was restored or pushed again, even when its product work is already represented on `main`.
+
+When evaluating a retained branch:
+
+1. Check whether it already has merged PRs.
+2. Compare it against `origin/main`.
+3. If the branch is older than `main` and a dry merge would reintroduce conflicts or older file versions, keep it as archival history.
+4. Only open a new PR when the branch contains unique, intentional changes that should land on top of current `main`.
+
+Known archival/superseded branch:
+
+- `codex/setup-os-brand`: source branch for early Setup OS scaffold work that was merged through PR #1 and PR #2, then superseded by later squash merges on `main`.
 
 ## Definition of Done
 
