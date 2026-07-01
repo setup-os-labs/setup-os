@@ -14,6 +14,7 @@ import { useState } from "react";
 import {
   checkPortfolioHealth,
   createPortfolioExample,
+  extractPortfolioMemory,
   getSetupOsHelp,
   importPortfolioConversationExample,
   runPortfolioReport,
@@ -115,6 +116,20 @@ export function App() {
     }
   }
 
+  async function extractPortfolioMemoryDrafts() {
+    setActionStatus("Extracting memory");
+    setCliOutput("Extracting review-only Portfolio memory drafts...");
+    try {
+      const output = await extractPortfolioMemory();
+      setCliOutput(output);
+      setActionStatus("Memory drafts ready");
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   return (
     <main className="shell">
       <aside className="sidebar">
@@ -168,6 +183,9 @@ export function App() {
             <div className="button-row">
               <button className="secondary" type="button" onClick={importPortfolioConversation}>
                 <FolderInput size={17} /> Import conversation
+              </button>
+              <button className="secondary" type="button" onClick={extractPortfolioMemoryDrafts}>
+                <FileText size={17} /> Extract drafts
               </button>
               <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
                 <Stethoscope size={17} /> Check health
