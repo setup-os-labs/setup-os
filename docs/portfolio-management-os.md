@@ -26,6 +26,7 @@ It is a local, advisory, alert-first investing assistant.
 - import portfolio planning conversations
 - import saved ChatGPT financial conversations
 - import Robinhood portfolio data in read-only mode
+- store imported conversations as raw memory first, then extract structured portfolio facts
 - produce daily Markdown portfolio reports
 - emit structured local notifications
 - track strategy and policy through Agent DNA
@@ -112,12 +113,13 @@ Default policy:
 
 1. Setup OS desktop app can import saved conversations and launch verticals.
 2. Robinhood read-only import and local reports.
-3. ChatGPT financial discussion import into raw/structured memory.
-4. Allocation drift and concentration alerts.
-5. Price/news/event enrichment.
-6. Optional ntfy or Apprise notifications.
-7. Human-approved execution through a supported broker interface.
-8. Limited automation only for pre-approved rules.
+3. ChatGPT financial discussion import into raw memory.
+4. Structured extraction from raw conversations into holdings context, strategy notes, risk rules, and watchlists.
+5. Allocation drift and concentration alerts.
+6. Price/news/event enrichment.
+7. Optional ntfy or Apprise notifications.
+8. Human-approved execution through a supported broker interface.
+9. Limited automation only for pre-approved rules.
 
 ## Robinhood Direction
 

@@ -9,6 +9,7 @@ Codex should:
 - read `README.md`, `TASKS.md`, `docs/roadmap.md`, and relevant ADRs before implementation
 - work from a short-lived branch named `codex/<task-name>`
 - keep changes scoped to one task or one vertical slice
+- prefer squash merges for iterative Codex PRs unless commits are intentionally structured for long-term history
 - update docs and task status in the same PR as the code
 - add tests for extraction, generation, evolution, or safety behavior changes
 - avoid broker execution, cloud dependencies, and rich dashboards in v0
@@ -23,6 +24,7 @@ Codex should:
 5. Update `TASKS.md`.
 6. Update `CHANGELOG.md` for user-visible changes.
 7. Open a PR with the template in `.github/PULL_REQUEST_TEMPLATE.md`.
+8. Squash merge iterative PRs to keep `main` readable; use normal merge only when each commit is intentionally reviewed and meaningful on its own.
 
 ## Definition of Done
 

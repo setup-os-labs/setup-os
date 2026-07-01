@@ -34,6 +34,7 @@ Use this blueprint for the first generated vertical after Setup OS.
 | Notifications | console + local inbox | ntfy + Apprise |
 | Market data | sample/local CSV | yfinance, SEC EDGAR, broker read-only |
 | Broker data | manual/CSV fallback | Robinhood Agentic/MCP-style read-only import |
+| Conversation memory | raw imports first | structured extraction after review |
 | Evolution | proposal Markdown | candidate release + tests |
 | Policy | alert-only | approval execution |
 

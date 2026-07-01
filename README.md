@@ -123,9 +123,9 @@ Setup OS is CLI-first for the engine, but the product should become desktop-firs
 
 - Core: Python engine and CLI.
 - Desktop shell: Tauri v2 + React + TypeScript.
-- Python process mode: CLI subprocess first; FastAPI only if the desktop shell needs a long-running local service.
+- Python process mode: CLI subprocess in development, bundled Python sidecar for desktop releases; FastAPI only if the desktop shell needs a long-running local service.
 - Local data: files and JSONL first; SQLite when the desktop needs indexed local state.
-- First desktop surface: vertical agent launcher.
+- First desktop surface: richer vertical agent launcher and dashboard shell.
 - First generated vertical: [Portfolio Management OS](docs/portfolio-management-os.md).
 
 See [ADR 0004](docs/adr/0004-desktop-app-stack.md) for the desktop stack decision.
