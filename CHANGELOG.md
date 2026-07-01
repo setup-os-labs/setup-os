@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Tauri-ready desktop shell scaffold with React/TypeScript launcher UI and a Python CLI command contract.
 - Portfolio Management OS building-block research with ranked stack options, rejected alternatives, and plug-and-play architecture guidance.
 - Changelog hygiene rule requiring every PR to update `CHANGELOG.md` before merge.
 - Python CLI scaffold for creating, evolving, and applying generated systems.

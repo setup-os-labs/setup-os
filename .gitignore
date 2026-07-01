@@ -7,6 +7,11 @@ __pycache__/
 .venv/
 venv/
 
+# JavaScript / desktop
+node_modules/
+*.tsbuildinfo
+apps/desktop/src-tauri/target/
+
 # Generated local outputs
 generated/
 dist/
