@@ -72,7 +72,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-054 | done | Codex | `codex/desktop-import-path-input` | Add desktop conversation path input | Desktop shell can import a user-entered saved Portfolio conversation path instead of only the bundled example |
 | SO-055 | done | Codex | `codex/desktop-portfolio-data-imports` | Add desktop Portfolio CSV import actions | Desktop shell can import holdings, transactions, cash, watchlist, and market snapshot CSV files into the generated Portfolio OS |
 | SO-056 | done | Codex | `codex/desktop-portfolio-full-flow` | Add desktop Portfolio demo flow | Desktop shell can run the full local Portfolio OS demo loop from create through report and status |
-| SO-057 | review | Codex | `codex/cross-platform-native-ci` | Add cross-platform native desktop CI | GitHub Actions compiles the Tauri desktop shell on Linux, Windows, and macOS without producing installers |
+| SO-057 | done | Codex | `codex/cross-platform-native-ci` | Add cross-platform native desktop CI | GitHub Actions compiles the Tauri desktop shell on Linux, Windows, and macOS without producing installers |
+| SO-058 | review | Codex | `codex/desktop-release-workflow` | Add manual desktop release workflow | GitHub Actions can manually build unsigned Linux, Windows, and macOS Tauri bundle artifacts for release testing |
 
 ## Backlog Rules
 

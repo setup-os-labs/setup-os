@@ -69,3 +69,5 @@ The shell also exposes a read-only status check for generated Portfolio artifact
 ## Packaging Direction
 
 Tauri release builds should bundle a Python sidecar later. The sidecar must keep the same command behavior as development mode before the desktop app grows a local API or FastAPI service.
+
+Unsigned desktop bundle builds can be run manually from GitHub Actions with the `Desktop Release Build` workflow. The workflow builds Linux, Windows, and macOS Tauri bundles and uploads the generated artifacts. Signed releases still require platform-specific certificates and notarization decisions.
