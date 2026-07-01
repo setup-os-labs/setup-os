@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 from setup_os import __version__
+from setup_os.blueprints import generate_portfolio_blueprint
 from setup_os.conversation import parse_conversation_file
 from setup_os.spec import extract_agent_spec
 
@@ -65,6 +66,8 @@ def _create(args: argparse.Namespace) -> int:
         json.dumps(spec.to_dict(), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    if spec.slug == "portfolio-manager-agent":
+        generate_portfolio_blueprint(spec, output_dir)
 
     print(f"Wrote {spec_path}")
     return 0
