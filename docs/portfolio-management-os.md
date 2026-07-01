@@ -30,6 +30,7 @@ It is a local, advisory, alert-first investing assistant.
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
 - produce daily Markdown portfolio reports
 - warn on concentration above the local review threshold
+- warn on allocation drift outside the local target review band
 - emit structured local notifications
 - track strategy and policy through Agent DNA
 - write audit and timeline events
@@ -59,6 +60,7 @@ portfolio-management-os/
   report.py
   data/
     holdings.csv
+    allocation_targets.csv
     portfolio_import_manifest.jsonl
   reports/
   memory/
