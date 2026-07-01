@@ -16,6 +16,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop Portfolio launcher now remembers the output path, conversation path, and CSV import paths between sessions.
 - Desktop Portfolio create action now accepts a user-entered seed conversation path instead of only the bundled example conversation.
 - Desktop Portfolio launcher can read the generated agent notification inbox from `.setup_os/notifications.jsonl`.
+- Product status checkpoint documenting current completion estimate and the remaining desktop MVP work needed to reach 75%.
 - Cross-platform native desktop CI matrix for Linux, Windows, and macOS Tauri compile checks.
 - Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
 - Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.
