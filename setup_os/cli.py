@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 from setup_os import __version__
+from setup_os.architecture import write_architecture_proposal
 from setup_os.audit import append_audit_event
 from setup_os.blueprints import generate_portfolio_blueprint
 from setup_os.conversation import parse_conversation_file
@@ -74,6 +75,7 @@ def _create(args: argparse.Namespace) -> int:
         json.dumps(spec.to_dict(), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    architecture_path = write_architecture_proposal(spec, output_dir)
     if spec.slug == "portfolio-manager-agent":
         generate_portfolio_blueprint(spec, output_dir)
     append_audit_event(
@@ -83,6 +85,7 @@ def _create(args: argparse.Namespace) -> int:
             "conversation": args.conversation,
             "spec": spec.slug,
             "artifact": str(spec_path),
+            "architecture": str(architecture_path),
         },
     )
 

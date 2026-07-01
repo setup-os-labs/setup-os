@@ -19,8 +19,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | --- | --- | --- | --- | --- | --- |
 | SO-007 | review | Codex | `codex/setup-os-brand` | Add append-only audit log | Create/evolve actions write JSONL audit events |
 | SO-008 | review | Codex | `codex/setup-os-brand` | Add notification provider interface and console adapter | Generated agent can emit a test console notification |
-| SO-009 | todo | Codex | `codex/static-component-registry` | Add static component registry | Architecture proposal cites selected components and rejected alternatives |
-| SO-010 | todo | Codex | `codex/architecture-proposal` | Generate architecture proposal Markdown | Proposal includes runtime, storage, notification, approval, and dependency rationale |
+| SO-009 | review | Codex | `codex/setup-os-brand` | Add static component registry | Architecture proposal cites selected components and rejected alternatives |
+| SO-010 | review | Codex | `codex/setup-os-brand` | Generate architecture proposal Markdown | Proposal includes runtime, storage, notification, approval, and dependency rationale |
 | SO-011 | todo | Codex | `codex/pytest-foundation` | Add pytest foundation | Tests cover ingestion, spec extraction, generation, and evolution proposal |
 | SO-015 | review | Codex | `codex/setup-os-brand` | Add planning conversation guide and starter vertical templates | Docs explain Think/Build/Evolve, minimum input/output, missing-decision checks, and five guide templates exist |
 | SO-016 | todo | Codex | `codex/spec-completeness` | Add spec completeness checker | `create` reports missing runtime, privacy, alert, data, and approval decisions without blocking generation |
