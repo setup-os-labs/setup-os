@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- ADR index and convention for keeping architecture decisions discoverable.
 - Generated-agent `health.py` runtime checks for required files, config policy, scheduler folder, reports folder, and notification inbox validity.
 - CI checks for the desktop frontend package, including npm install, TypeScript, production build, and dependency audit.
 - Tauri-ready desktop shell scaffold with React/TypeScript launcher UI and a Python CLI command contract.
