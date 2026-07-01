@@ -67,6 +67,7 @@ class DesktopShellTests(unittest.TestCase):
         lib_rs = (DESKTOP / "src-tauri" / "src" / "lib.rs").read_text(encoding="utf-8")
 
         self.assertIn("setup_os_help", lib_rs)
+        self.assertIn("setup_os_check_desktop_readiness", lib_rs)
         self.assertIn("setup_os_create_portfolio_example", lib_rs)
         self.assertIn("setup_os_run_portfolio_report", lib_rs)
         self.assertIn("setup_os_check_portfolio_health", lib_rs)
@@ -86,6 +87,8 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("resolve_user_path", lib_rs)
         self.assertIn("agent output path is required", lib_rs)
         self.assertIn("seed conversation path is required", lib_rs)
+        self.assertIn("Setup OS desktop readiness", lib_rs)
+        self.assertIn("Next: run Create Portfolio Management OS.", lib_rs)
         self.assertIn("setup_os_repo_dir", lib_rs)
         self.assertIn("SETUP_OS_REPO_DIR", lib_rs)
         self.assertIn('"setup_os.cli"', lib_rs)
@@ -130,8 +133,11 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("runPortfolioDemoFlow(portfolioOutputPath)", app)
         self.assertIn("readPortfolioNotifications(portfolioOutputPath)", app)
         self.assertIn("Read inbox", app)
+        self.assertIn("checkDesktopReadiness(portfolioOutputPath, seedConversationPath)", app)
+        self.assertIn("Check readiness", app)
         self.assertIn("agentDir: string", setup_os)
         self.assertIn("seedConversationPath: string", setup_os)
+        self.assertIn("checkDesktopReadiness", setup_os)
         self.assertIn('"setup_os_create_portfolio_example", { agentDir, seedConversationPath }', setup_os)
         self.assertIn('"setup_os_read_portfolio_notifications", { agentDir }', setup_os)
 

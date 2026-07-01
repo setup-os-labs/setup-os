@@ -8,6 +8,66 @@ fn setup_os_help() -> Result<String, String> {
 }
 
 #[tauri::command]
+fn setup_os_check_desktop_readiness(
+    agent_dir: String,
+    seed_conversation_path: String,
+) -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let seed_path = resolve_user_path(&repo_dir, &seed_conversation_path)?;
+    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let python_check = Command::new(&python)
+        .args(["-m", "setup_os.cli", "--help"])
+        .current_dir(&repo_dir)
+        .output();
+
+    let mut lines = vec!["Setup OS desktop readiness".to_string()];
+    lines.push(format!(
+        "- {}: repo root ({})",
+        marker(repo_dir.join("setup_os").join("cli.py").exists()),
+        repo_dir.display()
+    ));
+    lines.push(format!(
+        "- {}: Python engine ({})",
+        marker(python_check.as_ref().map_or(false, |output| output.status.success())),
+        python
+    ));
+    if let Ok(output) = &python_check {
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            lines.push(format!("  Next: fix Python engine startup. {stderr}"));
+        }
+    } else if let Err(error) = &python_check {
+        lines.push(format!("  Next: set SETUP_OS_PYTHON or install Python. {error}"));
+    }
+    lines.push(format!(
+        "- {}: seed conversation ({})",
+        marker(seed_path.exists()),
+        seed_path.display()
+    ));
+    if !seed_path.exists() {
+        lines.push("  Next: choose an existing Markdown/TXT planning conversation before creating.".to_string());
+    }
+    lines.push(format!(
+        "- {}: selected Portfolio workspace ({})",
+        marker(agent_dir.exists()),
+        agent_dir.display()
+    ));
+    if !agent_dir.exists() {
+        lines.push("  Next: run Create Portfolio Management OS.".to_string());
+    } else {
+        for file_name in ["report.py", "health.py", "import_conversation.py"] {
+            lines.push(format!(
+                "- {}: generated {file_name}",
+                marker(agent_dir.join(file_name).exists())
+            ));
+        }
+    }
+
+    Ok(lines.join("\n"))
+}
+
+#[tauri::command]
 fn setup_os_create_portfolio_example(
     agent_dir: String,
     seed_conversation_path: String,
@@ -416,6 +476,14 @@ fn resolve_user_path(repo_dir: &PathBuf, path: &str) -> Result<PathBuf, String> 
     }
 }
 
+fn marker(ok: bool) -> &'static str {
+    if ok {
+        "OK"
+    } else {
+        "MISSING"
+    }
+}
+
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let repo_dir = setup_os_repo_dir()?;
@@ -459,6 +527,7 @@ pub fn run() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             setup_os_help,
+            setup_os_check_desktop_readiness,
             setup_os_create_portfolio_example,
             setup_os_run_portfolio_report,
             setup_os_check_portfolio_health,
