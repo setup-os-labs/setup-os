@@ -143,6 +143,11 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .primary {
   background: #173b2f;
   color: #ffffff;
@@ -235,6 +240,12 @@ button {
 
 .panel h3 {
   margin-bottom: 14px;
+}
+
+.panel-status {
+  margin-bottom: 12px;
+  color: #66756d;
+  font-size: 13px;
 }
 
 ul {

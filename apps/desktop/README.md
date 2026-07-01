@@ -26,6 +26,12 @@ The first command contract the shell must preserve is:
 python -m setup_os.cli --help
 ```
 
+The first product action contract is:
+
+```bash
+python -m setup_os.cli create examples/portfolio_conversation.md --output generated/desktop-portfolio-os
+```
+
 ## Packaging Direction
 
 Tauri release builds should bundle a Python sidecar later. The sidecar must keep the same command behavior as development mode before the desktop app grows a local API or FastAPI service.
