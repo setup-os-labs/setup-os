@@ -26,6 +26,7 @@ import {
   importPortfolioTransactions,
   importPortfolioWatchlist,
   readPortfolioNotifications,
+  resetPortfolioWorkspace,
   reviewPortfolioMemoryDrafts,
   runPortfolioDemoFlow,
   runPortfolioReport,
@@ -174,6 +175,32 @@ export function App() {
       const output = await createPortfolioExample(portfolioOutputPath, seedConversationPath);
       setCliOutput(output);
       setActionStatus("Generated");
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function resetPortfolioAgent() {
+    if (!requirePortfolioOutput() || !requirePath("Seed conversation path", seedConversationPath)) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Archive and recreate the Portfolio workspace at ${portfolioOutputPath}?`,
+    );
+    if (!confirmed) {
+      setActionStatus("Reset cancelled");
+      return;
+    }
+
+    setActionStatus("Resetting workspace");
+    setCliOutput(`Archiving and recreating ${portfolioOutputPath} from ${seedConversationPath}...`);
+    try {
+      const output = await resetPortfolioWorkspace(portfolioOutputPath, seedConversationPath);
+      setCliOutput(output);
+      setActionStatus("Workspace reset");
       setCliStatus("Ready");
     } catch (error) {
       setActionStatus("Needs attention");
@@ -426,6 +453,9 @@ export function App() {
             <div className="button-row">
               <button className="primary" type="button" onClick={runFullPortfolioFlow}>
                 <Play size={17} /> Run demo flow
+              </button>
+              <button className="secondary" type="button" onClick={resetPortfolioAgent}>
+                <RefreshCcw size={17} /> Reset workspace
               </button>
               <button className="secondary" type="button" onClick={checkReadiness}>
                 <ShieldCheck size={17} /> Check readiness

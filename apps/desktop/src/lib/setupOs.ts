@@ -12,6 +12,10 @@ export async function createPortfolioExample(agentDir: string, seedConversationP
   return invoke<string>("setup_os_create_portfolio_example", { agentDir, seedConversationPath });
 }
 
+export async function resetPortfolioWorkspace(agentDir: string, seedConversationPath: string): Promise<string> {
+  return invoke<string>("setup_os_reset_portfolio_workspace", { agentDir, seedConversationPath });
+}
+
 export async function runPortfolioReport(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_run_portfolio_report", { agentDir });
 }

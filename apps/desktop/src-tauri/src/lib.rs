@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[tauri::command]
 fn setup_os_help() -> Result<String, String> {
@@ -86,6 +87,63 @@ fn setup_os_create_portfolio_example(
         "--output",
         output_dir.as_str(),
     ])
+}
+
+#[tauri::command]
+fn setup_os_reset_portfolio_workspace(
+    agent_dir: String,
+    seed_conversation_path: String,
+) -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let agent_dir_path = resolve_agent_dir(&agent_dir)?;
+    let seed_path = resolve_user_path(&repo_dir, &seed_conversation_path)?;
+    if !seed_path.exists() {
+        return Err(format!(
+            "seed conversation does not exist: {}",
+            seed_path.display()
+        ));
+    }
+
+    let archive_note = if agent_dir_path.exists() {
+        let parent = agent_dir_path
+            .parent()
+            .ok_or_else(|| format!("cannot archive {}", agent_dir_path.display()))?;
+        let workspace_name = agent_dir_path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .unwrap_or("portfolio-workspace");
+        let archive_dir = parent.join("_archives");
+        fs::create_dir_all(&archive_dir).map_err(|error| {
+            format!(
+                "failed to create archive directory {}: {error}",
+                archive_dir.display()
+            )
+        })?;
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|error| format!("failed to create archive timestamp: {error}"))?
+            .as_secs();
+        let archive_path = archive_dir.join(format!("{workspace_name}-{timestamp}"));
+        fs::rename(&agent_dir_path, &archive_path).map_err(|error| {
+            format!(
+                "failed to archive {} to {}: {error}",
+                agent_dir_path.display(),
+                archive_path.display()
+            )
+        })?;
+        format!("Archived previous workspace: {}", archive_path.display())
+    } else {
+        "No existing workspace found; creating a fresh one.".to_string()
+    };
+
+    let create_output =
+        setup_os_create_portfolio_example(agent_dir, seed_path.display().to_string()).map_err(|error| {
+            format!("{archive_note}\nReset could not recreate the workspace: {error}")
+        })?;
+
+    Ok(format!(
+        "Portfolio workspace reset complete.\n{archive_note}\n\n{create_output}"
+    ))
 }
 
 #[tauri::command]
@@ -610,6 +668,7 @@ pub fn run() {
             setup_os_help,
             setup_os_check_desktop_readiness,
             setup_os_create_portfolio_example,
+            setup_os_reset_portfolio_workspace,
             setup_os_run_portfolio_report,
             setup_os_check_portfolio_health,
             setup_os_import_portfolio_conversation,
