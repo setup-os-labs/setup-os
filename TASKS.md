@@ -79,7 +79,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-061 | done | Codex | `codex/verify-desktop-release-workflow` | Verify desktop release workflow artifacts | Manual release workflow run `28546192396` passed on Linux, Windows, and macOS and uploaded unsigned desktop artifacts |
 | SO-062 | done | Codex | `codex/desktop-portfolio-output-path` | Add editable desktop Portfolio output path | Desktop Portfolio actions can target a user-entered generated-agent directory instead of only `generated/desktop-portfolio-os` |
 | SO-063 | done | Codex | `codex/desktop-path-persistence` | Persist desktop Portfolio paths | Desktop shell remembers Portfolio output, conversation, and CSV import paths between sessions |
-| SO-064 | review | Codex | `codex/desktop-create-seed-path` | Add desktop seed conversation path | Desktop Portfolio create action can generate from a user-entered seed planning conversation instead of only the bundled example |
+| SO-064 | done | Codex | `codex/desktop-create-seed-path` | Add desktop seed conversation path | Desktop Portfolio create action can generate from a user-entered seed planning conversation instead of only the bundled example |
+| SO-065 | review | Codex | `codex/desktop-portfolio-inbox` | Add desktop Portfolio notification inbox reader | Desktop shell can display generated Portfolio notification inbox events from `.setup_os/notifications.jsonl` |
 
 ## Backlog Rules
 

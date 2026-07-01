@@ -48,6 +48,10 @@ export async function getPortfolioStatus(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_portfolio_status", { agentDir });
 }
 
+export async function readPortfolioNotifications(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_read_portfolio_notifications", { agentDir });
+}
+
 export async function runPortfolioDemoFlow(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_run_portfolio_demo_flow", { agentDir });
 }
