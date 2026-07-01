@@ -14,6 +14,7 @@ from setup_os.blueprints import generate_portfolio_blueprint
 from setup_os.completeness import missing_decisions
 from setup_os.conversation import parse_conversation_file
 from setup_os.evolution import create_evolution_proposal
+from setup_os.releases import write_release_snapshot
 from setup_os.spec import extract_agent_spec
 from setup_os.timeline import append_timeline_event
 
@@ -81,6 +82,22 @@ def _create(args: argparse.Namespace) -> int:
     missing = missing_decisions(spec)
     if spec.slug == "portfolio-manager-agent":
         generate_portfolio_blueprint(spec, output_dir)
+    release_path = write_release_snapshot(
+        output_dir,
+        "v1",
+        f"Initial {spec.name}",
+        [
+            "agent_spec.json",
+            "architecture.md",
+            "README.md",
+            "agent_dna.json",
+            "config.json",
+        ],
+        {
+            "conversation": args.conversation,
+            "spec": spec.slug,
+        },
+    )
     append_timeline_event(
         output_dir,
         "created",
@@ -89,6 +106,7 @@ def _create(args: argparse.Namespace) -> int:
             "conversation": args.conversation,
             "spec": spec.slug,
             "maturity_level": "Level 2: Alerts",
+            "release": str(release_path),
         },
     )
     append_audit_event(
