@@ -52,6 +52,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-034 | review | Codex | `codex/tauri-native-ci-and-branches` | Add native Tauri CI validation and branch retention rule | CI compiles the desktop native shell without bundling, and Codex workflow says not to delete remote branches after merge |
 | SO-035 | review | Codex | `codex/branch-history-policy` | Document retained branch history policy | CODEX explains archival/restored branch handling and identifies `codex/setup-os-brand` as superseded history |
 | SO-036 | review | Codex | `codex/diagram-output-pack` | Add standard generated diagram pack | Generated systems include offline HTML diagrams, editable D2 source, local icons, manifest, docs, and tests |
+| SO-037 | review | Codex | `codex/ci-speedups` | Speed up CI feedback | CI splits Python, desktop frontend, and native Tauri checks into parallel jobs while preserving the protected `checks` aggregate |
 
 ## Backlog Rules
 

@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Parallel CI jobs and Rust build caching to shorten feedback for Python, desktop frontend, and native Tauri checks.
 - Standard generated diagram pack with offline HTML, editable D2 source, local SVG icons, and diagram manifest.
 - Branch history policy for retained archival branches such as `codex/setup-os-brand`.
 - Native Tauri CI validation with Linux prerequisites and `tauri build --no-bundle`.
