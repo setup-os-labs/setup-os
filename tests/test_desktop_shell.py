@@ -118,6 +118,10 @@ class DesktopShellTests(unittest.TestCase):
         setup_os = (DESKTOP / "src" / "lib" / "setupOs.ts").read_text(encoding="utf-8")
 
         self.assertIn("portfolioOutputPath", app)
+        self.assertIn("requirePath", app)
+        self.assertIn("is required before running this action.", app)
+        self.assertIn("Seed conversation path", app)
+        self.assertIn("Conversation path", app)
         self.assertIn("window.localStorage", app)
         self.assertIn("setup-os:portfolio-output-path", app)
         self.assertIn("setup-os:portfolio-seed-conversation-path", app)

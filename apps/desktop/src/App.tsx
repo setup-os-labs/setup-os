@@ -116,6 +116,20 @@ export function App() {
     window.localStorage.setItem("setup-os:portfolio-data-import-paths", JSON.stringify(dataImportPaths));
   }, [dataImportPaths]);
 
+  function requirePath(label: string, value: string) {
+    if (value.trim()) {
+      return true;
+    }
+
+    setActionStatus("Needs attention");
+    setCliOutput(`${label} is required before running this action.`);
+    return false;
+  }
+
+  function requirePortfolioOutput() {
+    return requirePath("Portfolio output path", portfolioOutputPath);
+  }
+
   async function checkCli() {
     setCliStatus("Checking");
     try {
@@ -129,6 +143,10 @@ export function App() {
   }
 
   async function checkReadiness() {
+    if (!requirePortfolioOutput() || !requirePath("Seed conversation path", seedConversationPath)) {
+      return;
+    }
+
     setCliStatus("Checking");
     setActionStatus("Checking readiness");
     try {
@@ -144,6 +162,10 @@ export function App() {
   }
 
   async function createPortfolioAgent() {
+    if (!requirePortfolioOutput() || !requirePath("Seed conversation path", seedConversationPath)) {
+      return;
+    }
+
     setActionStatus("Generating");
     setCliOutput(`Creating Portfolio Management OS in ${portfolioOutputPath} from ${seedConversationPath}...`);
     try {
@@ -158,6 +180,10 @@ export function App() {
   }
 
   async function runPortfolioAgentReport() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
     setActionStatus("Running report");
     setCliOutput("Running generated Portfolio Management OS report...");
     try {
@@ -172,6 +198,10 @@ export function App() {
   }
 
   async function checkPortfolioAgentHealth() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
     setActionStatus("Checking health");
     setCliOutput("Running generated Portfolio Management OS health check...");
     try {
@@ -186,6 +216,10 @@ export function App() {
   }
 
   async function importPortfolioConversationFromPath() {
+    if (!requirePortfolioOutput() || !requirePath("Conversation path", conversationPath)) {
+      return;
+    }
+
     setActionStatus("Importing conversation");
     setCliOutput(`Importing ${conversationPath} into raw Portfolio memory...`);
     try {
@@ -216,6 +250,10 @@ export function App() {
       marketData: importPortfolioMarketData,
     };
 
+    if (!requirePortfolioOutput() || !requirePath(`${labels[kind]} path`, path)) {
+      return;
+    }
+
     setActionStatus(`Importing ${labels[kind]}`);
     setCliOutput(`Importing ${path} into Portfolio ${labels[kind]}...`);
     try {
@@ -234,6 +272,10 @@ export function App() {
   }
 
   async function extractPortfolioMemoryDrafts() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
     setActionStatus("Extracting memory");
     setCliOutput("Extracting review-only Portfolio memory drafts...");
     try {
@@ -248,6 +290,10 @@ export function App() {
   }
 
   async function refreshPortfolioStatus() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
     setActionStatus("Refreshing status");
     try {
       const output = await getPortfolioStatus(portfolioOutputPath);
@@ -260,6 +306,10 @@ export function App() {
   }
 
   async function readPortfolioInbox() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
     setActionStatus("Reading inbox");
     try {
       const output = await readPortfolioNotifications(portfolioOutputPath);
@@ -272,6 +322,10 @@ export function App() {
   }
 
   async function runFullPortfolioFlow() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
     setActionStatus("Running full flow");
     setCliOutput("Running the full local Portfolio Management OS flow...");
     try {

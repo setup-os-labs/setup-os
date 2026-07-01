@@ -82,7 +82,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-064 | done | Codex | `codex/desktop-create-seed-path` | Add desktop seed conversation path | Desktop Portfolio create action can generate from a user-entered seed planning conversation instead of only the bundled example |
 | SO-065 | done | Codex | `codex/desktop-portfolio-inbox` | Add desktop Portfolio notification inbox reader | Desktop shell can display generated Portfolio notification inbox events from `.setup_os/notifications.jsonl` |
 | SO-066 | done | Codex | `codex/product-status-checkpoint` | Add product status checkpoint | Repo documents current completion estimate, usable surfaces, and the remaining desktop MVP slices needed to reach 75% |
-| SO-067 | review | Codex | `codex/desktop-readiness-checks` | Add desktop readiness checks | Desktop shell can check repo root, Python engine, seed conversation, and selected Portfolio workspace with next-step guidance |
+| SO-067 | done | Codex | `codex/desktop-readiness-checks` | Add desktop readiness checks | Desktop shell can check repo root, Python engine, seed conversation, and selected Portfolio workspace with next-step guidance |
+| SO-068 | review | Codex | `codex/desktop-action-validation` | Add desktop action validation | Desktop shell validates required output, seed, conversation, and import paths before invoking backend commands |
 
 ## Backlog Rules
 
