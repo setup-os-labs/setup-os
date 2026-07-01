@@ -118,6 +118,44 @@ fn setup_os_extract_portfolio_memory() -> Result<String, String> {
     }
 }
 
+#[tauri::command]
+fn setup_os_portfolio_status() -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+    let checks = [
+        ("Generated Portfolio OS", agent_dir.exists()),
+        ("Report command", agent_dir.join("report.py").exists()),
+        ("Health command", agent_dir.join("health.py").exists()),
+        (
+            "Raw conversation memory",
+            agent_dir
+                .join("memory")
+                .join("raw")
+                .join("import_manifest.jsonl")
+                .exists(),
+        ),
+        (
+            "Structured memory drafts",
+            agent_dir
+                .join("memory")
+                .join("structured")
+                .join("extraction_drafts.jsonl")
+                .exists(),
+        ),
+        (
+            "Latest daily report",
+            agent_dir.join("reports").join("daily_report.md").exists(),
+        ),
+    ];
+
+    let mut lines = vec!["Portfolio Management OS status".to_string()];
+    for (label, exists) in checks {
+        let marker = if exists { "OK" } else { "MISSING" };
+        lines.push(format!("- {marker}: {label}"));
+    }
+    Ok(lines.join("\n"))
+}
+
 fn ensure_generated_portfolio_file(agent_dir: &PathBuf, file_name: &str) -> Result<(), String> {
     if agent_dir.join(file_name).exists() {
         return Ok(());
@@ -175,7 +213,8 @@ pub fn run() {
             setup_os_run_portfolio_report,
             setup_os_check_portfolio_health,
             setup_os_import_portfolio_conversation_example,
-            setup_os_extract_portfolio_memory
+            setup_os_extract_portfolio_memory,
+            setup_os_portfolio_status
         ])
         .run(tauri::generate_context!())
         .expect("error while running Setup OS desktop app");
