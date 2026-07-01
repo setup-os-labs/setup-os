@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Generated-agent raw conversation import command that copies saved chats into `memory/raw` with a manifest and checksum without mutating strategy.
 - Parallel CI jobs and Rust build caching to shorten feedback for Python, desktop frontend, and native Tauri checks.
 - Standard generated diagram pack with offline HTML, editable D2 source, local SVG icons, and diagram manifest.
 - Branch history policy for retained archival branches such as `codex/setup-os-brand`.

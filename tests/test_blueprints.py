@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import tempfile
@@ -31,6 +32,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "config.json").exists())
             self.assertTrue((output / "agent_dna.json").exists())
             self.assertTrue((output / "data" / "holdings.csv").exists())
+            self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
@@ -49,6 +51,31 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "reports" / "daily_report.md").exists())
             self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
             self.assertIn("NOTIFY[info]:", report.stdout)
+
+            import_result = subprocess.run(
+                [
+                    sys.executable,
+                    "import_conversation.py",
+                    str(Path.cwd() / "examples" / "portfolio_update.md"),
+                ],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(import_result.returncode, 0)
+            self.assertIn("Imported raw conversation", import_result.stdout)
+
+            manifest_path = output / "memory" / "raw" / "import_manifest.jsonl"
+            self.assertTrue(manifest_path.exists())
+            manifest = [
+                json.loads(line)
+                for line in manifest_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(manifest[0]["memory_layer"], "raw")
+            self.assertEqual(manifest[0]["status"], "stored_raw_only")
+            self.assertTrue((output / manifest[0]["stored_path"]).exists())
 
             verify = subprocess.run(
                 [sys.executable, "verify.py"],

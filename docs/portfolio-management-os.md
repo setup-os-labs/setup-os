@@ -26,7 +26,7 @@ It is a local, advisory, alert-first investing assistant.
 - import portfolio planning conversations
 - import saved ChatGPT financial conversations
 - import Robinhood portfolio data in read-only mode
-- store imported conversations as raw memory first, then extract structured portfolio facts
+- store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
 - produce daily Markdown portfolio reports
 - emit structured local notifications
 - track strategy and policy through Agent DNA
