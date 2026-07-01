@@ -44,6 +44,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-026 | review | Codex | `codex/evolution-notification-foundation` | Add action permission policy primitives | Generated configs include read/alert/draft/approve/execute/auto-execute trust levels and prohibited actions |
 | SO-027 | review | Codex | `codex/evolution-notification-foundation` | Add explicit approve/apply command for safe evolution | Approved proposal can create a candidate release without mutating the current release silently |
 | SO-028 | todo | Codex | `codex/runtime-health` | Add generated runtime health checks | Generated systems can check scheduler, notifications, required files, and configuration health |
+| SO-029 | review | Codex | `codex/evolution-notification-foundation` | Document desktop stack and Portfolio Management OS blueprint | README, ADR, docs, and templates explain Python core, future Tauri desktop, optional FastAPI, and Portfolio Management OS scope |
+| SO-030 | todo | Codex | `codex/desktop-shell-spike` | Spike cross-platform desktop shell | Minimal Tauri shell can call `python -m setup_os.cli --help` on macOS and Windows |
 
 ## Backlog Rules
 

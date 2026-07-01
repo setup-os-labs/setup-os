@@ -117,6 +117,18 @@ For conversation structure and vertical planning templates, see [docs/conversati
 - Current adapters: Markdown/TXT conversation import, console notifications, local notification inbox.
 - Planned adapters: ntfy, Apprise, MCP-style connectors, richer schedulers, and additional vertical blueprints.
 
+## App Direction
+
+Setup OS is CLI-first during MVP, then desktop-first for everyday use.
+
+- Core: Python engine and CLI.
+- Desktop shell: Tauri v2 + React + TypeScript.
+- Local API: FastAPI only if the desktop shell needs a long-running local service.
+- Local data: files and JSONL first; SQLite when structured state needs it.
+- First generated vertical: [Portfolio Management OS](docs/portfolio-management-os.md).
+
+See [ADR 0004](docs/adr/0004-desktop-app-stack.md) for the desktop stack decision.
+
 ## Repository Layout
 
 The repo is intentionally a monorepo through MVP. Use it for the actual system while the architecture is still evolving; split repos only when a folder becomes a product, API, or community surface of its own.
