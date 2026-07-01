@@ -13,6 +13,7 @@ from setup_os.audit import append_audit_event
 from setup_os.blueprints import generate_health_blueprint, generate_portfolio_blueprint
 from setup_os.completeness import missing_decisions
 from setup_os.conversation import parse_conversation_file
+from setup_os.diagrams import write_standard_diagram_pack
 from setup_os.evolution import create_evolution_proposal
 from setup_os.releases import write_release_snapshot
 from setup_os.spec import extract_agent_spec
@@ -96,6 +97,7 @@ def _create(args: argparse.Namespace) -> int:
         encoding="utf-8",
     )
     architecture_path = write_architecture_proposal(spec, output_dir)
+    diagram_dir = write_standard_diagram_pack(spec, output_dir)
     missing = missing_decisions(spec)
     if spec.slug == "portfolio-manager-agent":
         generate_portfolio_blueprint(spec, output_dir)
@@ -136,6 +138,7 @@ def _create(args: argparse.Namespace) -> int:
             "spec": spec.slug,
             "artifact": str(spec_path),
             "architecture": str(architecture_path),
+            "diagrams": str(diagram_dir),
             "missing_decisions": [decision.key for decision in missing],
         },
     )

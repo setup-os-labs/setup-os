@@ -70,6 +70,16 @@ def write_architecture_proposal(spec: AgentSpec, output_dir: Path) -> Path:
             "- trade execution is disabled in v0",
             "- future strategy changes must be proposed through `evolution_proposal.md`",
             "",
+            "## Standard Diagram Pack",
+            "",
+            "Setup OS generates three local-first diagrams under `docs/diagrams/`:",
+            "",
+            "- `overview_orchestration.html`: the big-picture user mental model",
+            "- `runtime_architecture.html`: the local components and adapter boundaries",
+            "- `evolution_safety_flow.html`: the approval-first maturity loop",
+            "",
+            "Each diagram also has editable D2 source and local icon assets so it can be opened offline.",
+            "",
         ]
     )
 
