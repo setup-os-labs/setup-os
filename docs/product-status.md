@@ -1,14 +1,14 @@
 # Product Status
 
-Current checkpoint: Setup OS is a working local-first desktop MVP foundation, not a finished product.
+Current checkpoint: Setup OS has crossed the 75% local desktop MVP milestone, but it is not a finished product.
 
 ## Completion Estimate
 
-- Setup OS desktop MVP: about 75%.
+- Setup OS desktop MVP: about 76%.
 - Generated Portfolio Management OS local v0: about 65%.
 - End-to-end vision, where Setup OS desktop creates Portfolio Management OS from saved conversations and runs it day to day: about 60%.
 
-The next practical target is 75% for the desktop MVP. That means the product should feel usable by its owner without reading repo internals.
+The next practical target is 80% for the desktop MVP. That means the product should feel useful as a daily local launcher, not only a developer scaffold.
 
 ## Usable Today
 
@@ -16,12 +16,15 @@ The next practical target is 75% for the desktop MVP. That means the product sho
 - Manual unsigned desktop bundle workflow with verified Linux, Windows, and macOS artifacts.
 - Desktop Portfolio launcher with editable/persisted output, seed conversation, update conversation, and CSV import paths.
 - Desktop actions for create, import, extract memory, health, report, status, notification inbox, and one-click demo flow.
+- Desktop action for archiving and recreating a selected generated Portfolio workspace.
 - Python CLI for create, evolve, and approval-gated apply.
 - Generated Portfolio Management OS scaffold with local imports, reports, alerts, memory drafts, audit trail, health checks, and notifications.
 
-## Remaining To Reach 75%
+## Remaining To Reach 80%
 
-- Add a local reset/recreate flow for the selected generated workspace.
+- Add a clearer desktop review surface for structured memory drafts.
+- Add a desktop view for generated Portfolio report sections instead of only raw Markdown output.
+- Add a desktop release install/run note for Windows and macOS artifact testing.
 
 ## Still Later
 
