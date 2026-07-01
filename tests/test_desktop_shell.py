@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import struct
 import subprocess
 import sys
 import unittest
@@ -37,6 +38,20 @@ class DesktopShellTests(unittest.TestCase):
             config["bundle"]["icon"],
             ["icons/icon.png", "icons/icon.ico"],
         )
+
+    def test_ico_directory_matches_embedded_png_dimensions(self) -> None:
+        icon = (DESKTOP / "src-tauri" / "icons" / "icon.ico").read_bytes()
+
+        self.assertEqual(icon[:6], b"\x00\x00\x01\x00\x01\x00")
+        directory_width = 256 if icon[6] == 0 else icon[6]
+        directory_height = 256 if icon[7] == 0 else icon[7]
+        image_size = struct.unpack("<I", icon[14:18])[0]
+        image_offset = struct.unpack("<I", icon[18:22])[0]
+        png = icon[image_offset : image_offset + image_size]
+        png_width, png_height = struct.unpack(">II", png[16:24])
+
+        self.assertEqual(png[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertEqual((directory_width, directory_height), (png_width, png_height))
 
     def test_package_declares_desktop_stack(self) -> None:
         package = json.loads((DESKTOP / "package.json").read_text(encoding="utf-8"))
