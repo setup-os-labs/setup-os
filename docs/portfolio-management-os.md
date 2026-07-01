@@ -29,6 +29,7 @@ It is a local, advisory, alert-first investing assistant.
 - store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
 - produce daily Markdown portfolio reports
+- summarize offline unrealized performance from local cost basis and market snapshot files
 - warn on concentration above the local review threshold
 - warn on allocation drift outside the local target review band
 - emit structured local notifications
@@ -130,11 +131,11 @@ Default policy:
 ## Future Phases
 
 1. Setup OS desktop app can import saved conversations and launch verticals.
-2. Robinhood/manual read-only CSV holdings, transactions, cash, and watchlist import with local reports.
+2. Robinhood/manual read-only CSV holdings, transactions, cash, watchlist, and market snapshot import with local reports.
 3. ChatGPT financial discussion import into raw memory.
 4. Structured extraction drafts from raw conversations into holdings context, strategy notes, risk rules, and watchlists.
 5. Allocation drift and concentration alerts.
-6. Local price/event snapshot enrichment before live data APIs.
+6. Local price/event snapshot enrichment and offline performance summary before live data APIs.
 7. Optional ntfy or Apprise notifications.
 8. Human-approved execution through a supported broker interface.
 9. Limited automation only for pre-approved rules.

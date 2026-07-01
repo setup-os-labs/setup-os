@@ -61,7 +61,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-043 | done | Codex | `codex/portfolio-transaction-import` | Add read-only portfolio transaction import | Generated Portfolio Manager agents can import validated local transaction CSV snapshots, write an import manifest, and show recent transactions in reports |
 | SO-044 | done | Codex | `codex/portfolio-cash-import` | Add read-only portfolio cash import | Generated Portfolio Manager agents can import validated local cash CSV snapshots, write an import manifest, and include cash in reports |
 | SO-045 | done | Codex | `codex/portfolio-watchlist-import` | Add read-only portfolio watchlist import | Generated Portfolio Manager agents can import validated local watchlist CSV snapshots, write an import manifest, and show watchlist notes in reports |
-| SO-046 | review | Codex | `codex/portfolio-market-snapshot` | Add read-only market snapshot import | Generated Portfolio Manager agents can import validated local market data CSV snapshots, write an import manifest, and use snapshot prices/events in reports |
+| SO-046 | done | Codex | `codex/portfolio-market-snapshot` | Add read-only market snapshot import | Generated Portfolio Manager agents can import validated local market data CSV snapshots, write an import manifest, and use snapshot prices/events in reports |
+| SO-047 | review | Codex | `codex/portfolio-performance-summary` | Add offline portfolio performance summary | Generated Portfolio Manager reports include holdings cost basis, unrealized gain/loss, and per-holding return using local snapshot prices when present |
 
 ## Backlog Rules
 

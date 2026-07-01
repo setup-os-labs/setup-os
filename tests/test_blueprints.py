@@ -66,6 +66,9 @@ class BlueprintTests(unittest.TestCase):
             report_text = (output / "reports" / "daily_report.md").read_text(
                 encoding="utf-8"
             )
+            self.assertIn("## Performance Summary", report_text)
+            self.assertIn("Holdings cost basis:", report_text)
+            self.assertIn("Unrealized gain/loss:", report_text)
             self.assertIn("## Allocation Drift Alerts", report_text)
             self.assertIn("vs target", report_text)
             self.assertIn("## Concentration Alerts", report_text)
@@ -293,6 +296,8 @@ class BlueprintTests(unittest.TestCase):
             self.assertEqual(market_report.returncode, 0)
             self.assertIn("Cloud growth watch", market_report_text)
             self.assertIn("market snapshot price $210.00", market_report_text)
+            self.assertIn("Unrealized gain/loss: $550.00", market_report_text)
+            self.assertIn("unrealized $200.00", market_report_text)
 
             import_result = subprocess.run(
                 [
