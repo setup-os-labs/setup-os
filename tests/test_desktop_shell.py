@@ -110,6 +110,10 @@ class DesktopShellTests(unittest.TestCase):
         setup_os = (DESKTOP / "src" / "lib" / "setupOs.ts").read_text(encoding="utf-8")
 
         self.assertIn("portfolioOutputPath", app)
+        self.assertIn("window.localStorage", app)
+        self.assertIn("setup-os:portfolio-output-path", app)
+        self.assertIn("setup-os:portfolio-conversation-path", app)
+        self.assertIn("setup-os:portfolio-data-import-paths", app)
         self.assertIn('aria-label="Portfolio output path"', app)
         self.assertIn('"generated/desktop-portfolio-os"', app)
         self.assertIn('"examples/portfolio_update.md"', app)
