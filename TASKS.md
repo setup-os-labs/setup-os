@@ -80,7 +80,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-062 | done | Codex | `codex/desktop-portfolio-output-path` | Add editable desktop Portfolio output path | Desktop Portfolio actions can target a user-entered generated-agent directory instead of only `generated/desktop-portfolio-os` |
 | SO-063 | done | Codex | `codex/desktop-path-persistence` | Persist desktop Portfolio paths | Desktop shell remembers Portfolio output, conversation, and CSV import paths between sessions |
 | SO-064 | done | Codex | `codex/desktop-create-seed-path` | Add desktop seed conversation path | Desktop Portfolio create action can generate from a user-entered seed planning conversation instead of only the bundled example |
-| SO-065 | review | Codex | `codex/desktop-portfolio-inbox` | Add desktop Portfolio notification inbox reader | Desktop shell can display generated Portfolio notification inbox events from `.setup_os/notifications.jsonl` |
+| SO-065 | done | Codex | `codex/desktop-portfolio-inbox` | Add desktop Portfolio notification inbox reader | Desktop shell can display generated Portfolio notification inbox events from `.setup_os/notifications.jsonl` |
+| SO-066 | review | Codex | `codex/product-status-checkpoint` | Add product status checkpoint | Repo documents current completion estimate, usable surfaces, and the remaining desktop MVP slices needed to reach 75% |
 
 ## Backlog Rules
 
