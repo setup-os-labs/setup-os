@@ -60,3 +60,15 @@ Every dependency should include:
 ## 7. Generated Agents Own Their UX
 
 Setup OS generates and evolves vertical systems. The generated system owns its runtime UX.
+
+## 8. Evolution Is Proposal-Based
+
+Raw conversations do not directly mutate generated agents.
+
+Future conversations should produce schema-constrained, confidence-scored, conflict-aware evolution proposals that the user can approve, reject, or revise.
+
+## 9. Timelines Are Source Of Truth
+
+Generated agents should preserve an append-only timeline for created systems, proposed changes, approvals, and future runtime events.
+
+Calendars and notifications can mirror timeline events, but they are not the canonical memory.

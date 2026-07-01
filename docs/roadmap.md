@@ -16,7 +16,7 @@ Required:
 - console notification adapter
 - evolution proposal diff from a second conversation
 - append-only audit log
-- pytest coverage for the golden path
+- unittest coverage for the golden path
 
 Explicitly out of scope:
 
@@ -32,6 +32,9 @@ Explicitly out of scope:
 
 - approval gates
 - better audit log schema
+- evolution timeline
+- confidence-scored evolution proposals
+- maturity levels
 - generated repo verification command
 - dependency justification report
 - ADR templates for generated agents
@@ -43,8 +46,17 @@ Explicitly out of scope:
 - Career OS
 - Learning OS
 - Home OS
+- Health OS
 
 Each new vertical must reuse the same ingestion, architecture, approval, generation, and evolution pipeline.
+
+## v0.3: Notification OS Foundation
+
+- shared notification event schema
+- local notification inbox
+- snooze, done, dismiss, and explain states
+- calendar mirroring for time-bound events
+- clear boundary between agent timeline and calendar
 
 ## v1: Public Open-Core Launch
 

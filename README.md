@@ -84,7 +84,7 @@ python -m setup_os.cli evolve examples/portfolio_update.md
 
 See [docs/roadmap.md](docs/roadmap.md) and [TASKS.md](TASKS.md).
 
-For conversation structure and vertical planning templates, see [docs/conversation-planning-guide.md](docs/conversation-planning-guide.md) and [templates/conversation-guides/](templates/conversation-guides/).
+For conversation structure and vertical planning templates, see [docs/conversation-planning-guide.md](docs/conversation-planning-guide.md) and [templates/conversation-guides/](templates/conversation-guides/). For the long-term update loop, see [docs/evolution-model.md](docs/evolution-model.md) and [docs/notification-os.md](docs/notification-os.md).
 
 ## Repository Layout
 

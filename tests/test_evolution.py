@@ -33,6 +33,9 @@ class EvolutionTests(unittest.TestCase):
             proposal = proposal_path.read_text(encoding="utf-8")
             self.assertIn("concentration alerts", proposal)
             self.assertIn("35%", proposal)
+            self.assertIn("confidence: 0.91", proposal)
+            self.assertIn("memory layer: policy", proposal)
+            self.assertIn("Maturity Level", proposal)
             self.assertIn("Approval Required", proposal)
 
 

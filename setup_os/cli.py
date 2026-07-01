@@ -15,6 +15,7 @@ from setup_os.completeness import missing_decisions
 from setup_os.conversation import parse_conversation_file
 from setup_os.evolution import create_evolution_proposal
 from setup_os.spec import extract_agent_spec
+from setup_os.timeline import append_timeline_event
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -80,6 +81,16 @@ def _create(args: argparse.Namespace) -> int:
     missing = missing_decisions(spec)
     if spec.slug == "portfolio-manager-agent":
         generate_portfolio_blueprint(spec, output_dir)
+    append_timeline_event(
+        output_dir,
+        "created",
+        spec.name,
+        {
+            "conversation": args.conversation,
+            "spec": spec.slug,
+            "maturity_level": "Level 2: Alerts",
+        },
+    )
     append_audit_event(
         output_dir,
         "create",
@@ -108,6 +119,16 @@ def _evolve(args: argparse.Namespace) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     proposal_path = output_dir / "evolution_proposal.md"
     proposal_path.write_text(proposal.to_markdown(), encoding="utf-8")
+    append_timeline_event(
+        output_dir,
+        "proposal",
+        proposal.title,
+        {
+            "conversation": args.conversation,
+            "changes": [change.to_dict() for change in proposal.proposed_changes],
+            "approval_required": proposal.approval_required,
+        },
+    )
     append_audit_event(
         output_dir,
         "evolve",

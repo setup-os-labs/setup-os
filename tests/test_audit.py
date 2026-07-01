@@ -44,14 +44,21 @@ class AuditTests(unittest.TestCase):
             self.assertEqual(evolve.returncode, 0)
 
             audit_path = Path(tmpdir) / ".setup_os" / "audit.jsonl"
+            timeline_path = Path(tmpdir) / ".setup_os" / "timeline.jsonl"
             events = [
                 json.loads(line)
                 for line in audit_path.read_text(encoding="utf-8").splitlines()
+            ]
+            timeline = [
+                json.loads(line)
+                for line in timeline_path.read_text(encoding="utf-8").splitlines()
             ]
 
             self.assertEqual([event["event_type"] for event in events], ["create", "evolve"])
             self.assertEqual(events[0]["payload"]["spec"], "portfolio-manager-agent")
             self.assertTrue(events[1]["payload"]["approval_required"])
+            self.assertEqual([event["event_type"] for event in timeline], ["created", "proposal"])
+            self.assertEqual(timeline[0]["details"]["maturity_level"], "Level 2: Alerts")
 
 
 if __name__ == "__main__":

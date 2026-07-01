@@ -7,23 +7,25 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | ID | Status | Owner | Branch | Task | Acceptance |
 | --- | --- | --- | --- | --- | --- |
 | SO-001 | done | Codex | `codex/open-core-product-setup` | Establish open-core GitHub product scaffold | README, changelog, roadmap, task queue, PR templates, and Codex workflow exist |
-| SO-002 | review | Codex | `codex/setup-os-brand` | Create Python package and CLI skeleton | `python -m setup_os.cli --help` runs locally |
-| SO-003 | review | Codex | `codex/setup-os-brand` | Add Markdown/TXT conversation ingestion | Example conversation parses into a normalized envelope |
-| SO-004 | review | Codex | `codex/setup-os-brand` | Add deterministic v0 spec extractor | `agent_spec.json` is produced for portfolio example |
-| SO-005 | review | Codex | `codex/setup-os-brand` | Add Portfolio Manager Agent blueprint | Generated repo contains README, config, report command, and sample data |
-| SO-006 | review | Codex | `codex/setup-os-brand` | Add evolution proposal flow | Second conversation creates `evolution_proposal.md` without mutating generated agent |
+| SO-002 | done | Codex | `codex/setup-os-brand` | Create Python package and CLI skeleton | `python -m setup_os.cli --help` runs locally |
+| SO-003 | done | Codex | `codex/setup-os-brand` | Add Markdown/TXT conversation ingestion | Example conversation parses into a normalized envelope |
+| SO-004 | done | Codex | `codex/setup-os-brand` | Add deterministic v0 spec extractor | `agent_spec.json` is produced for portfolio example |
+| SO-005 | done | Codex | `codex/setup-os-brand` | Add Portfolio Manager Agent blueprint | Generated repo contains README, config, report command, and sample data |
+| SO-006 | done | Codex | `codex/setup-os-brand` | Add evolution proposal flow | Second conversation creates `evolution_proposal.md` without mutating generated agent |
 
 ## Next
 
 | ID | Status | Owner | Branch | Task | Acceptance |
 | --- | --- | --- | --- | --- | --- |
-| SO-007 | review | Codex | `codex/setup-os-brand` | Add append-only audit log | Create/evolve actions write JSONL audit events |
-| SO-008 | review | Codex | `codex/setup-os-brand` | Add notification provider interface and console adapter | Generated agent can emit a test console notification |
-| SO-009 | review | Codex | `codex/setup-os-brand` | Add static component registry | Architecture proposal cites selected components and rejected alternatives |
-| SO-010 | review | Codex | `codex/setup-os-brand` | Generate architecture proposal Markdown | Proposal includes runtime, storage, notification, approval, and dependency rationale |
-| SO-011 | todo | Codex | `codex/pytest-foundation` | Add pytest foundation | Tests cover ingestion, spec extraction, generation, and evolution proposal |
-| SO-015 | review | Codex | `codex/setup-os-brand` | Add planning conversation guide and starter vertical templates | Docs explain Think/Build/Evolve, minimum input/output, missing-decision checks, and five guide templates exist |
-| SO-016 | review | Codex | `codex/setup-os-brand` | Add spec completeness checker | `create` reports missing runtime, privacy, alert, data, and approval decisions without blocking generation |
+| SO-007 | done | Codex | `codex/setup-os-brand` | Add append-only audit log | Create/evolve actions write JSONL audit events |
+| SO-008 | done | Codex | `codex/setup-os-brand` | Add notification provider interface and console adapter | Generated agent can emit a test console notification |
+| SO-009 | done | Codex | `codex/setup-os-brand` | Add static component registry | Architecture proposal cites selected components and rejected alternatives |
+| SO-010 | done | Codex | `codex/setup-os-brand` | Generate architecture proposal Markdown | Proposal includes runtime, storage, notification, approval, and dependency rationale |
+| SO-011 | done | Codex | `codex/setup-os-brand` | Add unittest foundation | Tests cover ingestion, spec extraction, generation, and evolution proposal |
+| SO-015 | done | Codex | `codex/setup-os-brand` | Add planning conversation guide and starter vertical templates | Docs explain Think/Build/Evolve, minimum input/output, missing-decision checks, and five guide templates exist |
+| SO-016 | done | Codex | `codex/setup-os-brand` | Add spec completeness checker | `create` reports missing runtime, privacy, alert, data, and approval decisions without blocking generation |
+| SO-017 | review | Codex | `codex/evolution-notification-foundation` | Add evolution timeline and richer proposal metadata | `evolve` writes confidence, risk, memory layer, maturity level, and timeline events |
+| SO-018 | review | Codex | `codex/evolution-notification-foundation` | Document Notification OS boundary | Docs define Notification OS, calendar mirroring, and connector/MCP direction |
 
 ## Later
 
@@ -32,6 +34,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-012 | todo | Codex | `codex/ntfy-adapter` | Add optional ntfy adapter | Adapter is disabled by default and documented |
 | SO-013 | todo | Codex | `codex/adr-index` | Add ADR index generator or convention | ADRs are easy to discover and link from PRs |
 | SO-014 | todo | Codex | `codex/docs-site` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
+| SO-019 | todo | Codex | `codex/notification-events` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
+| SO-020 | todo | Codex | `codex/vertical-health-template` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
 
 ## Backlog Rules
 
