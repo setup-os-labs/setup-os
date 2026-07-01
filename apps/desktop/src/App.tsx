@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { createPortfolioExample, getSetupOsHelp } from "./lib/setupOs";
+import { createPortfolioExample, getSetupOsHelp, runPortfolioReport } from "./lib/setupOs";
 import "./styles.css";
 
 const agents = [
@@ -59,6 +59,20 @@ export function App() {
       const output = await createPortfolioExample();
       setCliOutput(output);
       setActionStatus("Generated");
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function runPortfolioAgentReport() {
+    setActionStatus("Running report");
+    setCliOutput("Running generated Portfolio Management OS report...");
+    try {
+      const output = await runPortfolioReport();
+      setCliOutput(output);
+      setActionStatus("Report ready");
       setCliStatus("Ready");
     } catch (error) {
       setActionStatus("Needs attention");
@@ -116,8 +130,8 @@ export function App() {
               <p className="eyebrow">Agents</p>
               <h3>Generated systems</h3>
             </div>
-            <button className="secondary" type="button">
-              <FolderInput size={17} /> Import conversation
+            <button className="secondary" type="button" onClick={runPortfolioAgentReport}>
+              <FileText size={17} /> Run report
             </button>
           </div>
 
