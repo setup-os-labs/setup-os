@@ -67,7 +67,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-049 | done | Codex | `codex/desktop-run-portfolio-report` | Add desktop Portfolio OS report action | Desktop shell can run the generated Portfolio Management OS report and display the Markdown output |
 | SO-050 | done | Codex | `codex/desktop-portfolio-health-action` | Add desktop Portfolio OS health action | Desktop shell can run the generated Portfolio Management OS health check and display the output |
 | SO-051 | done | Codex | `codex/desktop-import-conversation-action` | Add desktop raw conversation import action | Desktop shell can import an example saved Portfolio conversation into the generated agent raw memory |
-| SO-052 | review | Codex | `codex/desktop-extract-memory-action` | Add desktop structured memory draft action | Desktop shell can run generated Portfolio memory extraction and display the review-only draft output |
+| SO-052 | done | Codex | `codex/desktop-extract-memory-action` | Add desktop structured memory draft action | Desktop shell can run generated Portfolio memory extraction and display the review-only draft output |
+| SO-053 | review | Codex | `codex/desktop-portfolio-status-action` | Add desktop generated Portfolio status action | Desktop shell can display which generated Portfolio artifacts exist without mutating files |
 
 ## Backlog Rules
 

@@ -23,3 +23,7 @@ export async function importPortfolioConversationExample(): Promise<string> {
 export async function extractPortfolioMemory(): Promise<string> {
   return invoke<string>("setup_os_extract_portfolio_memory");
 }
+
+export async function getPortfolioStatus(): Promise<string> {
+  return invoke<string>("setup_os_portfolio_status");
+}

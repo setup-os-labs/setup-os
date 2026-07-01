@@ -16,6 +16,7 @@ import {
   createPortfolioExample,
   extractPortfolioMemory,
   getSetupOsHelp,
+  getPortfolioStatus,
   importPortfolioConversationExample,
   runPortfolioReport,
 } from "./lib/setupOs";
@@ -130,6 +131,18 @@ export function App() {
     }
   }
 
+  async function refreshPortfolioStatus() {
+    setActionStatus("Refreshing status");
+    try {
+      const output = await getPortfolioStatus();
+      setCliOutput(output);
+      setActionStatus("Status refreshed");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   return (
     <main className="shell">
       <aside className="sidebar">
@@ -181,6 +194,9 @@ export function App() {
               <h3>Generated systems</h3>
             </div>
             <div className="button-row">
+              <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
+                <RefreshCcw size={17} /> Refresh status
+              </button>
               <button className="secondary" type="button" onClick={importPortfolioConversation}>
                 <FolderInput size={17} /> Import conversation
               </button>

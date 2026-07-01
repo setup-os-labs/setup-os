@@ -60,6 +60,8 @@ cd generated/desktop-portfolio-os
 python extract_memory.py
 ```
 
+The shell also exposes a read-only status check for generated Portfolio artifacts.
+
 ## Packaging Direction
 
 Tauri release builds should bundle a Python sidecar later. The sidecar must keep the same command behavior as development mode before the desktop app grows a local API or FastAPI service.
