@@ -4,14 +4,19 @@
 
 # Setup OS
 
-[![License](https://img.shields.io/github/license/setup-os-labs/setup-os)](LICENSE)
-[![CI](https://github.com/setup-os-labs/setup-os/actions/workflows/ci.yml/badge.svg)](https://github.com/setup-os-labs/setup-os/actions/workflows/ci.yml)
-[![GitHub stars](https://img.shields.io/github/stars/setup-os-labs/setup-os?style=social)](https://github.com/setup-os-labs/setup-os/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/setup-os-labs/setup-os?style=social)](https://github.com/setup-os-labs/setup-os/forks)
-[![GitHub issues](https://img.shields.io/github/issues/setup-os-labs/setup-os)](https://github.com/setup-os-labs/setup-os/issues)
-[![GitHub release](https://img.shields.io/github/v/release/setup-os-labs/setup-os?display_name=tag)](https://github.com/setup-os-labs/setup-os/releases)
-[![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
-[![Local first](https://img.shields.io/badge/local--first-default-2ea44f)](docs/architecture-principles.md)
+<p align="center">
+  <a href="https://github.com/setup-os-labs/setup-os/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/setup-os-labs/setup-os/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/setup-os-labs/setup-os"></a>
+  <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/python-3.12%2B-blue"></a>
+  <a href="docs/architecture-principles.md"><img alt="Local first" src="https://img.shields.io/badge/local--first-default-2ea44f"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/setup-os-labs/setup-os/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/setup-os-labs/setup-os?style=social"></a>
+  <a href="https://github.com/setup-os-labs/setup-os/forks"><img alt="GitHub forks" src="https://img.shields.io/github/forks/setup-os-labs/setup-os?style=social"></a>
+  <a href="https://github.com/setup-os-labs/setup-os/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/setup-os-labs/setup-os"></a>
+  <a href="https://github.com/setup-os-labs/setup-os/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/setup-os-labs/setup-os?display_name=tag"></a>
+</p>
 
 Setup OS turns finalized AI planning conversations into local, self-hosted operating systems.
 
@@ -92,6 +97,25 @@ python verify.py
 See [docs/roadmap.md](docs/roadmap.md) and [TASKS.md](TASKS.md).
 
 For conversation structure and vertical planning templates, see [docs/conversation-planning-guide.md](docs/conversation-planning-guide.md) and [templates/conversation-guides/](templates/conversation-guides/). For the long-term update loop, see [docs/evolution-model.md](docs/evolution-model.md), [docs/notification-os.md](docs/notification-os.md), and [docs/agnostic-architecture.md](docs/agnostic-architecture.md).
+
+## Tech Stack
+
+<p>
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white">
+  <img alt="Markdown" src="https://img.shields.io/badge/Markdown-specs%20%26%20reports-000000?logo=markdown&logoColor=white">
+  <img alt="JSON" src="https://img.shields.io/badge/JSON-agent%20specs-000000?logo=json&logoColor=white">
+  <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub%20Actions-CI-2088FF?logo=githubactions&logoColor=white">
+  <img alt="unittest" src="https://img.shields.io/badge/tests-unittest-2ea44f">
+  <img alt="Local first" src="https://img.shields.io/badge/runtime-local--first-2ea44f">
+</p>
+
+- Core engine: Python 3.12+ standard library.
+- CLI: `argparse` entrypoint at `python -m setup_os.cli`.
+- Specs and state: JSON files, JSONL audit logs, JSONL timelines, and Markdown proposals.
+- Generated agents: local Python scaffolds with sample data, reports, notifications, `verify.py`, and release metadata.
+- Tests: stdlib `unittest` with GitHub Actions.
+- Current adapters: Markdown/TXT conversation import, console notifications, local notification inbox.
+- Planned adapters: ntfy, Apprise, MCP-style connectors, richer schedulers, and additional vertical blueprints.
 
 ## Repository Layout
 
