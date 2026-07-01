@@ -4,7 +4,7 @@ Current checkpoint: Setup OS is a working local-first desktop MVP foundation, no
 
 ## Completion Estimate
 
-- Setup OS desktop MVP: about 73%.
+- Setup OS desktop MVP: about 74%.
 - Generated Portfolio Management OS local v0: about 65%.
 - End-to-end vision, where Setup OS desktop creates Portfolio Management OS from saved conversations and runs it day to day: about 60%.
 
@@ -21,7 +21,6 @@ The next practical target is 75% for the desktop MVP. That means the product sho
 
 ## Remaining To Reach 75%
 
-- Add a review surface for structured memory drafts instead of showing raw command output only.
 - Add a desktop summary panel for latest report, notifications, and health state.
 - Add a local reset/recreate flow for the selected generated workspace.
 
