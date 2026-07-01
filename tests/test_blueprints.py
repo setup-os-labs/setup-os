@@ -33,6 +33,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "agent_dna.json").exists())
             self.assertTrue((output / "data" / "holdings.csv").exists())
             self.assertTrue((output / "import_conversation.py").exists())
+            self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
@@ -76,6 +77,28 @@ class BlueprintTests(unittest.TestCase):
             self.assertEqual(manifest[0]["memory_layer"], "raw")
             self.assertEqual(manifest[0]["status"], "stored_raw_only")
             self.assertTrue((output / manifest[0]["stored_path"]).exists())
+
+            extract_result = subprocess.run(
+                [sys.executable, "extract_memory.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(extract_result.returncode, 0)
+            self.assertIn("structured memory draft", extract_result.stdout)
+
+            drafts_path = output / "memory" / "structured" / "extraction_drafts.jsonl"
+            self.assertTrue(drafts_path.exists())
+            drafts = [
+                json.loads(line)
+                for line in drafts_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(drafts[0]["memory_layer"], "structured")
+            self.assertEqual(drafts[0]["status"], "draft_requires_review")
+            self.assertIn("concentration", " ".join(drafts[0]["risk_rules"]).lower())
+            self.assertIn("review", drafts[0]["next_step"].lower())
 
             verify = subprocess.run(
                 [sys.executable, "verify.py"],

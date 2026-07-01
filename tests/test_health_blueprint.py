@@ -32,6 +32,7 @@ class HealthBlueprintTests(unittest.TestCase):
             self.assertTrue((output / "data" / "health_notes.csv").exists())
             self.assertTrue((output / "agent_dna.json").exists())
             self.assertTrue((output / "import_conversation.py").exists())
+            self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "health.py").exists())
 
             spec = json.loads((output / "agent_spec.json").read_text(encoding="utf-8"))

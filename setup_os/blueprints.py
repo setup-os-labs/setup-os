@@ -53,6 +53,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_verifier(output_dir)
     write_runtime_health(output_dir)
     write_conversation_importer(output_dir)
+    write_memory_extractor(output_dir)
 
 
 def write_verifier(output_dir: Path) -> None:
@@ -74,6 +75,7 @@ REQUIRED_PATHS = [
     "agent_dna.json",
     "config.json",
     "import_conversation.py",
+    "extract_memory.py",
     "report.py",
     "health.py",
     ".setup_os",
@@ -122,6 +124,7 @@ REQUIRED_PATHS = [
     "agent_dna.json",
     "config.json",
     "import_conversation.py",
+    "extract_memory.py",
     "report.py",
     "verify.py",
     "memory/raw",
@@ -290,6 +293,140 @@ if __name__ == "__main__":
     )
 
 
+def write_memory_extractor(output_dir: Path) -> None:
+    _write(
+        output_dir / "extract_memory.py",
+        """from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import re
+
+
+ROOT = Path(__file__).parent
+RAW_MEMORY_DIR = ROOT / "memory" / "raw"
+MANIFEST_PATH = RAW_MEMORY_DIR / "import_manifest.jsonl"
+STRUCTURED_MEMORY_DIR = ROOT / "memory" / "structured"
+DRAFTS_PATH = STRUCTURED_MEMORY_DIR / "extraction_drafts.jsonl"
+
+
+RISK_TERMS = [
+    "alert",
+    "concentration",
+    "drawdown",
+    "loss",
+    "rebalance",
+    "risk",
+    "sell",
+    "threshold",
+    "warn",
+]
+STRATEGY_TERMS = [
+    "allocation",
+    "buy",
+    "diversify",
+    "goal",
+    "hold",
+    "portfolio",
+    "strategy",
+    "watchlist",
+]
+
+
+def load_manifest() -> list[dict[str, object]]:
+    if not MANIFEST_PATH.exists():
+        return []
+    records = []
+    for line in MANIFEST_PATH.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            records.append(json.loads(line))
+    return records
+
+
+def matching_lines(text: str, terms: list[str]) -> list[str]:
+    matches = []
+    for line in text.splitlines():
+        normalized = line.strip()
+        if not normalized:
+            continue
+        lowered = normalized.lower()
+        if any(term in lowered for term in terms):
+            matches.append(normalized[:240])
+    return matches[:12]
+
+
+def extract_tickers(text: str) -> list[str]:
+    tickers = sorted(set(re.findall(r"\\b[A-Z]{2,5}\\b", text)))
+    ignored = {"AI", "API", "CSV", "JSON", "LLM", "MCP", "OS", "TXT"}
+    return [ticker for ticker in tickers if ticker not in ignored][:25]
+
+
+def build_draft(record: dict[str, object]) -> dict[str, object]:
+    stored_path = ROOT / str(record["stored_path"])
+    text = stored_path.read_text(encoding="utf-8", errors="replace")
+    risk_rules = matching_lines(text, RISK_TERMS)
+    strategy_notes = matching_lines(text, STRATEGY_TERMS)
+    watchlist = extract_tickers(text)
+
+    return {
+        "extracted_at": datetime.now(timezone.utc).isoformat(),
+        "source_name": record.get("source_name"),
+        "source_path": record.get("stored_path"),
+        "source_sha256": record.get("sha256"),
+        "memory_layer": "structured",
+        "status": "draft_requires_review",
+        "confidence": 0.45,
+        "holdings_context": [],
+        "strategy_notes": strategy_notes,
+        "risk_rules": risk_rules,
+        "watchlist": watchlist,
+        "next_step": "Review this draft before promoting anything into policy, strategy, alerts, or evolution proposals.",
+    }
+
+
+def write_drafts(drafts: list[dict[str, object]]) -> None:
+    STRUCTURED_MEMORY_DIR.mkdir(parents=True, exist_ok=True)
+    with DRAFTS_PATH.open("w", encoding="utf-8") as file:
+        for draft in drafts:
+            file.write(json.dumps(draft, sort_keys=True) + "\\n")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Extract review-only structured memory drafts from raw imported conversations.",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Extract drafts for all raw imports in the manifest.",
+    )
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    records = load_manifest()
+    if not records:
+        print("No raw conversation imports found. Run import_conversation.py first.")
+        return 1
+    if not args.all:
+        records = records[-1:]
+
+    drafts = [build_draft(record) for record in records]
+    write_drafts(drafts)
+    print(f"Wrote {len(drafts)} structured memory draft(s) to {DRAFTS_PATH}")
+    print("Drafts require review before strategy, policy, alert, or evolution changes.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
+
+
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:
     create_agent_directories(output_dir)
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
@@ -313,11 +450,13 @@ This is a local, alert-only Portfolio Manager Agent scaffold generated by Setup 
 
 ```bash
 python import_conversation.py path/to/chatgpt-finance-export.md
+python extract_memory.py
 python report.py
 python health.py
 ```
 
 Raw conversation imports are stored in `memory/raw` and do not mutate strategy.
+Structured memory drafts are written to `memory/structured` for review before promotion.
 
 ## Safety
 
@@ -442,11 +581,13 @@ This is a local, advisory Health OS scaffold generated by Setup OS.
 
 ```bash
 python import_conversation.py path/to/health-notes-export.md
+python extract_memory.py
 python report.py
 python health.py
 ```
 
 Raw conversation imports are stored in `memory/raw` and do not mutate behavior.
+Structured memory drafts are written to `memory/structured` for review before promotion.
 
 ## Safety
 

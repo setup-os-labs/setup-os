@@ -27,6 +27,7 @@ It is a local, advisory, alert-first investing assistant.
 - import saved ChatGPT financial conversations
 - import Robinhood portfolio data in read-only mode
 - store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
+- keep structured extraction outputs as review-only drafts until promoted by an approved proposal
 - produce daily Markdown portfolio reports
 - emit structured local notifications
 - track strategy and policy through Agent DNA
@@ -114,7 +115,7 @@ Default policy:
 1. Setup OS desktop app can import saved conversations and launch verticals.
 2. Robinhood read-only import and local reports.
 3. ChatGPT financial discussion import into raw memory.
-4. Structured extraction from raw conversations into holdings context, strategy notes, risk rules, and watchlists.
+4. Structured extraction drafts from raw conversations into holdings context, strategy notes, risk rules, and watchlists.
 5. Allocation drift and concentration alerts.
 6. Price/news/event enrichment.
 7. Optional ntfy or Apprise notifications.
@@ -140,6 +141,7 @@ Recommended center of gravity:
 
 - Setup OS generated local Python vertical for v0.
 - Raw-first conversation memory, then structured extraction after review.
+- Structured memory drafts must be marked `draft_requires_review` and must not mutate strategy, policy, alerts, or releases directly.
 - OpenBB-style market data adapter when real data enrichment begins.
 - LangGraph-style workflow orchestration when the agent needs durable, human-in-the-loop state.
 - Ghostfolio-style cockpit only after the raw import, reports, alerts, and evolution flow are proven.
