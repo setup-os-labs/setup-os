@@ -33,6 +33,10 @@ class DesktopShellTests(unittest.TestCase):
 
         self.assertEqual(config["productName"], "Setup OS")
         self.assertEqual(config["app"]["windows"][0]["title"], "Setup OS")
+        self.assertEqual(
+            config["bundle"]["icon"],
+            ["icons/icon.png", "icons/icon.ico"],
+        )
 
     def test_package_declares_desktop_stack(self) -> None:
         package = json.loads((DESKTOP / "package.json").read_text(encoding="utf-8"))
