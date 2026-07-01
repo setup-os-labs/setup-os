@@ -10,7 +10,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   checkPortfolioHealth,
   createPortfolioExample,
@@ -50,19 +50,62 @@ const activity = [
   "Evolution proposals require approval",
 ];
 
+type DataImportPaths = {
+  holdings: string;
+  transactions: string;
+  cash: string;
+  watchlist: string;
+  marketData: string;
+};
+
+const defaultDataImportPaths: DataImportPaths = {
+  holdings: "examples/portfolio_snapshot.csv",
+  transactions: "examples/portfolio_transactions.csv",
+  cash: "examples/portfolio_cash.csv",
+  watchlist: "examples/portfolio_watchlist.csv",
+  marketData: "examples/portfolio_market_data.csv",
+};
+
+function readStoredValue(key: string, fallback: string) {
+  return window.localStorage.getItem(key) || fallback;
+}
+
+function readStoredDataImportPaths(): DataImportPaths {
+  const stored = window.localStorage.getItem("setup-os:portfolio-data-import-paths");
+  if (!stored) {
+    return defaultDataImportPaths;
+  }
+
+  try {
+    return { ...defaultDataImportPaths, ...JSON.parse(stored) } as DataImportPaths;
+  } catch {
+    return defaultDataImportPaths;
+  }
+}
+
 export function App() {
   const [cliStatus, setCliStatus] = useState("Not checked");
   const [cliOutput, setCliOutput] = useState("");
   const [actionStatus, setActionStatus] = useState("Ready");
-  const [portfolioOutputPath, setPortfolioOutputPath] = useState("generated/desktop-portfolio-os");
-  const [conversationPath, setConversationPath] = useState("examples/portfolio_update.md");
-  const [dataImportPaths, setDataImportPaths] = useState({
-    holdings: "examples/portfolio_snapshot.csv",
-    transactions: "examples/portfolio_transactions.csv",
-    cash: "examples/portfolio_cash.csv",
-    watchlist: "examples/portfolio_watchlist.csv",
-    marketData: "examples/portfolio_market_data.csv",
-  });
+  const [portfolioOutputPath, setPortfolioOutputPath] = useState(() =>
+    readStoredValue("setup-os:portfolio-output-path", "generated/desktop-portfolio-os"),
+  );
+  const [conversationPath, setConversationPath] = useState(() =>
+    readStoredValue("setup-os:portfolio-conversation-path", "examples/portfolio_update.md"),
+  );
+  const [dataImportPaths, setDataImportPaths] = useState<DataImportPaths>(readStoredDataImportPaths);
+
+  useEffect(() => {
+    window.localStorage.setItem("setup-os:portfolio-output-path", portfolioOutputPath);
+  }, [portfolioOutputPath]);
+
+  useEffect(() => {
+    window.localStorage.setItem("setup-os:portfolio-conversation-path", conversationPath);
+  }, [conversationPath]);
+
+  useEffect(() => {
+    window.localStorage.setItem("setup-os:portfolio-data-import-paths", JSON.stringify(dataImportPaths));
+  }, [dataImportPaths]);
 
   async function checkCli() {
     setCliStatus("Checking");
@@ -132,7 +175,7 @@ export function App() {
     }
   }
 
-  async function importPortfolioData(kind: keyof typeof dataImportPaths) {
+  async function importPortfolioData(kind: keyof DataImportPaths) {
     const path = dataImportPaths[kind];
     const labels = {
       holdings: "holdings",
@@ -162,7 +205,7 @@ export function App() {
     }
   }
 
-  function updateDataImportPath(kind: keyof typeof dataImportPaths, value: string) {
+  function updateDataImportPath(kind: keyof DataImportPaths, value: string) {
     setDataImportPaths((current) => ({ ...current, [kind]: value }));
   }
 
