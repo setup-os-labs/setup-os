@@ -65,7 +65,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-047 | done | Codex | `codex/portfolio-performance-summary` | Add offline portfolio performance summary | Generated Portfolio Manager reports include holdings cost basis, unrealized gain/loss, and per-holding return using local snapshot prices when present |
 | SO-048 | done | Codex | `codex/desktop-create-portfolio-action` | Add desktop Portfolio OS create action | Desktop shell can invoke the Python CLI to generate the Portfolio Management OS example into `generated/desktop-portfolio-os` |
 | SO-049 | done | Codex | `codex/desktop-run-portfolio-report` | Add desktop Portfolio OS report action | Desktop shell can run the generated Portfolio Management OS report and display the Markdown output |
-| SO-050 | review | Codex | `codex/desktop-portfolio-health-action` | Add desktop Portfolio OS health action | Desktop shell can run the generated Portfolio Management OS health check and display the output |
+| SO-050 | done | Codex | `codex/desktop-portfolio-health-action` | Add desktop Portfolio OS health action | Desktop shell can run the generated Portfolio Management OS health check and display the output |
+| SO-051 | review | Codex | `codex/desktop-import-conversation-action` | Add desktop raw conversation import action | Desktop shell can import an example saved Portfolio conversation into the generated agent raw memory |
 
 ## Backlog Rules
 

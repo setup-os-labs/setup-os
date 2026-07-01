@@ -46,6 +46,13 @@ cd generated/desktop-portfolio-os
 python health.py
 ```
 
+The first raw-memory import action uses the generated conversation importer:
+
+```bash
+cd generated/desktop-portfolio-os
+python import_conversation.py ../../examples/portfolio_update.md
+```
+
 ## Packaging Direction
 
 Tauri release builds should bundle a Python sidecar later. The sidecar must keep the same command behavior as development mode before the desktop app grows a local API or FastAPI service.
