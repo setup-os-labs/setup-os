@@ -8,6 +8,8 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Portfolio Management OS building-block research with ranked stack options, rejected alternatives, and plug-and-play architecture guidance.
+- Changelog hygiene rule requiring every PR to update `CHANGELOG.md` before merge.
 - Python CLI scaffold for creating, evolving, and applying generated systems.
 - Markdown/TXT conversation ingestion and deterministic v0 spec extraction.
 - Portfolio and Health OS generated-agent scaffolds with reports, notifications, policy, release metadata, and `verify.py`.

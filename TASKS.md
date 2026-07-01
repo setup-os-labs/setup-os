@@ -47,6 +47,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-029 | review | Codex | `codex/evolution-notification-foundation` | Document desktop stack and Portfolio Management OS blueprint | README, ADR, docs, and templates explain Python core, future Tauri desktop, optional FastAPI, and Portfolio Management OS scope |
 | SO-030 | todo | Codex | `codex/desktop-shell-spike` | Spike cross-platform desktop shell | Minimal Tauri vertical-agent launcher can call `python -m setup_os.cli --help` on native macOS and Windows |
 | SO-031 | review | Codex | `codex/evolution-notification-foundation` | Capture desktop-first and Robinhood read-only decisions | ADR and Portfolio Management OS docs record desktop-first sequencing, Tauri rationale, process mode decision rule, native Windows target, and Robinhood read-only import direction |
+| SO-032 | review | Codex | `codex/desktop-shell-spike` | Add Portfolio Management OS building-block research | Research note ranks stack options, captures rejected alternatives, and links from Portfolio Management OS docs |
 
 ## Backlog Rules
 

@@ -131,3 +131,18 @@ Preferred path:
 - otherwise manual export or user-provided account snapshots
 
 Do not use unofficial trading APIs as the default. Do not store credentials until there is a reviewed connector and explicit user approval.
+
+## Building Block Research
+
+The current working recommendation is to build the v0 as a small local system first, while preserving plug-and-play adapter boundaries for a richer Portfolio Management OS later.
+
+Recommended center of gravity:
+
+- Setup OS generated local Python vertical for v0.
+- Raw-first conversation memory, then structured extraction after review.
+- OpenBB-style market data adapter when real data enrichment begins.
+- LangGraph-style workflow orchestration when the agent needs durable, human-in-the-loop state.
+- Ghostfolio-style cockpit only after the raw import, reports, alerts, and evolution flow are proven.
+- Robinhood official Agentic/MCP-style connector as read-only first, with execution out of scope until explicit approval workflows are mature.
+
+See [research/portfolio-management-os-building-blocks.md](../research/portfolio-management-os-building-blocks.md) for the ranked stack options and rejected alternatives.

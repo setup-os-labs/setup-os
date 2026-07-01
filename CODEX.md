@@ -11,6 +11,7 @@ Codex should:
 - keep changes scoped to one task or one vertical slice
 - prefer squash merges for iterative Codex PRs unless commits are intentionally structured for long-term history
 - update docs and task status in the same PR as the code
+- update `CHANGELOG.md` in every PR before merge, even for documentation-only changes
 - add tests for extraction, generation, evolution, or safety behavior changes
 - avoid broker execution, cloud dependencies, and rich dashboards in v0
 - preserve local-first and human-approval-by-default behavior
@@ -22,7 +23,7 @@ Codex should:
 3. Implement the smallest useful slice.
 4. Run the relevant tests or checks.
 5. Update `TASKS.md`.
-6. Update `CHANGELOG.md` for user-visible changes.
+6. Update `CHANGELOG.md` with a short entry for the PR.
 7. Open a PR with the template in `.github/PULL_REQUEST_TEMPLATE.md`.
 8. Squash merge iterative PRs to keep `main` readable; use normal merge only when each commit is intentionally reviewed and meaningful on its own.
 

@@ -11,7 +11,7 @@ Closes:
 - [ ] Tests run
 - [ ] Manual check performed
 - [ ] Docs updated
-- [ ] Changelog updated, if user-facing
+- [ ] Changelog updated for this PR
 
 ## Safety Review
 
