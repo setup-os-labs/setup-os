@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Generated Portfolio Manager read-only transaction CSV importer and recent-activity report section.
 - Generated Portfolio Manager allocation drift warnings against local target weights.
 - Generated Portfolio Manager read-only holdings snapshot importer with validation and import manifest.
 - ADR 0005 documenting that repository-native Markdown remains canonical through MVP before adding a docs site.
