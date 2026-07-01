@@ -31,6 +31,8 @@ class ArchitectureTests(unittest.TestCase):
 
             proposal = architecture_path.read_text(encoding="utf-8")
             self.assertIn("Component Choices", proposal)
+            self.assertIn("Capability Dependency Graph", proposal)
+            self.assertIn("Daily portfolio report", proposal)
             self.assertIn("console notification adapter", proposal)
             self.assertIn("broker execution", proposal.lower())
             self.assertIn("alternatives considered", proposal)
