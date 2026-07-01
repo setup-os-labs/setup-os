@@ -17,7 +17,12 @@ import {
   extractPortfolioMemory,
   getSetupOsHelp,
   getPortfolioStatus,
+  importPortfolioCash,
   importPortfolioConversation as importPortfolioConversationFile,
+  importPortfolioHoldings,
+  importPortfolioMarketData,
+  importPortfolioTransactions,
+  importPortfolioWatchlist,
   runPortfolioReport,
 } from "./lib/setupOs";
 import "./styles.css";
@@ -49,6 +54,13 @@ export function App() {
   const [cliOutput, setCliOutput] = useState("");
   const [actionStatus, setActionStatus] = useState("Ready");
   const [conversationPath, setConversationPath] = useState("../../examples/portfolio_update.md");
+  const [dataImportPaths, setDataImportPaths] = useState({
+    holdings: "../../examples/portfolio_snapshot.csv",
+    transactions: "../../examples/portfolio_transactions.csv",
+    cash: "../../examples/portfolio_cash.csv",
+    watchlist: "../../examples/portfolio_watchlist.csv",
+    marketData: "../../examples/portfolio_market_data.csv",
+  });
 
   async function checkCli() {
     setCliStatus("Checking");
@@ -116,6 +128,40 @@ export function App() {
       setActionStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
     }
+  }
+
+  async function importPortfolioData(kind: keyof typeof dataImportPaths) {
+    const path = dataImportPaths[kind];
+    const labels = {
+      holdings: "holdings",
+      transactions: "transactions",
+      cash: "cash",
+      watchlist: "watchlist",
+      marketData: "market data",
+    };
+    const actions = {
+      holdings: importPortfolioHoldings,
+      transactions: importPortfolioTransactions,
+      cash: importPortfolioCash,
+      watchlist: importPortfolioWatchlist,
+      marketData: importPortfolioMarketData,
+    };
+
+    setActionStatus(`Importing ${labels[kind]}`);
+    setCliOutput(`Importing ${path} into Portfolio ${labels[kind]}...`);
+    try {
+      const output = await actions[kind](path);
+      setCliOutput(output);
+      setActionStatus(`${labels[kind]} imported`);
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  function updateDataImportPath(kind: keyof typeof dataImportPaths, value: string) {
+    setDataImportPaths((current) => ({ ...current, [kind]: value }));
   }
 
   async function extractPortfolioMemoryDrafts() {
@@ -268,6 +314,41 @@ export function App() {
             <pre>{cliOutput || "Run Check engine to call python -m setup_os.cli --help."}</pre>
           </div>
         </section>
+
+        <section className="panel data-imports" aria-label="Portfolio data imports">
+          <p className="eyebrow">Portfolio data</p>
+          <h3>Local CSV imports</h3>
+          <DataImportRow
+            label="Holdings"
+            value={dataImportPaths.holdings}
+            onChange={(value) => updateDataImportPath("holdings", value)}
+            onImport={() => importPortfolioData("holdings")}
+          />
+          <DataImportRow
+            label="Transactions"
+            value={dataImportPaths.transactions}
+            onChange={(value) => updateDataImportPath("transactions", value)}
+            onImport={() => importPortfolioData("transactions")}
+          />
+          <DataImportRow
+            label="Cash"
+            value={dataImportPaths.cash}
+            onChange={(value) => updateDataImportPath("cash", value)}
+            onImport={() => importPortfolioData("cash")}
+          />
+          <DataImportRow
+            label="Watchlist"
+            value={dataImportPaths.watchlist}
+            onChange={(value) => updateDataImportPath("watchlist", value)}
+            onImport={() => importPortfolioData("watchlist")}
+          />
+          <DataImportRow
+            label="Market data"
+            value={dataImportPaths.marketData}
+            onChange={(value) => updateDataImportPath("marketData", value)}
+            onImport={() => importPortfolioData("marketData")}
+          />
+        </section>
       </section>
     </main>
   );
@@ -289,6 +370,30 @@ function StatusTile({
         <p>{label}</p>
         <strong>{value}</strong>
       </div>
+    </div>
+  );
+}
+
+function DataImportRow({
+  label,
+  value,
+  onChange,
+  onImport,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  onImport: () => void;
+}) {
+  return (
+    <div className="data-import-row">
+      <label>
+        <span>{label}</span>
+        <input value={value} onChange={(event) => onChange(event.target.value)} />
+      </label>
+      <button className="secondary" type="button" onClick={onImport}>
+        <FolderInput size={17} /> Import
+      </button>
     </div>
   );
 }

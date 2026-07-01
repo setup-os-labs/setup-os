@@ -20,6 +20,26 @@ export async function importPortfolioConversation(conversationPath: string): Pro
   return invoke<string>("setup_os_import_portfolio_conversation", { conversationPath });
 }
 
+export async function importPortfolioHoldings(holdingsPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_holdings", { holdingsPath });
+}
+
+export async function importPortfolioTransactions(transactionsPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_transactions", { transactionsPath });
+}
+
+export async function importPortfolioCash(cashPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_cash", { cashPath });
+}
+
+export async function importPortfolioWatchlist(watchlistPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_watchlist", { watchlistPath });
+}
+
+export async function importPortfolioMarketData(marketDataPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_market_data", { marketDataPath });
+}
+
 export async function extractPortfolioMemory(): Promise<string> {
   return invoke<string>("setup_os_extract_portfolio_memory");
 }

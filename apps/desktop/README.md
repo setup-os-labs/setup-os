@@ -53,6 +53,8 @@ cd generated/desktop-portfolio-os
 python import_conversation.py ../../examples/portfolio_update.md
 ```
 
+The desktop can also import generated Portfolio CSV data files for holdings, transactions, cash, watchlist, and market snapshots. The default paths point at repo examples and can be replaced with local exports.
+
 The shell can then create review-only structured memory drafts:
 
 ```bash

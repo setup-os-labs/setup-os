@@ -69,7 +69,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-051 | done | Codex | `codex/desktop-import-conversation-action` | Add desktop raw conversation import action | Desktop shell can import an example saved Portfolio conversation into the generated agent raw memory |
 | SO-052 | done | Codex | `codex/desktop-extract-memory-action` | Add desktop structured memory draft action | Desktop shell can run generated Portfolio memory extraction and display the review-only draft output |
 | SO-053 | done | Codex | `codex/desktop-portfolio-status-action` | Add desktop generated Portfolio status action | Desktop shell can display which generated Portfolio artifacts exist without mutating files |
-| SO-054 | review | Codex | `codex/desktop-import-path-input` | Add desktop conversation path input | Desktop shell can import a user-entered saved Portfolio conversation path instead of only the bundled example |
+| SO-054 | done | Codex | `codex/desktop-import-path-input` | Add desktop conversation path input | Desktop shell can import a user-entered saved Portfolio conversation path instead of only the bundled example |
+| SO-055 | review | Codex | `codex/desktop-portfolio-data-imports` | Add desktop Portfolio CSV import actions | Desktop shell can import holdings, transactions, cash, watchlist, and market snapshot CSV files into the generated Portfolio OS |
 
 ## Backlog Rules
 

@@ -72,30 +72,68 @@ fn setup_os_check_portfolio_health() -> Result<String, String> {
 
 #[tauri::command]
 fn setup_os_import_portfolio_conversation(conversation_path: String) -> Result<String, String> {
-    let repo_dir = setup_os_repo_dir()?;
-    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
-    ensure_generated_portfolio_file(&agent_dir, "import_conversation.py")?;
-    let trimmed_path = conversation_path.trim();
-    if trimmed_path.is_empty() {
-        return Err("conversation path is required".to_string());
-    }
+    run_generated_portfolio_script(
+        "import_conversation.py",
+        &[conversation_path.as_str()],
+        "conversation path is required",
+        "failed to import Portfolio conversation",
+        "Portfolio conversation import",
+    )
+}
 
-    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
-    let output = Command::new(python)
-        .args(["import_conversation.py", trimmed_path])
-        .current_dir(&agent_dir)
-        .output()
-        .map_err(|error| format!("failed to import Portfolio conversation: {error}"))?;
+#[tauri::command]
+fn setup_os_import_portfolio_holdings(holdings_path: String) -> Result<String, String> {
+    run_generated_portfolio_script(
+        "import_portfolio_snapshot.py",
+        &[holdings_path.as_str(), "--source", "desktop-local-file"],
+        "holdings path is required",
+        "failed to import Portfolio holdings",
+        "Portfolio holdings import",
+    )
+}
 
-    if output.status.success() {
-        Ok(String::from_utf8_lossy(&output.stdout).to_string())
-    } else {
-        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-        Err(format!(
-            "Portfolio conversation import exited with {}: {stderr}",
-            output.status
-        ))
-    }
+#[tauri::command]
+fn setup_os_import_portfolio_transactions(transactions_path: String) -> Result<String, String> {
+    run_generated_portfolio_script(
+        "import_portfolio_transactions.py",
+        &[transactions_path.as_str(), "--source", "desktop-local-file"],
+        "transactions path is required",
+        "failed to import Portfolio transactions",
+        "Portfolio transactions import",
+    )
+}
+
+#[tauri::command]
+fn setup_os_import_portfolio_cash(cash_path: String) -> Result<String, String> {
+    run_generated_portfolio_script(
+        "import_portfolio_cash.py",
+        &[cash_path.as_str(), "--source", "desktop-local-file"],
+        "cash path is required",
+        "failed to import Portfolio cash",
+        "Portfolio cash import",
+    )
+}
+
+#[tauri::command]
+fn setup_os_import_portfolio_watchlist(watchlist_path: String) -> Result<String, String> {
+    run_generated_portfolio_script(
+        "import_portfolio_watchlist.py",
+        &[watchlist_path.as_str(), "--source", "desktop-local-file"],
+        "watchlist path is required",
+        "failed to import Portfolio watchlist",
+        "Portfolio watchlist import",
+    )
+}
+
+#[tauri::command]
+fn setup_os_import_portfolio_market_data(market_data_path: String) -> Result<String, String> {
+    run_generated_portfolio_script(
+        "import_portfolio_market_data.py",
+        &[market_data_path.as_str(), "--source", "desktop-local-file"],
+        "market data path is required",
+        "failed to import Portfolio market data",
+        "Portfolio market data import",
+    )
 }
 
 #[tauri::command]
@@ -170,6 +208,37 @@ fn ensure_generated_portfolio_file(agent_dir: &PathBuf, file_name: &str) -> Resu
     ))
 }
 
+fn run_generated_portfolio_script(
+    script_name: &str,
+    args: &[&str],
+    empty_path_error: &str,
+    start_error: &str,
+    label: &str,
+) -> Result<String, String> {
+    if args.first().map_or(true, |path| path.trim().is_empty()) {
+        return Err(empty_path_error.to_string());
+    }
+
+    let repo_dir = setup_os_repo_dir()?;
+    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+    ensure_generated_portfolio_file(&agent_dir, script_name)?;
+
+    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let output = Command::new(python)
+        .arg(script_name)
+        .args(args.iter().map(|argument| argument.trim()))
+        .current_dir(&agent_dir)
+        .output()
+        .map_err(|error| format!("{start_error}: {error}"))?;
+
+    if output.status.success() {
+        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+        Err(format!("{label} exited with {}: {stderr}", output.status))
+    }
+}
+
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let repo_dir = setup_os_repo_dir()?;
@@ -217,6 +286,11 @@ pub fn run() {
             setup_os_run_portfolio_report,
             setup_os_check_portfolio_health,
             setup_os_import_portfolio_conversation,
+            setup_os_import_portfolio_holdings,
+            setup_os_import_portfolio_transactions,
+            setup_os_import_portfolio_cash,
+            setup_os_import_portfolio_watchlist,
+            setup_os_import_portfolio_market_data,
             setup_os_extract_portfolio_memory,
             setup_os_portfolio_status
         ])
