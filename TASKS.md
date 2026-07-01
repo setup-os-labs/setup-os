@@ -74,6 +74,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-056 | done | Codex | `codex/desktop-portfolio-full-flow` | Add desktop Portfolio demo flow | Desktop shell can run the full local Portfolio OS demo loop from create through report and status |
 | SO-057 | done | Codex | `codex/cross-platform-native-ci` | Add cross-platform native desktop CI | GitHub Actions compiles the Tauri desktop shell on Linux, Windows, and macOS without producing installers |
 | SO-058 | review | Codex | `codex/desktop-release-workflow` | Add manual desktop release workflow | GitHub Actions can manually build unsigned Linux, Windows, and macOS Tauri bundle artifacts for release testing |
+| SO-059 | review | Codex | `codex/fix-desktop-release-icons` | Fix desktop release bundle icons | Manual release workflow can package Linux AppImage and Windows MSI artifacts with configured Tauri icon assets |
 
 ## Backlog Rules
 
