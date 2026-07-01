@@ -56,7 +56,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-038 | done | Codex | `codex/raw-conversation-import` | Add raw conversation import to generated agents | Generated agents include `import_conversation.py`, store saved chats in `memory/raw`, append manifest metadata, and avoid strategy mutation |
 | SO-039 | done | Codex | `codex/structured-memory-drafts` | Add structured memory extraction drafts | Generated agents include `extract_memory.py` that converts raw imports into review-only `memory/structured` drafts without mutating strategy or policy |
 | SO-040 | done | Codex | `codex/portfolio-concentration-alerts` | Add Portfolio concentration warning reports | Generated Portfolio Manager daily reports warn when a single holding is above the local review threshold and emit a warning notification |
-| SO-041 | review | Codex | `codex/portfolio-snapshot-import` | Add read-only portfolio snapshot import | Generated Portfolio Manager agents can import validated local holdings CSV snapshots, write an import manifest, and avoid storing broker credentials |
+| SO-041 | done | Codex | `codex/portfolio-snapshot-import` | Add read-only portfolio snapshot import | Generated Portfolio Manager agents can import validated local holdings CSV snapshots, write an import manifest, and avoid storing broker credentials |
+| SO-042 | review | Codex | `codex/portfolio-allocation-drift` | Add Portfolio allocation drift warnings | Generated Portfolio Manager reports compare holdings to local target weights and warn when drift exceeds the review band |
 
 ## Backlog Rules
 

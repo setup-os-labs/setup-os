@@ -32,6 +32,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "config.json").exists())
             self.assertTrue((output / "agent_dna.json").exists())
             self.assertTrue((output / "data" / "holdings.csv").exists())
+            self.assertTrue((output / "data" / "allocation_targets.csv").exists())
             self.assertTrue((output / "import_portfolio_snapshot.py").exists())
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
@@ -57,6 +58,8 @@ class BlueprintTests(unittest.TestCase):
             report_text = (output / "reports" / "daily_report.md").read_text(
                 encoding="utf-8"
             )
+            self.assertIn("## Allocation Drift Alerts", report_text)
+            self.assertIn("vs target", report_text)
             self.assertIn("## Concentration Alerts", report_text)
             self.assertIn("VOO is", report_text)
             self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
