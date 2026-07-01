@@ -42,7 +42,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-024 | review | Codex | `codex/evolution-notification-foundation` | Add first non-portfolio vertical skeleton | Health OS planning conversation produces a generated health scaffold with local reports and no medical-action automation |
 | SO-025 | review | Codex | `codex/evolution-notification-foundation` | Add generated repo verification command | `create` emits instructions and a machine-checkable command for validating generated systems |
 | SO-026 | review | Codex | `codex/evolution-notification-foundation` | Add action permission policy primitives | Generated configs include read/alert/draft/approve/execute/auto-execute trust levels and prohibited actions |
-| SO-027 | todo | Codex | `codex/apply-evolution` | Add explicit approve/apply command for safe evolution | Approved proposal can create a candidate release without mutating the current release silently |
+| SO-027 | review | Codex | `codex/evolution-notification-foundation` | Add explicit approve/apply command for safe evolution | Approved proposal can create a candidate release without mutating the current release silently |
 | SO-028 | todo | Codex | `codex/runtime-health` | Add generated runtime health checks | Generated systems can check scheduler, notifications, required files, and configuration health |
 
 ## Backlog Rules

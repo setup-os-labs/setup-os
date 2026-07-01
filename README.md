@@ -80,6 +80,7 @@ Acceptance target:
 ```bash
 python -m setup_os.cli create examples/portfolio_conversation.md
 python -m setup_os.cli evolve examples/portfolio_update.md
+python -m setup_os.cli apply --output generated/setup-os-agent --approve
 ```
 
 Generated systems include `verify.py` so the scaffold can be checked with:

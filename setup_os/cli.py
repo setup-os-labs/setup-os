@@ -64,6 +64,23 @@ def build_parser() -> argparse.ArgumentParser:
     )
     evolve.set_defaults(handler=_evolve)
 
+    apply = subparsers.add_parser(
+        "apply",
+        help="Create a candidate release from an approved evolution proposal.",
+    )
+    apply.add_argument(
+        "-o",
+        "--output",
+        default="generated/setup-os-agent",
+        help="Generated system directory containing evolution_proposal.md.",
+    )
+    apply.add_argument(
+        "--approve",
+        action="store_true",
+        help="Explicitly approve creating a candidate release.",
+    )
+    apply.set_defaults(handler=_apply)
+
     return parser
 
 
@@ -160,6 +177,49 @@ def _evolve(args: argparse.Namespace) -> int:
     )
 
     print(f"Wrote {proposal_path}")
+    return 0
+
+
+def _apply(args: argparse.Namespace) -> int:
+    output_dir = Path(args.output)
+    proposal_path = output_dir / "evolution_proposal.md"
+
+    if not args.approve:
+        print("Refusing to apply evolution proposal without --approve.")
+        return 1
+    if not proposal_path.exists():
+        print(f"Missing {proposal_path}")
+        return 1
+
+    release_path = write_release_snapshot(
+        output_dir,
+        "v2-candidate",
+        "Approved evolution candidate",
+        ["evolution_proposal.md"],
+        {
+            "proposal": str(proposal_path),
+            "approved": True,
+        },
+    )
+    append_timeline_event(
+        output_dir,
+        "candidate_release",
+        "Approved evolution candidate",
+        {
+            "proposal": str(proposal_path),
+            "release": str(release_path),
+        },
+    )
+    append_audit_event(
+        output_dir,
+        "apply",
+        {
+            "proposal": str(proposal_path),
+            "release": str(release_path),
+        },
+    )
+
+    print(f"Wrote {release_path}")
     return 0
 
 
