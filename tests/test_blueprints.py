@@ -33,6 +33,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "data" / "holdings.csv").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
+            self.assertTrue((output / "health.py").exists())
             self.assertTrue((output / "memory" / "raw").is_dir())
             self.assertTrue((output / "evolution").is_dir())
 
@@ -58,6 +59,16 @@ class BlueprintTests(unittest.TestCase):
             )
             self.assertEqual(verify.returncode, 0)
             self.assertIn("Verification passed.", verify.stdout)
+
+            health = subprocess.run(
+                [sys.executable, "health.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(health.returncode, 0)
+            self.assertIn("Runtime health check passed.", health.stdout)
 
 
 if __name__ == "__main__":

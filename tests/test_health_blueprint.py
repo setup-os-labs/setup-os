@@ -31,6 +31,7 @@ class HealthBlueprintTests(unittest.TestCase):
             self.assertTrue((output / "README.md").exists())
             self.assertTrue((output / "data" / "health_notes.csv").exists())
             self.assertTrue((output / "agent_dna.json").exists())
+            self.assertTrue((output / "health.py").exists())
 
             spec = json.loads((output / "agent_spec.json").read_text(encoding="utf-8"))
             self.assertEqual(spec["slug"], "health-os-agent")
@@ -60,6 +61,16 @@ class HealthBlueprintTests(unittest.TestCase):
             )
             self.assertEqual(verify.returncode, 0)
             self.assertIn("Verification passed.", verify.stdout)
+
+            health = subprocess.run(
+                [sys.executable, "health.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(health.returncode, 0)
+            self.assertIn("Runtime health check passed.", health.stdout)
 
 
 if __name__ == "__main__":
