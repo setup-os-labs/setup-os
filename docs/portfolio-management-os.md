@@ -25,7 +25,7 @@ It is a local, advisory, alert-first investing assistant.
 
 - import portfolio planning conversations
 - import saved ChatGPT financial conversations
-- import Robinhood/manual portfolio data, transactions, and cash balances as read-only local CSV snapshots
+- import Robinhood/manual portfolio data, transactions, cash balances, and watchlists as read-only local CSV snapshots
 - store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
 - produce daily Markdown portfolio reports
@@ -59,15 +59,18 @@ portfolio-management-os/
   import_portfolio_snapshot.py
   import_portfolio_transactions.py
   import_portfolio_cash.py
+  import_portfolio_watchlist.py
   report.py
   data/
     holdings.csv
     allocation_targets.csv
     transactions.csv
     cash.csv
+    watchlist.csv
     portfolio_import_manifest.jsonl
     transaction_import_manifest.jsonl
     cash_import_manifest.jsonl
+    watchlist_import_manifest.jsonl
   reports/
   memory/
     raw/
@@ -124,7 +127,7 @@ Default policy:
 ## Future Phases
 
 1. Setup OS desktop app can import saved conversations and launch verticals.
-2. Robinhood/manual read-only CSV holdings, transactions, and cash import with local reports.
+2. Robinhood/manual read-only CSV holdings, transactions, cash, and watchlist import with local reports.
 3. ChatGPT financial discussion import into raw memory.
 4. Structured extraction drafts from raw conversations into holdings context, strategy notes, risk rules, and watchlists.
 5. Allocation drift and concentration alerts.
