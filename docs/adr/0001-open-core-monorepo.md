@@ -12,30 +12,47 @@ The project should look and operate like a serious open-core GitHub product, but
 
 ## Decision
 
-Start with one main monorepo under a future GitHub organization.
+Start with one main monorepo under the GitHub organization.
 
-Keep these areas in the monorepo for v0:
+Use the monorepo for the actual system while the architecture is still evolving. Keep everything in the monorepo through MVP.
 
-- core CLI
-- schemas
-- ingestion
-- extraction
-- architecture proposal generator
-- component registry
-- blueprints
-- examples
-- docs
-- tests
+Target layout:
 
-Create separate repositories later only when a boundary needs independent versioning, distribution, or community ownership.
+```text
+setup-os/
+  apps/
+    desktop/
+    web/
+    cli/
+  packages/
+    core/
+    schemas/
+    agent-runtime/
+    conversation-import/
+    blueprint-engine/
+    component-registry/
+    policy/
+  templates/
+  docs/
+  examples/
+  research/
+```
 
-Likely future repos:
+Split repositories only when a folder becomes a product, API, or community surface of its own.
 
-- `setup-os/docs`
-- `setup-os/blueprints`
-- `setup-os/skills`
-- `setup-os/registry`
-- `setup-os/examples`
+Likely eventual split points:
+
+- `setup-os` for the main product and orchestration surface
+- `setup-os-core` or `core` for stable SDK/runtime APIs
+- `setup-os-schemas` for versioned public schemas
+- `setup-os-agent-runtime` for reusable agent execution primitives
+- `setup-os-conversation-import` for import adapters
+- `setup-os-blueprint-engine` for generation tooling
+- `setup-os-component-registry` for OSS discovery and scoring metadata
+- `setup-os-policy` for reusable policy/risk gates
+- `setup-os-templates` for blueprints and starter systems
+- `setup-os-docs` if documentation becomes a standalone publishing surface
+- `setup-os-examples` if examples need independent community contribution flow
 
 ## Consequences
 

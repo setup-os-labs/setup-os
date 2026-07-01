@@ -84,33 +84,22 @@ python -m setup_os.cli evolve examples/portfolio_update.md
 
 See [docs/roadmap.md](docs/roadmap.md) and [TASKS.md](TASKS.md).
 
+For conversation structure and vertical planning templates, see [docs/conversation-planning-guide.md](docs/conversation-planning-guide.md) and [templates/conversation-guides/](templates/conversation-guides/).
+
 ## Repository Layout
 
 The repo is intentionally a monorepo through MVP. Use it for the actual system while the architecture is still evolving; split repos only when a folder becomes a product, API, or community surface of its own.
 
-Current layout:
+Current MVP layout:
 
 ```text
 setup-os/
   .github/                  GitHub issue, PR, and CI configuration
-  docs/                     product, architecture, roadmap, and decisions
-  examples/                 example conversations and generated outputs
-  setup_os/                 future Python core package
-  tests/                    future pytest suite
-  TASKS.md                  active Codex task queue
-  CHANGELOG.md              release history
-  CODEX.md                  AI-native development workflow
-```
-
-Target MVP layout:
-
-```text
-setup-os/
-  apps/
+  apps/                     user-facing applications
     desktop/
     web/
     cli/
-  packages/
+  packages/                 shared system packages
     core/
     schemas/
     agent-runtime/
@@ -118,10 +107,15 @@ setup-os/
     blueprint-engine/
     component-registry/
     policy/
-  templates/
-  docs/
-  examples/
-  research/
+  templates/                generated-system templates and blueprints
+  docs/                     product, architecture, roadmap, and decisions
+  examples/                 example conversations and generated outputs
+  research/                 component research and stack-selection notes
+  setup_os/                 temporary Python import package for v0 CLI compatibility
+  tests/                    future pytest suite
+  TASKS.md                  active Codex task queue
+  CHANGELOG.md              release history
+  CODEX.md                  AI-native development workflow
 ```
 
 See [ADR 0001](docs/adr/0001-open-core-monorepo.md) for the eventual repo split policy.
