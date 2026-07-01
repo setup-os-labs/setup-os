@@ -48,6 +48,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-030 | review | Codex | `codex/desktop-shell-foundation` | Spike cross-platform desktop shell | Minimal Tauri vertical-agent launcher can call `python -m setup_os.cli --help` on native macOS and Windows |
 | SO-031 | review | Codex | `codex/evolution-notification-foundation` | Capture desktop-first and Robinhood read-only decisions | ADR and Portfolio Management OS docs record desktop-first sequencing, Tauri rationale, process mode decision rule, native Windows target, and Robinhood read-only import direction |
 | SO-032 | review | Codex | `codex/desktop-shell-spike` | Add Portfolio Management OS building-block research | Research note ranks stack options, captures rejected alternatives, and links from Portfolio Management OS docs |
+| SO-033 | review | Codex | `codex/desktop-ci-checks` | Add desktop frontend checks to CI | GitHub Actions runs desktop npm ci, typecheck, build, and audit without requiring native Tauri packaging |
 
 ## Backlog Rules
 

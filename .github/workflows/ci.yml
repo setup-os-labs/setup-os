@@ -19,6 +19,13 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: apps/desktop/package-lock.json
+
       - name: Check repository shape
         run: |
           test -f README.md
@@ -33,3 +40,19 @@ jobs:
           else
             echo "No tests yet."
           fi
+
+      - name: Install desktop dependencies
+        working-directory: apps/desktop
+        run: npm ci
+
+      - name: Typecheck desktop
+        working-directory: apps/desktop
+        run: npm run typecheck
+
+      - name: Build desktop frontend
+        working-directory: apps/desktop
+        run: npm run build
+
+      - name: Audit desktop dependencies
+        working-directory: apps/desktop
+        run: npm audit --audit-level=moderate
