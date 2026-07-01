@@ -32,6 +32,13 @@ The first product action contract is:
 python -m setup_os.cli create examples/portfolio_conversation.md --output generated/desktop-portfolio-os
 ```
 
+After generation, the shell can run the generated report command:
+
+```bash
+cd generated/desktop-portfolio-os
+python report.py
+```
+
 ## Packaging Direction
 
 Tauri release builds should bundle a Python sidecar later. The sidecar must keep the same command behavior as development mode before the desktop app grows a local API or FastAPI service.

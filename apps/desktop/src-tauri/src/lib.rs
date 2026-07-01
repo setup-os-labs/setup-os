@@ -1,3 +1,4 @@
+use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -16,6 +17,38 @@ fn setup_os_create_portfolio_example() -> Result<String, String> {
         "--output",
         "generated/desktop-portfolio-os",
     ])
+}
+
+#[tauri::command]
+fn setup_os_run_portfolio_report() -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+    if !agent_dir.join("report.py").exists() {
+        return Err(
+            "generated/desktop-portfolio-os is missing; create the Portfolio Management OS first"
+                .to_string(),
+        );
+    }
+
+    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let output = Command::new(python)
+        .arg("report.py")
+        .current_dir(&agent_dir)
+        .output()
+        .map_err(|error| format!("failed to run generated Portfolio report: {error}"))?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+        return Err(format!(
+            "generated Portfolio report exited with {}: {stderr}",
+            output.status
+        ));
+    }
+
+    let report_path = agent_dir.join("reports").join("daily_report.md");
+    let report = fs::read_to_string(&report_path)
+        .map_err(|error| format!("failed to read {}: {error}", report_path.display()))?;
+    Ok(report)
 }
 
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
@@ -61,7 +94,8 @@ pub fn run() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             setup_os_help,
-            setup_os_create_portfolio_example
+            setup_os_create_portfolio_example,
+            setup_os_run_portfolio_report
         ])
         .run(tauri::generate_context!())
         .expect("error while running Setup OS desktop app");
