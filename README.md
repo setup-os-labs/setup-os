@@ -173,7 +173,7 @@ Use short-lived branches and PRs for every meaningful change.
 - Merge requirement: tests pass, docs updated, changelog updated when user-facing behavior changes
 - Architecture changes: add or update an ADR in `docs/adr/`
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODEX.md](CODEX.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md), [CODEX.md](CODEX.md), and the [ADR index](docs/adr/README.md).
 
 ## License
 
