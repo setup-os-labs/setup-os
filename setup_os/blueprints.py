@@ -676,6 +676,11 @@ def main() -> int:
         float(row["quantity"]) * float(market_data.get(row["symbol"], row)["price"])
         for row in holdings
     )
+    holdings_cost_basis = sum(float(row["cost_basis"]) for row in holdings)
+    unrealized_gain_loss = holdings_value - holdings_cost_basis
+    unrealized_return = (
+        unrealized_gain_loss / holdings_cost_basis if holdings_cost_basis else 0
+    )
     cash_value = sum(float(row["balance"]) for row in cash_balances if row["currency"] == "USD")
     total_value = holdings_value + cash_value
     concentration_threshold = 0.35
@@ -692,6 +697,11 @@ def main() -> int:
         f"Holdings value: ${holdings_value:,.2f}",
         f"Cash value: ${cash_value:,.2f}",
         "",
+        "## Performance Summary",
+        "",
+        f"Holdings cost basis: ${holdings_cost_basis:,.2f}",
+        f"Unrealized gain/loss: ${unrealized_gain_loss:,.2f} ({unrealized_return:+.1%})",
+        "",
         "## Holdings",
         "",
     ]
@@ -700,9 +710,15 @@ def main() -> int:
         market_row = market_data.get(row["symbol"], {})
         price = float(market_row.get("price", row["price"]))
         value = float(row["quantity"]) * price
+        cost_basis = float(row["cost_basis"])
+        gain_loss = value - cost_basis
+        return_pct = gain_loss / cost_basis if cost_basis else 0
         weight = value / total_value if total_value else 0
         price_note = "market snapshot" if market_row else "holding file"
-        lines.append(f"- {row['symbol']}: ${value:,.2f} ({weight:.1%}, {price_note} price ${price:,.2f})")
+        lines.append(
+            f"- {row['symbol']}: ${value:,.2f} ({weight:.1%}, {price_note} price ${price:,.2f}, "
+            f"unrealized ${gain_loss:,.2f} / {return_pct:+.1%})"
+        )
         if weight > concentration_threshold:
             concentration_alerts.append(
                 f"{row['symbol']} is {weight:.1%} of the portfolio, above the 35.0% review threshold."
