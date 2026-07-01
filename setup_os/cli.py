@@ -10,7 +10,7 @@ from pathlib import Path
 from setup_os import __version__
 from setup_os.architecture import write_architecture_proposal
 from setup_os.audit import append_audit_event
-from setup_os.blueprints import generate_portfolio_blueprint
+from setup_os.blueprints import generate_health_blueprint, generate_portfolio_blueprint
 from setup_os.completeness import missing_decisions
 from setup_os.conversation import parse_conversation_file
 from setup_os.evolution import create_evolution_proposal
@@ -82,6 +82,8 @@ def _create(args: argparse.Namespace) -> int:
     missing = missing_decisions(spec)
     if spec.slug == "portfolio-manager-agent":
         generate_portfolio_blueprint(spec, output_dir)
+    if spec.slug == "health-os-agent":
+        generate_health_blueprint(spec, output_dir)
     release_path = write_release_snapshot(
         output_dir,
         "v1",

@@ -66,6 +66,32 @@ def extract_agent_spec(envelope: ConversationEnvelope) -> AgentSpec:
             },
         )
 
+    if "health" in text or "wellness" in text:
+        return AgentSpec(
+            name="Health OS Agent",
+            slug="health-os-agent",
+            summary=(
+                "Local advisory health and wellness assistant that tracks notes, "
+                "reminders, habits, and questions for clinician review."
+            ),
+            inputs=["health notes", "appointment list", "habit log"],
+            outputs=["daily wellness report", "console notification", "audit log"],
+            safety=[
+                "no diagnosis",
+                "no medication changes",
+                "clinician approval required for medical decisions",
+                "emergency situations require human emergency services",
+            ],
+            runtime="local laptop or always-on local machine",
+            privacy="local-first",
+            storage="local files",
+            notifications=["console"],
+            source={
+                "conversation": envelope.source,
+                "message_count": len(envelope.messages),
+            },
+        )
+
     return AgentSpec(
         name="Generated Local Agent",
         slug="generated-local-agent",

@@ -35,11 +35,12 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-013 | todo | Codex | `codex/adr-index` | Add ADR index generator or convention | ADRs are easy to discover and link from PRs |
 | SO-014 | todo | Codex | `codex/docs-site` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
 | SO-019 | review | Codex | `codex/evolution-notification-foundation` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
-| SO-020 | todo | Codex | `codex/vertical-health-template` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
+| SO-020 | review | Codex | `codex/evolution-notification-foundation` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
 | SO-021 | review | Codex | `codex/evolution-notification-foundation` | Add agnostic architecture and Agent DNA | Docs define provider-neutral layers; generated portfolio agent includes `agent_dna.json` and quality score |
 | SO-022 | review | Codex | `codex/evolution-notification-foundation` | Add capability dependency graph | Portfolio architecture proposal includes capability dependencies and affected surfaces |
 | SO-023 | review | Codex | `codex/evolution-notification-foundation` | Add generated-agent release snapshots | Create/evolve can preserve versioned release metadata for future rollback |
-| SO-024 | todo | Codex | `codex/health-blueprint` | Add first non-portfolio vertical skeleton | Health OS planning conversation produces a generated health scaffold with local reports and no medical-action automation |
+| SO-024 | review | Codex | `codex/evolution-notification-foundation` | Add first non-portfolio vertical skeleton | Health OS planning conversation produces a generated health scaffold with local reports and no medical-action automation |
+| SO-025 | todo | Codex | `codex/generated-verification` | Add generated repo verification command | `create` emits instructions and a machine-checkable command for validating generated systems |
 
 ## Backlog Rules
 
