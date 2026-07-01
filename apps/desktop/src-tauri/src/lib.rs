@@ -71,14 +71,18 @@ fn setup_os_check_portfolio_health() -> Result<String, String> {
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_conversation_example() -> Result<String, String> {
+fn setup_os_import_portfolio_conversation(conversation_path: String) -> Result<String, String> {
     let repo_dir = setup_os_repo_dir()?;
     let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
     ensure_generated_portfolio_file(&agent_dir, "import_conversation.py")?;
+    let trimmed_path = conversation_path.trim();
+    if trimmed_path.is_empty() {
+        return Err("conversation path is required".to_string());
+    }
 
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let output = Command::new(python)
-        .args(["import_conversation.py", "../../examples/portfolio_update.md"])
+        .args(["import_conversation.py", trimmed_path])
         .current_dir(&agent_dir)
         .output()
         .map_err(|error| format!("failed to import Portfolio conversation: {error}"))?;
@@ -212,7 +216,7 @@ pub fn run() {
             setup_os_create_portfolio_example,
             setup_os_run_portfolio_report,
             setup_os_check_portfolio_health,
-            setup_os_import_portfolio_conversation_example,
+            setup_os_import_portfolio_conversation,
             setup_os_extract_portfolio_memory,
             setup_os_portfolio_status
         ])

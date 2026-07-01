@@ -18,7 +18,8 @@ body {
 }
 
 button,
-a {
+a,
+input {
   font: inherit;
 }
 
@@ -227,6 +228,23 @@ button:disabled {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.path-field {
+  display: grid;
+  gap: 4px;
+  min-width: min(320px, 100%);
+  color: #66756d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.path-field input {
+  min-height: 38px;
+  border: 1px solid #cfd8d1;
+  border-radius: 8px;
+  padding: 0 10px;
+  color: #17211c;
 }
 
 .agent-actions button {
