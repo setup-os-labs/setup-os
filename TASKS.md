@@ -11,7 +11,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-003 | review | Codex | `codex/setup-os-brand` | Add Markdown/TXT conversation ingestion | Example conversation parses into a normalized envelope |
 | SO-004 | review | Codex | `codex/setup-os-brand` | Add deterministic v0 spec extractor | `agent_spec.json` is produced for portfolio example |
 | SO-005 | review | Codex | `codex/setup-os-brand` | Add Portfolio Manager Agent blueprint | Generated repo contains README, config, report command, and sample data |
-| SO-006 | todo | Codex | `codex/evolution-proposal` | Add evolution proposal flow | Second conversation creates `evolution_proposal.md` without mutating generated agent |
+| SO-006 | review | Codex | `codex/setup-os-brand` | Add evolution proposal flow | Second conversation creates `evolution_proposal.md` without mutating generated agent |
 
 ## Next
 
