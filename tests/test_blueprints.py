@@ -39,6 +39,10 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "health.py").exists())
             self.assertTrue((output / "memory" / "raw").is_dir())
             self.assertTrue((output / "evolution").is_dir())
+            config = json.loads((output / "config.json").read_text(encoding="utf-8"))
+            ntfy_config = config["notification_channels"]["ntfy"]
+            self.assertFalse(ntfy_config["enabled"])
+            self.assertEqual(ntfy_config["topic_env"], "SETUP_OS_NTFY_TOPIC")
 
             report = subprocess.run(
                 [sys.executable, "report.py"],
@@ -57,6 +61,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
             self.assertIn("NOTIFY[info]:", report.stdout)
             self.assertIn("NOTIFY[warning]:", report.stdout)
+            self.assertNotIn("NTFY[sent]", report.stdout)
 
             import_result = subprocess.run(
                 [

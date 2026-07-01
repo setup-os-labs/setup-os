@@ -39,6 +39,13 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
                 "mode": "advisory",
                 "storage": spec.storage,
                 "notifications": spec.notifications,
+                "notification_channels": {
+                    "ntfy": {
+                        "enabled": False,
+                        "server": "https://ntfy.sh",
+                        "topic_env": "SETUP_OS_NTFY_TOPIC",
+                    }
+                },
                 "action_policy": policy.to_dict(),
             },
             indent=2,
@@ -458,6 +465,7 @@ python health.py
 
 Raw conversation imports are stored in `memory/raw` and do not mutate strategy.
 Structured memory drafts are written to `memory/structured` for review before promotion.
+ntfy push is available but disabled by default in `config.json`.
 
 ## Safety
 
@@ -484,13 +492,25 @@ import csv
 from datetime import date
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
+from urllib.error import URLError
+from urllib.parse import quote
+from urllib.request import Request, urlopen
 
 
 ROOT = Path(__file__).parent
 DATA_PATH = ROOT / "data" / "holdings.csv"
 REPORT_PATH = ROOT / "reports" / "daily_report.md"
 INBOX_PATH = ROOT / ".setup_os" / "notifications.jsonl"
+CONFIG_PATH = ROOT / "config.json"
+
+
+def load_config() -> dict:
+    try:
+        return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 
 def notify(title: str, body: str, severity: str = "info") -> None:
@@ -506,6 +526,32 @@ def notify(title: str, body: str, severity: str = "info") -> None:
     }
     with INBOX_PATH.open("a", encoding="utf-8") as file:
         file.write(json.dumps(event, sort_keys=True) + "\\n")
+    send_ntfy(title, body, severity)
+
+
+def send_ntfy(title: str, body: str, severity: str) -> None:
+    ntfy_config = load_config().get("notification_channels", {}).get("ntfy", {})
+    if not ntfy_config.get("enabled", False):
+        return
+
+    topic = os.environ.get(ntfy_config.get("topic_env", "SETUP_OS_NTFY_TOPIC"), "")
+    if not topic:
+        print("NTFY[skipped]: topic environment variable is not set")
+        return
+
+    server = ntfy_config.get("server", "https://ntfy.sh").rstrip("/")
+    request = Request(
+        f"{server}/{quote(topic, safe='')}",
+        data=body.encode("utf-8"),
+        method="POST",
+        headers={"Title": title, "Tags": severity},
+    )
+    try:
+        with urlopen(request, timeout=5):
+            pass
+        print(f"NTFY[sent]: {title}")
+    except URLError as error:
+        print(f"NTFY[failed]: {error}")
 
 
 def load_holdings() -> list[dict[str, str]]:
@@ -614,6 +660,7 @@ python health.py
 
 Raw conversation imports are stored in `memory/raw` and do not mutate behavior.
 Structured memory drafts are written to `memory/structured` for review before promotion.
+ntfy push is available but disabled by default in `config.json`.
 
 ## Safety
 
@@ -640,13 +687,25 @@ import csv
 from datetime import date
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
+from urllib.error import URLError
+from urllib.parse import quote
+from urllib.request import Request, urlopen
 
 
 ROOT = Path(__file__).parent
 DATA_PATH = ROOT / "data" / "health_notes.csv"
 REPORT_PATH = ROOT / "reports" / "wellness_report.md"
 INBOX_PATH = ROOT / ".setup_os" / "notifications.jsonl"
+CONFIG_PATH = ROOT / "config.json"
+
+
+def load_config() -> dict:
+    try:
+        return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 
 def notify(title: str, body: str, severity: str = "info") -> None:
@@ -662,6 +721,32 @@ def notify(title: str, body: str, severity: str = "info") -> None:
     }
     with INBOX_PATH.open("a", encoding="utf-8") as file:
         file.write(json.dumps(event, sort_keys=True) + "\\n")
+    send_ntfy(title, body, severity)
+
+
+def send_ntfy(title: str, body: str, severity: str) -> None:
+    ntfy_config = load_config().get("notification_channels", {}).get("ntfy", {})
+    if not ntfy_config.get("enabled", False):
+        return
+
+    topic = os.environ.get(ntfy_config.get("topic_env", "SETUP_OS_NTFY_TOPIC"), "")
+    if not topic:
+        print("NTFY[skipped]: topic environment variable is not set")
+        return
+
+    server = ntfy_config.get("server", "https://ntfy.sh").rstrip("/")
+    request = Request(
+        f"{server}/{quote(topic, safe='')}",
+        data=body.encode("utf-8"),
+        method="POST",
+        headers={"Title": title, "Tags": severity},
+    )
+    try:
+        with urlopen(request, timeout=5):
+            pass
+        print(f"NTFY[sent]: {title}")
+    except URLError as error:
+        print(f"NTFY[failed]: {error}")
 
 
 def load_notes() -> list[dict[str, str]]:

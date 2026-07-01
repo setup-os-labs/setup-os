@@ -38,7 +38,7 @@ Explicitly out of scope:
 - generated repo verification command
 - dependency justification report
 - ADR templates for generated agents
-- optional ntfy adapter
+- optional ntfy adapter, disabled by default
 
 ## v0.2: More Vertical Blueprints
 
