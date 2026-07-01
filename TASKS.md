@@ -60,7 +60,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-042 | done | Codex | `codex/portfolio-allocation-drift` | Add Portfolio allocation drift warnings | Generated Portfolio Manager reports compare holdings to local target weights and warn when drift exceeds the review band |
 | SO-043 | done | Codex | `codex/portfolio-transaction-import` | Add read-only portfolio transaction import | Generated Portfolio Manager agents can import validated local transaction CSV snapshots, write an import manifest, and show recent transactions in reports |
 | SO-044 | done | Codex | `codex/portfolio-cash-import` | Add read-only portfolio cash import | Generated Portfolio Manager agents can import validated local cash CSV snapshots, write an import manifest, and include cash in reports |
-| SO-045 | review | Codex | `codex/portfolio-watchlist-import` | Add read-only portfolio watchlist import | Generated Portfolio Manager agents can import validated local watchlist CSV snapshots, write an import manifest, and show watchlist notes in reports |
+| SO-045 | done | Codex | `codex/portfolio-watchlist-import` | Add read-only portfolio watchlist import | Generated Portfolio Manager agents can import validated local watchlist CSV snapshots, write an import manifest, and show watchlist notes in reports |
+| SO-046 | review | Codex | `codex/portfolio-market-snapshot` | Add read-only market snapshot import | Generated Portfolio Manager agents can import validated local market data CSV snapshots, write an import manifest, and use snapshot prices/events in reports |
 
 ## Backlog Rules
 

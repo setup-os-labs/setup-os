@@ -36,10 +36,12 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "data" / "transactions.csv").exists())
             self.assertTrue((output / "data" / "cash.csv").exists())
             self.assertTrue((output / "data" / "watchlist.csv").exists())
+            self.assertTrue((output / "data" / "market_data.csv").exists())
             self.assertTrue((output / "import_portfolio_snapshot.py").exists())
             self.assertTrue((output / "import_portfolio_transactions.py").exists())
             self.assertTrue((output / "import_portfolio_cash.py").exists())
             self.assertTrue((output / "import_portfolio_watchlist.py").exists())
+            self.assertTrue((output / "import_portfolio_market_data.py").exists())
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "report.py").exists())
@@ -71,6 +73,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("## Cash", report_text)
             self.assertIn("Cash value:", report_text)
             self.assertIn("## Watchlist", report_text)
+            self.assertIn("## Market Snapshot", report_text)
             self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
             self.assertIn("NOTIFY[info]:", report.stdout)
             self.assertIn("NOTIFY[warning]:", report.stdout)
@@ -249,6 +252,47 @@ class BlueprintTests(unittest.TestCase):
             self.assertEqual(watchlist_report.returncode, 0)
             self.assertIn("NVDA", watchlist_report_text)
             self.assertIn("Dividend quality candidate", watchlist_report_text)
+
+            import_market_data = subprocess.run(
+                [
+                    sys.executable,
+                    "import_portfolio_market_data.py",
+                    str(Path.cwd() / "examples" / "portfolio_market_data.csv"),
+                    "--source",
+                    "openbb-export",
+                ],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(import_market_data.returncode, 0)
+            self.assertIn("No broker credentials were stored.", import_market_data.stdout)
+
+            market_manifest_path = output / "data" / "market_data_import_manifest.jsonl"
+            self.assertTrue(market_manifest_path.exists())
+            market_manifest = [
+                json.loads(line)
+                for line in market_manifest_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(market_manifest[0]["source_type"], "openbb-export")
+            self.assertFalse(market_manifest[0]["credentials_stored"])
+            self.assertEqual(market_manifest[0]["mode"], "read_only_market_snapshot")
+
+            market_report = subprocess.run(
+                [sys.executable, "report.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            market_report_text = (output / "reports" / "daily_report.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertEqual(market_report.returncode, 0)
+            self.assertIn("Cloud growth watch", market_report_text)
+            self.assertIn("market snapshot price $210.00", market_report_text)
 
             import_result = subprocess.run(
                 [
