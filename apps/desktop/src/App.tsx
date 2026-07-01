@@ -23,6 +23,7 @@ import {
   importPortfolioMarketData,
   importPortfolioTransactions,
   importPortfolioWatchlist,
+  runPortfolioDemoFlow,
   runPortfolioReport,
 } from "./lib/setupOs";
 import "./styles.css";
@@ -190,6 +191,20 @@ export function App() {
     }
   }
 
+  async function runFullPortfolioFlow() {
+    setActionStatus("Running full flow");
+    setCliOutput("Running the full local Portfolio Management OS flow...");
+    try {
+      const output = await runPortfolioDemoFlow();
+      setCliOutput(output);
+      setActionStatus("Full flow complete");
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   return (
     <main className="shell">
       <aside className="sidebar">
@@ -241,6 +256,9 @@ export function App() {
               <h3>Generated systems</h3>
             </div>
             <div className="button-row">
+              <button className="primary" type="button" onClick={runFullPortfolioFlow}>
+                <Play size={17} /> Run demo flow
+              </button>
               <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
                 <RefreshCcw size={17} /> Refresh status
               </button>

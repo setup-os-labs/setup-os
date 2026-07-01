@@ -198,6 +198,85 @@ fn setup_os_portfolio_status() -> Result<String, String> {
     Ok(lines.join("\n"))
 }
 
+#[tauri::command]
+fn setup_os_run_portfolio_demo_flow() -> Result<String, String> {
+    let mut transcript = Vec::new();
+
+    append_demo_step(
+        &mut transcript,
+        "Create Portfolio Management OS",
+        setup_os_create_portfolio_example(),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Import holdings",
+        setup_os_import_portfolio_holdings("../../examples/portfolio_snapshot.csv".to_string()),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Import transactions",
+        setup_os_import_portfolio_transactions(
+            "../../examples/portfolio_transactions.csv".to_string(),
+        ),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Import cash",
+        setup_os_import_portfolio_cash("../../examples/portfolio_cash.csv".to_string()),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Import watchlist",
+        setup_os_import_portfolio_watchlist("../../examples/portfolio_watchlist.csv".to_string()),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Import market data",
+        setup_os_import_portfolio_market_data("../../examples/portfolio_market_data.csv".to_string()),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Import saved conversation",
+        setup_os_import_portfolio_conversation("../../examples/portfolio_update.md".to_string()),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Extract memory drafts",
+        setup_os_extract_portfolio_memory(),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Run health check",
+        setup_os_check_portfolio_health(),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Run daily report",
+        setup_os_run_portfolio_report(),
+    )?;
+    append_demo_step(&mut transcript, "Refresh status", setup_os_portfolio_status())?;
+
+    Ok(transcript.join("\n\n"))
+}
+
+fn append_demo_step(
+    transcript: &mut Vec<String>,
+    label: &str,
+    result: Result<String, String>,
+) -> Result<(), String> {
+    transcript.push(format!("## {label}"));
+    match result {
+        Ok(output) => {
+            transcript.push(output.trim().to_string());
+            Ok(())
+        }
+        Err(error) => {
+            transcript.push(format!("FAILED: {error}"));
+            Err(transcript.join("\n\n"))
+        }
+    }
+}
+
 fn ensure_generated_portfolio_file(agent_dir: &PathBuf, file_name: &str) -> Result<(), String> {
     if agent_dir.join(file_name).exists() {
         return Ok(());
@@ -292,7 +371,8 @@ pub fn run() {
             setup_os_import_portfolio_watchlist,
             setup_os_import_portfolio_market_data,
             setup_os_extract_portfolio_memory,
-            setup_os_portfolio_status
+            setup_os_portfolio_status,
+            setup_os_run_portfolio_demo_flow
         ])
         .run(tauri::generate_context!())
         .expect("error while running Setup OS desktop app");

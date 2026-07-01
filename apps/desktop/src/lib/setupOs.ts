@@ -47,3 +47,7 @@ export async function extractPortfolioMemory(): Promise<string> {
 export async function getPortfolioStatus(): Promise<string> {
   return invoke<string>("setup_os_portfolio_status");
 }
+
+export async function runPortfolioDemoFlow(): Promise<string> {
+  return invoke<string>("setup_os_run_portfolio_demo_flow");
+}
