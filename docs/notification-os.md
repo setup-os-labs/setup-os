@@ -17,7 +17,9 @@ Notification OS receives events from those agents and owns:
 
 ## v0 Boundary
 
-Setup OS v0 only includes a console notification adapter. Full Notification OS is out of scope until the generated-agent pipeline is stable.
+Setup OS v0 includes console notifications, a local JSONL notification inbox, and optional ntfy push that is disabled by default.
+
+Full Notification OS is out of scope until the generated-agent pipeline is stable.
 
 ## Target Flow
 

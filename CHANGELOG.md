@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Optional disabled-by-default ntfy notification adapter for core notifications and generated agents.
 - Generated Portfolio Manager daily report concentration warnings with local warning notifications.
 - Generated-agent `extract_memory.py` command that turns raw conversation imports into review-only structured memory drafts.
 - Generated-agent raw conversation import command that copies saved chats into `memory/raw` with a manifest and checksum without mutating strategy.
