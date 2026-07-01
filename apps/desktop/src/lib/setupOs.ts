@@ -56,6 +56,10 @@ export async function getPortfolioStatus(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_portfolio_status", { agentDir });
 }
 
+export async function getPortfolioSummary(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_portfolio_summary", { agentDir });
+}
+
 export async function readPortfolioNotifications(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_read_portfolio_notifications", { agentDir });
 }
