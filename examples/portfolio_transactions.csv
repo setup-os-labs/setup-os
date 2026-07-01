@@ -1,0 +1,4 @@
+date,symbol,action,quantity,price,fees
+2026-06-28,AAPL,buy,1,200.00,0.00
+2026-06-29,MSFT,buy,1,500.00,0.00
+2026-06-30,VXUS,dividend,0,8.25,0.00

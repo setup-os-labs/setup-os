@@ -33,7 +33,9 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "agent_dna.json").exists())
             self.assertTrue((output / "data" / "holdings.csv").exists())
             self.assertTrue((output / "data" / "allocation_targets.csv").exists())
+            self.assertTrue((output / "data" / "transactions.csv").exists())
             self.assertTrue((output / "import_portfolio_snapshot.py").exists())
+            self.assertTrue((output / "import_portfolio_transactions.py").exists())
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "report.py").exists())
@@ -106,6 +108,56 @@ class BlueprintTests(unittest.TestCase):
             )
             self.assertEqual(imported_report.returncode, 0)
             self.assertIn("AAPL", imported_report_text)
+            self.assertIn("## Recent Transactions", imported_report_text)
+
+            import_transactions = subprocess.run(
+                [
+                    sys.executable,
+                    "import_portfolio_transactions.py",
+                    str(Path.cwd() / "examples" / "portfolio_transactions.csv"),
+                    "--source",
+                    "robinhood-readonly-export",
+                ],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(import_transactions.returncode, 0)
+            self.assertIn("No broker credentials were stored.", import_transactions.stdout)
+
+            transaction_manifest_path = (
+                output / "data" / "transaction_import_manifest.jsonl"
+            )
+            self.assertTrue(transaction_manifest_path.exists())
+            transaction_manifest = [
+                json.loads(line)
+                for line in transaction_manifest_path.read_text(
+                    encoding="utf-8"
+                ).splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(
+                transaction_manifest[0]["source_type"], "robinhood-readonly-export"
+            )
+            self.assertFalse(transaction_manifest[0]["credentials_stored"])
+            self.assertEqual(
+                transaction_manifest[0]["mode"], "read_only_transactions"
+            )
+
+            transaction_report = subprocess.run(
+                [sys.executable, "report.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            transaction_report_text = (
+                output / "reports" / "daily_report.md"
+            ).read_text(encoding="utf-8")
+            self.assertEqual(transaction_report.returncode, 0)
+            self.assertIn("MSFT", transaction_report_text)
+            self.assertIn("DIVIDEND", transaction_report_text)
 
             import_result = subprocess.run(
                 [
