@@ -1,0 +1,69 @@
+"""Command-line interface for Setup OS."""
+
+from __future__ import annotations
+
+import argparse
+from collections.abc import Sequence
+
+from setup_os import __version__
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="setup-os",
+        description="Turn finalized AI planning conversations into local systems.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"setup-os {__version__}",
+    )
+
+    subparsers = parser.add_subparsers(dest="command", metavar="command")
+
+    create = subparsers.add_parser(
+        "create",
+        help="Create a local system from a planning conversation.",
+    )
+    create.add_argument(
+        "conversation",
+        help="Path to a Markdown, TXT, or JSON planning conversation.",
+    )
+    create.set_defaults(handler=_create)
+
+    evolve = subparsers.add_parser(
+        "evolve",
+        help="Create an evolution proposal from an update conversation.",
+    )
+    evolve.add_argument(
+        "conversation",
+        help="Path to a Markdown, TXT, or JSON update conversation.",
+    )
+    evolve.set_defaults(handler=_evolve)
+
+    return parser
+
+
+def _create(args: argparse.Namespace) -> int:
+    print(f"create is not implemented yet: {args.conversation}")
+    return 1
+
+
+def _evolve(args: argparse.Namespace) -> int:
+    print(f"evolve is not implemented yet: {args.conversation}")
+    return 1
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+
+    if not hasattr(args, "handler"):
+        parser.print_help()
+        return 0
+
+    return args.handler(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

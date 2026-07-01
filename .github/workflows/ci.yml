@@ -28,8 +28,8 @@ jobs:
 
       - name: Run tests when present
         run: |
-          if [ -d tests ]; then
-            python -m pytest
+          if find tests -name "test_*.py" -print -quit | grep -q .; then
+            python -m unittest discover -s tests
           else
             echo "No tests yet."
           fi

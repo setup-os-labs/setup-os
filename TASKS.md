@@ -7,7 +7,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | ID | Status | Owner | Branch | Task | Acceptance |
 | --- | --- | --- | --- | --- | --- |
 | SO-001 | done | Codex | `codex/open-core-product-setup` | Establish open-core GitHub product scaffold | README, changelog, roadmap, task queue, PR templates, and Codex workflow exist |
-| SO-002 | todo | Codex | `codex/v0-cli-scaffold` | Create Python package and CLI skeleton | `python -m setup_os.cli --help` runs locally |
+| SO-002 | review | Codex | `codex/setup-os-brand` | Create Python package and CLI skeleton | `python -m setup_os.cli --help` runs locally |
 | SO-003 | todo | Codex | `codex/conversation-ingestion` | Add Markdown/TXT conversation ingestion | Example conversation parses into a normalized envelope |
 | SO-004 | todo | Codex | `codex/spec-extraction` | Add deterministic v0 spec extractor | `agent_spec.json` is produced for portfolio example |
 | SO-005 | todo | Codex | `codex/portfolio-blueprint` | Add Portfolio Manager Agent blueprint | Generated repo contains README, config, report command, and sample data |
