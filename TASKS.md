@@ -17,7 +17,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 
 | ID | Status | Owner | Branch | Task | Acceptance |
 | --- | --- | --- | --- | --- | --- |
-| SO-007 | todo | Codex | `codex/audit-log` | Add append-only audit log | Create/evolve actions write JSONL audit events |
+| SO-007 | review | Codex | `codex/setup-os-brand` | Add append-only audit log | Create/evolve actions write JSONL audit events |
 | SO-008 | todo | Codex | `codex/notification-interface` | Add notification provider interface and console adapter | Generated agent can emit a test console notification |
 | SO-009 | todo | Codex | `codex/static-component-registry` | Add static component registry | Architecture proposal cites selected components and rejected alternatives |
 | SO-010 | todo | Codex | `codex/architecture-proposal` | Generate architecture proposal Markdown | Proposal includes runtime, storage, notification, approval, and dependency rationale |

@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 from setup_os import __version__
+from setup_os.audit import append_audit_event
 from setup_os.blueprints import generate_portfolio_blueprint
 from setup_os.conversation import parse_conversation_file
 from setup_os.evolution import create_evolution_proposal
@@ -75,6 +76,15 @@ def _create(args: argparse.Namespace) -> int:
     )
     if spec.slug == "portfolio-manager-agent":
         generate_portfolio_blueprint(spec, output_dir)
+    append_audit_event(
+        output_dir,
+        "create",
+        {
+            "conversation": args.conversation,
+            "spec": spec.slug,
+            "artifact": str(spec_path),
+        },
+    )
 
     print(f"Wrote {spec_path}")
     return 0
@@ -88,6 +98,15 @@ def _evolve(args: argparse.Namespace) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     proposal_path = output_dir / "evolution_proposal.md"
     proposal_path.write_text(proposal.to_markdown(), encoding="utf-8")
+    append_audit_event(
+        output_dir,
+        "evolve",
+        {
+            "conversation": args.conversation,
+            "artifact": str(proposal_path),
+            "approval_required": proposal.approval_required,
+        },
+    )
 
     print(f"Wrote {proposal_path}")
     return 0
