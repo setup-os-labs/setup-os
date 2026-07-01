@@ -6,11 +6,17 @@ import {
   FolderInput,
   Play,
   RefreshCcw,
+  Stethoscope,
   ShieldCheck,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { createPortfolioExample, getSetupOsHelp, runPortfolioReport } from "./lib/setupOs";
+import {
+  checkPortfolioHealth,
+  createPortfolioExample,
+  getSetupOsHelp,
+  runPortfolioReport,
+} from "./lib/setupOs";
 import "./styles.css";
 
 const agents = [
@@ -80,6 +86,20 @@ export function App() {
     }
   }
 
+  async function checkPortfolioAgentHealth() {
+    setActionStatus("Checking health");
+    setCliOutput("Running generated Portfolio Management OS health check...");
+    try {
+      const output = await checkPortfolioHealth();
+      setCliOutput(output);
+      setActionStatus("Healthy");
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   return (
     <main className="shell">
       <aside className="sidebar">
@@ -130,9 +150,14 @@ export function App() {
               <p className="eyebrow">Agents</p>
               <h3>Generated systems</h3>
             </div>
-            <button className="secondary" type="button" onClick={runPortfolioAgentReport}>
-              <FileText size={17} /> Run report
-            </button>
+            <div className="button-row">
+              <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
+                <Stethoscope size={17} /> Check health
+              </button>
+              <button className="secondary" type="button" onClick={runPortfolioAgentReport}>
+                <FileText size={17} /> Run report
+              </button>
+            </div>
           </div>
 
           <div className="agent-list">

@@ -39,6 +39,13 @@ cd generated/desktop-portfolio-os
 python report.py
 ```
 
+The shell can also run the generated health check:
+
+```bash
+cd generated/desktop-portfolio-os
+python health.py
+```
+
 ## Packaging Direction
 
 Tauri release builds should bundle a Python sidecar later. The sidecar must keep the same command behavior as development mode before the desktop app grows a local API or FastAPI service.
