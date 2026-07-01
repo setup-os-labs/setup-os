@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from setup_os.capabilities import capabilities_for_slug
 from setup_os.registry import component_choices_for_slug
 from setup_os.spec import AgentSpec
 
@@ -11,6 +12,7 @@ from setup_os.spec import AgentSpec
 def write_architecture_proposal(spec: AgentSpec, output_dir: Path) -> Path:
     proposal_path = output_dir / "architecture.md"
     choices = component_choices_for_slug(spec.slug)
+    capabilities = capabilities_for_slug(spec.slug)
 
     lines = [
         f"# {spec.name} Architecture Proposal",
@@ -36,6 +38,26 @@ def write_architecture_proposal(spec: AgentSpec, output_dir: Path) -> Path:
                 f"- selected: {choice.selected}",
                 f"- reason: {choice.reason}",
                 f"- alternatives considered: {alternatives}",
+                "",
+            ]
+        )
+
+    lines.extend(
+        [
+            "## Capability Dependency Graph",
+            "",
+        ]
+    )
+
+    for capability in capabilities:
+        dependencies = ", ".join(capability.dependencies)
+        surfaces = ", ".join(capability.surfaces)
+        lines.extend(
+            [
+                f"### {capability.name}",
+                "",
+                f"- depends on: {dependencies}",
+                f"- affects: {surfaces}",
                 "",
             ]
         )

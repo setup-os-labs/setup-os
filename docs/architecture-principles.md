@@ -60,3 +60,25 @@ Every dependency should include:
 ## 7. Generated Agents Own Their UX
 
 Setup OS generates and evolves vertical systems. The generated system owns its runtime UX.
+
+## 8. Evolution Is Proposal-Based
+
+Raw conversations do not directly mutate generated agents.
+
+Future conversations should produce schema-constrained, confidence-scored, conflict-aware evolution proposals that the user can approve, reject, or revise.
+
+## 9. Timelines Are Source Of Truth
+
+Generated agents should preserve an append-only timeline for created systems, proposed changes, approvals, and future runtime events.
+
+Calendars and notifications can mirror timeline events, but they are not the canonical memory.
+
+## 10. Action Permissions Are Graduated
+
+Actions should move through explicit trust levels:
+
+```text
+read -> alert -> draft -> approve -> execute -> auto_execute
+```
+
+High-risk domains such as finance and health should start at `alert` and prohibit dangerous automation by default.

@@ -10,11 +10,13 @@ from pathlib import Path
 from setup_os import __version__
 from setup_os.architecture import write_architecture_proposal
 from setup_os.audit import append_audit_event
-from setup_os.blueprints import generate_portfolio_blueprint
+from setup_os.blueprints import generate_health_blueprint, generate_portfolio_blueprint
 from setup_os.completeness import missing_decisions
 from setup_os.conversation import parse_conversation_file
 from setup_os.evolution import create_evolution_proposal
+from setup_os.releases import write_release_snapshot
 from setup_os.spec import extract_agent_spec
+from setup_os.timeline import append_timeline_event
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -62,6 +64,23 @@ def build_parser() -> argparse.ArgumentParser:
     )
     evolve.set_defaults(handler=_evolve)
 
+    apply = subparsers.add_parser(
+        "apply",
+        help="Create a candidate release from an approved evolution proposal.",
+    )
+    apply.add_argument(
+        "-o",
+        "--output",
+        default="generated/setup-os-agent",
+        help="Generated system directory containing evolution_proposal.md.",
+    )
+    apply.add_argument(
+        "--approve",
+        action="store_true",
+        help="Explicitly approve creating a candidate release.",
+    )
+    apply.set_defaults(handler=_apply)
+
     return parser
 
 
@@ -80,6 +99,35 @@ def _create(args: argparse.Namespace) -> int:
     missing = missing_decisions(spec)
     if spec.slug == "portfolio-manager-agent":
         generate_portfolio_blueprint(spec, output_dir)
+    if spec.slug == "health-os-agent":
+        generate_health_blueprint(spec, output_dir)
+    release_path = write_release_snapshot(
+        output_dir,
+        "v1",
+        f"Initial {spec.name}",
+        [
+            "agent_spec.json",
+            "architecture.md",
+            "README.md",
+            "agent_dna.json",
+            "config.json",
+        ],
+        {
+            "conversation": args.conversation,
+            "spec": spec.slug,
+        },
+    )
+    append_timeline_event(
+        output_dir,
+        "created",
+        spec.name,
+        {
+            "conversation": args.conversation,
+            "spec": spec.slug,
+            "maturity_level": "Level 2: Alerts",
+            "release": str(release_path),
+        },
+    )
     append_audit_event(
         output_dir,
         "create",
@@ -108,6 +156,16 @@ def _evolve(args: argparse.Namespace) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     proposal_path = output_dir / "evolution_proposal.md"
     proposal_path.write_text(proposal.to_markdown(), encoding="utf-8")
+    append_timeline_event(
+        output_dir,
+        "proposal",
+        proposal.title,
+        {
+            "conversation": args.conversation,
+            "changes": [change.to_dict() for change in proposal.proposed_changes],
+            "approval_required": proposal.approval_required,
+        },
+    )
     append_audit_event(
         output_dir,
         "evolve",
@@ -119,6 +177,49 @@ def _evolve(args: argparse.Namespace) -> int:
     )
 
     print(f"Wrote {proposal_path}")
+    return 0
+
+
+def _apply(args: argparse.Namespace) -> int:
+    output_dir = Path(args.output)
+    proposal_path = output_dir / "evolution_proposal.md"
+
+    if not args.approve:
+        print("Refusing to apply evolution proposal without --approve.")
+        return 1
+    if not proposal_path.exists():
+        print(f"Missing {proposal_path}")
+        return 1
+
+    release_path = write_release_snapshot(
+        output_dir,
+        "v2-candidate",
+        "Approved evolution candidate",
+        ["evolution_proposal.md"],
+        {
+            "proposal": str(proposal_path),
+            "approved": True,
+        },
+    )
+    append_timeline_event(
+        output_dir,
+        "candidate_release",
+        "Approved evolution candidate",
+        {
+            "proposal": str(proposal_path),
+            "release": str(release_path),
+        },
+    )
+    append_audit_event(
+        output_dir,
+        "apply",
+        {
+            "proposal": str(proposal_path),
+            "release": str(release_path),
+        },
+    )
+
+    print(f"Wrote {release_path}")
     return 0
 
 

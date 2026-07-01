@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import tempfile
@@ -7,8 +8,8 @@ import unittest
 from pathlib import Path
 
 
-class ArchitectureTests(unittest.TestCase):
-    def test_create_writes_architecture_proposal(self) -> None:
+class ReleaseTests(unittest.TestCase):
+    def test_create_writes_initial_release_snapshot(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             result = subprocess.run(
                 [
@@ -25,17 +26,14 @@ class ArchitectureTests(unittest.TestCase):
                 text=True,
             )
 
-            architecture_path = Path(tmpdir) / "architecture.md"
+            release_path = Path(tmpdir) / ".setup_os" / "releases" / "v1.json"
             self.assertEqual(result.returncode, 0)
-            self.assertTrue(architecture_path.exists())
+            self.assertTrue(release_path.exists())
 
-            proposal = architecture_path.read_text(encoding="utf-8")
-            self.assertIn("Component Choices", proposal)
-            self.assertIn("Capability Dependency Graph", proposal)
-            self.assertIn("Daily portfolio report", proposal)
-            self.assertIn("console notification adapter", proposal)
-            self.assertIn("broker execution", proposal.lower())
-            self.assertIn("alternatives considered", proposal)
+            release = json.loads(release_path.read_text(encoding="utf-8"))
+            self.assertEqual(release["version"], "v1")
+            self.assertIn("architecture.md", release["artifacts"])
+            self.assertEqual(release["source"]["spec"], "portfolio-manager-agent")
 
 
 if __name__ == "__main__":

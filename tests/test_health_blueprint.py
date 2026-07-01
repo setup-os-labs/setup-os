@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import tempfile
@@ -7,8 +8,8 @@ import unittest
 from pathlib import Path
 
 
-class BlueprintTests(unittest.TestCase):
-    def test_create_generates_portfolio_blueprint(self) -> None:
+class HealthBlueprintTests(unittest.TestCase):
+    def test_create_generates_health_blueprint(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             result = subprocess.run(
                 [
@@ -16,7 +17,7 @@ class BlueprintTests(unittest.TestCase):
                     "-m",
                     "setup_os.cli",
                     "create",
-                    "examples/portfolio_conversation.md",
+                    "examples/health_conversation.md",
                     "--output",
                     tmpdir,
                 ],
@@ -28,13 +29,12 @@ class BlueprintTests(unittest.TestCase):
             output = Path(tmpdir)
             self.assertEqual(result.returncode, 0)
             self.assertTrue((output / "README.md").exists())
-            self.assertTrue((output / "config.json").exists())
+            self.assertTrue((output / "data" / "health_notes.csv").exists())
             self.assertTrue((output / "agent_dna.json").exists())
-            self.assertTrue((output / "data" / "holdings.csv").exists())
-            self.assertTrue((output / "report.py").exists())
-            self.assertTrue((output / "verify.py").exists())
-            self.assertTrue((output / "memory" / "raw").is_dir())
-            self.assertTrue((output / "evolution").is_dir())
+
+            spec = json.loads((output / "agent_spec.json").read_text(encoding="utf-8"))
+            self.assertEqual(spec["slug"], "health-os-agent")
+            self.assertIn("no diagnosis", spec["safety"])
 
             report = subprocess.run(
                 [sys.executable, "report.py"],
@@ -44,9 +44,11 @@ class BlueprintTests(unittest.TestCase):
                 text=True,
             )
 
+            report_text = (output / "reports" / "wellness_report.md").read_text(
+                encoding="utf-8"
+            )
             self.assertEqual(report.returncode, 0)
-            self.assertTrue((output / "reports" / "daily_report.md").exists())
-            self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
+            self.assertIn("not medical advice", report_text)
             self.assertIn("NOTIFY[info]:", report.stdout)
 
             verify = subprocess.run(
