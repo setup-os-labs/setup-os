@@ -24,36 +24,37 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-011 | done | Codex | `codex/setup-os-brand` | Add unittest foundation | Tests cover ingestion, spec extraction, generation, and evolution proposal |
 | SO-015 | done | Codex | `codex/setup-os-brand` | Add planning conversation guide and starter vertical templates | Docs explain Think/Build/Evolve, minimum input/output, missing-decision checks, and five guide templates exist |
 | SO-016 | done | Codex | `codex/setup-os-brand` | Add spec completeness checker | `create` reports missing runtime, privacy, alert, data, and approval decisions without blocking generation |
-| SO-017 | review | Codex | `codex/evolution-notification-foundation` | Add evolution timeline and richer proposal metadata | `evolve` writes confidence, risk, memory layer, maturity level, and timeline events |
-| SO-018 | review | Codex | `codex/evolution-notification-foundation` | Document Notification OS boundary | Docs define Notification OS, calendar mirroring, and connector/MCP direction |
+| SO-017 | done | Codex | `codex/evolution-notification-foundation` | Add evolution timeline and richer proposal metadata | `evolve` writes confidence, risk, memory layer, maturity level, and timeline events |
+| SO-018 | done | Codex | `codex/evolution-notification-foundation` | Document Notification OS boundary | Docs define Notification OS, calendar mirroring, and connector/MCP direction |
 
 ## Later
 
 | ID | Status | Owner | Branch | Task | Acceptance |
 | --- | --- | --- | --- | --- | --- |
 | SO-012 | todo | Codex | `codex/ntfy-adapter` | Add optional ntfy adapter | Adapter is disabled by default and documented |
-| SO-013 | review | Codex | `codex/adr-index` | Add ADR index generator or convention | ADRs are easy to discover and link from PRs |
+| SO-013 | done | Codex | `codex/adr-index` | Add ADR index generator or convention | ADRs are easy to discover and link from PRs |
 | SO-014 | todo | Codex | `codex/docs-site` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
-| SO-019 | review | Codex | `codex/evolution-notification-foundation` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
-| SO-020 | review | Codex | `codex/evolution-notification-foundation` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
-| SO-021 | review | Codex | `codex/evolution-notification-foundation` | Add agnostic architecture and Agent DNA | Docs define provider-neutral layers; generated portfolio agent includes `agent_dna.json` and quality score |
-| SO-022 | review | Codex | `codex/evolution-notification-foundation` | Add capability dependency graph | Portfolio architecture proposal includes capability dependencies and affected surfaces |
-| SO-023 | review | Codex | `codex/evolution-notification-foundation` | Add generated-agent release snapshots | Create/evolve can preserve versioned release metadata for future rollback |
-| SO-024 | review | Codex | `codex/evolution-notification-foundation` | Add first non-portfolio vertical skeleton | Health OS planning conversation produces a generated health scaffold with local reports and no medical-action automation |
-| SO-025 | review | Codex | `codex/evolution-notification-foundation` | Add generated repo verification command | `create` emits instructions and a machine-checkable command for validating generated systems |
-| SO-026 | review | Codex | `codex/evolution-notification-foundation` | Add action permission policy primitives | Generated configs include read/alert/draft/approve/execute/auto-execute trust levels and prohibited actions |
-| SO-027 | review | Codex | `codex/evolution-notification-foundation` | Add explicit approve/apply command for safe evolution | Approved proposal can create a candidate release without mutating the current release silently |
-| SO-028 | review | Codex | `codex/runtime-health` | Add generated runtime health checks | Generated systems can check scheduler, notifications, required files, and configuration health |
-| SO-029 | review | Codex | `codex/evolution-notification-foundation` | Document desktop stack and Portfolio Management OS blueprint | README, ADR, docs, and templates explain Python core, future Tauri desktop, optional FastAPI, and Portfolio Management OS scope |
-| SO-030 | review | Codex | `codex/desktop-shell-foundation` | Spike cross-platform desktop shell | Minimal Tauri vertical-agent launcher can call `python -m setup_os.cli --help` on native macOS and Windows |
-| SO-031 | review | Codex | `codex/evolution-notification-foundation` | Capture desktop-first and Robinhood read-only decisions | ADR and Portfolio Management OS docs record desktop-first sequencing, Tauri rationale, process mode decision rule, native Windows target, and Robinhood read-only import direction |
-| SO-032 | review | Codex | `codex/desktop-shell-spike` | Add Portfolio Management OS building-block research | Research note ranks stack options, captures rejected alternatives, and links from Portfolio Management OS docs |
-| SO-033 | review | Codex | `codex/desktop-ci-checks` | Add desktop frontend checks to CI | GitHub Actions runs desktop npm ci, typecheck, build, and audit without requiring native Tauri packaging |
-| SO-034 | review | Codex | `codex/tauri-native-ci-and-branches` | Add native Tauri CI validation and branch retention rule | CI compiles the desktop native shell without bundling, and Codex workflow says not to delete remote branches after merge |
-| SO-035 | review | Codex | `codex/branch-history-policy` | Document retained branch history policy | CODEX explains archival/restored branch handling and identifies `codex/setup-os-brand` as superseded history |
-| SO-036 | review | Codex | `codex/diagram-output-pack` | Add standard generated diagram pack | Generated systems include offline HTML diagrams, editable D2 source, local icons, manifest, docs, and tests |
-| SO-037 | review | Codex | `codex/ci-speedups` | Speed up CI feedback | CI splits Python, desktop frontend, and native Tauri checks into parallel jobs while preserving the protected `checks` aggregate |
-| SO-038 | review | Codex | `codex/raw-conversation-import` | Add raw conversation import to generated agents | Generated agents include `import_conversation.py`, store saved chats in `memory/raw`, append manifest metadata, and avoid strategy mutation |
+| SO-019 | done | Codex | `codex/evolution-notification-foundation` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
+| SO-020 | done | Codex | `codex/evolution-notification-foundation` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
+| SO-021 | done | Codex | `codex/evolution-notification-foundation` | Add agnostic architecture and Agent DNA | Docs define provider-neutral layers; generated portfolio agent includes `agent_dna.json` and quality score |
+| SO-022 | done | Codex | `codex/evolution-notification-foundation` | Add capability dependency graph | Portfolio architecture proposal includes capability dependencies and affected surfaces |
+| SO-023 | done | Codex | `codex/evolution-notification-foundation` | Add generated-agent release snapshots | Create/evolve can preserve versioned release metadata for future rollback |
+| SO-024 | done | Codex | `codex/evolution-notification-foundation` | Add first non-portfolio vertical skeleton | Health OS planning conversation produces a generated health scaffold with local reports and no medical-action automation |
+| SO-025 | done | Codex | `codex/evolution-notification-foundation` | Add generated repo verification command | `create` emits instructions and a machine-checkable command for validating generated systems |
+| SO-026 | done | Codex | `codex/evolution-notification-foundation` | Add action permission policy primitives | Generated configs include read/alert/draft/approve/execute/auto-execute trust levels and prohibited actions |
+| SO-027 | done | Codex | `codex/evolution-notification-foundation` | Add explicit approve/apply command for safe evolution | Approved proposal can create a candidate release without mutating the current release silently |
+| SO-028 | done | Codex | `codex/runtime-health` | Add generated runtime health checks | Generated systems can check scheduler, notifications, required files, and configuration health |
+| SO-029 | done | Codex | `codex/evolution-notification-foundation` | Document desktop stack and Portfolio Management OS blueprint | README, ADR, docs, and templates explain Python core, future Tauri desktop, optional FastAPI, and Portfolio Management OS scope |
+| SO-030 | done | Codex | `codex/desktop-shell-foundation` | Spike cross-platform desktop shell | Minimal Tauri vertical-agent launcher can call `python -m setup_os.cli --help` on native macOS and Windows |
+| SO-031 | done | Codex | `codex/evolution-notification-foundation` | Capture desktop-first and Robinhood read-only decisions | ADR and Portfolio Management OS docs record desktop-first sequencing, Tauri rationale, process mode decision rule, native Windows target, and Robinhood read-only import direction |
+| SO-032 | done | Codex | `codex/desktop-shell-spike` | Add Portfolio Management OS building-block research | Research note ranks stack options, captures rejected alternatives, and links from Portfolio Management OS docs |
+| SO-033 | done | Codex | `codex/desktop-ci-checks` | Add desktop frontend checks to CI | GitHub Actions runs desktop npm ci, typecheck, build, and audit without requiring native Tauri packaging |
+| SO-034 | done | Codex | `codex/tauri-native-ci-and-branches` | Add native Tauri CI validation and branch retention rule | CI compiles the desktop native shell without bundling, and Codex workflow says not to delete remote branches after merge |
+| SO-035 | done | Codex | `codex/branch-history-policy` | Document retained branch history policy | CODEX explains archival/restored branch handling and identifies `codex/setup-os-brand` as superseded history |
+| SO-036 | done | Codex | `codex/diagram-output-pack` | Add standard generated diagram pack | Generated systems include offline HTML diagrams, editable D2 source, local icons, manifest, docs, and tests |
+| SO-037 | done | Codex | `codex/ci-speedups` | Speed up CI feedback | CI splits Python, desktop frontend, and native Tauri checks into parallel jobs while preserving the protected `checks` aggregate |
+| SO-038 | done | Codex | `codex/raw-conversation-import` | Add raw conversation import to generated agents | Generated agents include `import_conversation.py`, store saved chats in `memory/raw`, append manifest metadata, and avoid strategy mutation |
+| SO-039 | review | Codex | `codex/structured-memory-drafts` | Add structured memory extraction drafts | Generated agents include `extract_memory.py` that converts raw imports into review-only `memory/structured` drafts without mutating strategy or policy |
 
 ## Backlog Rules
 

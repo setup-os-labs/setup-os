@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Generated-agent `extract_memory.py` command that turns raw conversation imports into review-only structured memory drafts.
 - Generated-agent raw conversation import command that copies saved chats into `memory/raw` with a manifest and checksum without mutating strategy.
 - Parallel CI jobs and Rust build caching to shorten feedback for Python, desktop frontend, and native Tauri checks.
 - Standard generated diagram pack with offline HTML, editable D2 source, local SVG icons, and diagram manifest.
