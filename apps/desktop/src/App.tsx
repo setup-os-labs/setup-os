@@ -90,6 +90,9 @@ export function App() {
   const [portfolioOutputPath, setPortfolioOutputPath] = useState(() =>
     readStoredValue("setup-os:portfolio-output-path", "generated/desktop-portfolio-os"),
   );
+  const [seedConversationPath, setSeedConversationPath] = useState(() =>
+    readStoredValue("setup-os:portfolio-seed-conversation-path", "examples/portfolio_conversation.md"),
+  );
   const [conversationPath, setConversationPath] = useState(() =>
     readStoredValue("setup-os:portfolio-conversation-path", "examples/portfolio_update.md"),
   );
@@ -98,6 +101,10 @@ export function App() {
   useEffect(() => {
     window.localStorage.setItem("setup-os:portfolio-output-path", portfolioOutputPath);
   }, [portfolioOutputPath]);
+
+  useEffect(() => {
+    window.localStorage.setItem("setup-os:portfolio-seed-conversation-path", seedConversationPath);
+  }, [seedConversationPath]);
 
   useEffect(() => {
     window.localStorage.setItem("setup-os:portfolio-conversation-path", conversationPath);
@@ -121,9 +128,9 @@ export function App() {
 
   async function createPortfolioAgent() {
     setActionStatus("Generating");
-    setCliOutput(`Creating Portfolio Management OS in ${portfolioOutputPath}...`);
+    setCliOutput(`Creating Portfolio Management OS in ${portfolioOutputPath} from ${seedConversationPath}...`);
     try {
-      const output = await createPortfolioExample(portfolioOutputPath);
+      const output = await createPortfolioExample(portfolioOutputPath, seedConversationPath);
       setCliOutput(output);
       setActionStatus("Generated");
       setCliStatus("Ready");
@@ -312,6 +319,14 @@ export function App() {
                   value={portfolioOutputPath}
                   onChange={(event) => setPortfolioOutputPath(event.target.value)}
                   aria-label="Portfolio output path"
+                />
+              </label>
+              <label className="path-field">
+                <span>Seed</span>
+                <input
+                  value={seedConversationPath}
+                  onChange={(event) => setSeedConversationPath(event.target.value)}
+                  aria-label="Seed conversation path"
                 />
               </label>
               <label className="path-field">

@@ -78,7 +78,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-060 | done | Codex | `codex/fix-macos-release-icon` | Fix macOS desktop release icon conversion | Manual release workflow can package macOS app artifacts with an ICO asset whose directory metadata matches its embedded PNG |
 | SO-061 | done | Codex | `codex/verify-desktop-release-workflow` | Verify desktop release workflow artifacts | Manual release workflow run `28546192396` passed on Linux, Windows, and macOS and uploaded unsigned desktop artifacts |
 | SO-062 | done | Codex | `codex/desktop-portfolio-output-path` | Add editable desktop Portfolio output path | Desktop Portfolio actions can target a user-entered generated-agent directory instead of only `generated/desktop-portfolio-os` |
-| SO-063 | review | Codex | `codex/desktop-path-persistence` | Persist desktop Portfolio paths | Desktop shell remembers Portfolio output, conversation, and CSV import paths between sessions |
+| SO-063 | done | Codex | `codex/desktop-path-persistence` | Persist desktop Portfolio paths | Desktop shell remembers Portfolio output, conversation, and CSV import paths between sessions |
+| SO-064 | review | Codex | `codex/desktop-create-seed-path` | Add desktop seed conversation path | Desktop Portfolio create action can generate from a user-entered seed planning conversation instead of only the bundled example |
 
 ## Backlog Rules
 

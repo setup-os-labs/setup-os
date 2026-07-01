@@ -8,13 +8,21 @@ fn setup_os_help() -> Result<String, String> {
 }
 
 #[tauri::command]
-fn setup_os_create_portfolio_example(agent_dir: String) -> Result<String, String> {
+fn setup_os_create_portfolio_example(
+    agent_dir: String,
+    seed_conversation_path: String,
+) -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
     let output_dir = normalize_required_path(&agent_dir, "agent output path is required")?;
+    let seed_path = normalize_required_path(
+        &resolve_user_path(&repo_dir, &seed_conversation_path)?.display().to_string(),
+        "seed conversation path is required",
+    )?;
     run_setup_os([
         "-m",
         "setup_os.cli",
         "create",
-        "examples/portfolio_conversation.md",
+        seed_path.as_str(),
         "--output",
         output_dir.as_str(),
     ])
@@ -217,7 +225,10 @@ fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String>
     append_demo_step(
         &mut transcript,
         "Create Portfolio Management OS",
-        setup_os_create_portfolio_example(agent_dir.clone()),
+        setup_os_create_portfolio_example(
+            agent_dir.clone(),
+            "examples/portfolio_conversation.md".to_string(),
+        ),
     )?;
     append_demo_step(
         &mut transcript,
