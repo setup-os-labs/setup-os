@@ -32,6 +32,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "config.json").exists())
             self.assertTrue((output / "agent_dna.json").exists())
             self.assertTrue((output / "data" / "holdings.csv").exists())
+            self.assertTrue((output / "import_portfolio_snapshot.py").exists())
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "report.py").exists())
@@ -62,6 +63,46 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("NOTIFY[info]:", report.stdout)
             self.assertIn("NOTIFY[warning]:", report.stdout)
             self.assertNotIn("NTFY[sent]", report.stdout)
+
+            import_snapshot = subprocess.run(
+                [
+                    sys.executable,
+                    "import_portfolio_snapshot.py",
+                    str(Path.cwd() / "examples" / "portfolio_snapshot.csv"),
+                    "--source",
+                    "robinhood-readonly-export",
+                ],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(import_snapshot.returncode, 0)
+            self.assertIn("No broker credentials were stored.", import_snapshot.stdout)
+
+            import_manifest_path = output / "data" / "portfolio_import_manifest.jsonl"
+            self.assertTrue(import_manifest_path.exists())
+            import_manifest = [
+                json.loads(line)
+                for line in import_manifest_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(import_manifest[0]["source_type"], "robinhood-readonly-export")
+            self.assertFalse(import_manifest[0]["credentials_stored"])
+            self.assertEqual(import_manifest[0]["mode"], "read_only_snapshot")
+
+            imported_report = subprocess.run(
+                [sys.executable, "report.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            imported_report_text = (output / "reports" / "daily_report.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertEqual(imported_report.returncode, 0)
+            self.assertIn("AAPL", imported_report_text)
 
             import_result = subprocess.run(
                 [
