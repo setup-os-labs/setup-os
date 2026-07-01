@@ -46,7 +46,7 @@ cd generated/desktop-portfolio-os
 python health.py
 ```
 
-The first raw-memory import action uses the generated conversation importer:
+The raw-memory import action accepts a conversation path and uses the generated conversation importer:
 
 ```bash
 cd generated/desktop-portfolio-os

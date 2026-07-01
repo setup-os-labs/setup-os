@@ -16,8 +16,8 @@ export async function checkPortfolioHealth(): Promise<string> {
   return invoke<string>("setup_os_check_portfolio_health");
 }
 
-export async function importPortfolioConversationExample(): Promise<string> {
-  return invoke<string>("setup_os_import_portfolio_conversation_example");
+export async function importPortfolioConversation(conversationPath: string): Promise<string> {
+  return invoke<string>("setup_os_import_portfolio_conversation", { conversationPath });
 }
 
 export async function extractPortfolioMemory(): Promise<string> {

@@ -17,7 +17,7 @@ import {
   extractPortfolioMemory,
   getSetupOsHelp,
   getPortfolioStatus,
-  importPortfolioConversationExample,
+  importPortfolioConversation as importPortfolioConversationFile,
   runPortfolioReport,
 } from "./lib/setupOs";
 import "./styles.css";
@@ -48,6 +48,7 @@ export function App() {
   const [cliStatus, setCliStatus] = useState("Not checked");
   const [cliOutput, setCliOutput] = useState("");
   const [actionStatus, setActionStatus] = useState("Ready");
+  const [conversationPath, setConversationPath] = useState("../../examples/portfolio_update.md");
 
   async function checkCli() {
     setCliStatus("Checking");
@@ -103,11 +104,11 @@ export function App() {
     }
   }
 
-  async function importPortfolioConversation() {
+  async function importPortfolioConversationFromPath() {
     setActionStatus("Importing conversation");
-    setCliOutput("Importing examples/portfolio_update.md into raw Portfolio memory...");
+    setCliOutput(`Importing ${conversationPath} into raw Portfolio memory...`);
     try {
-      const output = await importPortfolioConversationExample();
+      const output = await importPortfolioConversationFile(conversationPath);
       setCliOutput(output);
       setActionStatus("Conversation imported");
       setCliStatus("Ready");
@@ -197,8 +198,16 @@ export function App() {
               <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
                 <RefreshCcw size={17} /> Refresh status
               </button>
-              <button className="secondary" type="button" onClick={importPortfolioConversation}>
-                <FolderInput size={17} /> Import conversation
+              <label className="path-field">
+                <span>Conversation</span>
+                <input
+                  value={conversationPath}
+                  onChange={(event) => setConversationPath(event.target.value)}
+                  aria-label="Conversation path"
+                />
+              </label>
+              <button className="secondary" type="button" onClick={importPortfolioConversationFromPath}>
+                <FolderInput size={17} /> Import
               </button>
               <button className="secondary" type="button" onClick={extractPortfolioMemoryDrafts}>
                 <FileText size={17} /> Extract drafts

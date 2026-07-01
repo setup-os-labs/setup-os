@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Desktop Portfolio conversation import now accepts an editable conversation path.
 - Desktop launcher action for refreshing generated Portfolio Management OS artifact status.
 - Desktop launcher action for extracting review-only Portfolio memory drafts.
 - Desktop launcher action for importing an example saved Portfolio conversation into raw memory.
