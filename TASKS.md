@@ -33,7 +33,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | --- | --- | --- | --- | --- | --- |
 | SO-012 | done | Codex | `codex/ntfy-adapter` | Add optional ntfy adapter | Adapter is disabled by default and documented |
 | SO-013 | done | Codex | `codex/adr-index` | Add ADR index generator or convention | ADRs are easy to discover and link from PRs |
-| SO-014 | review | Codex | `codex/docs-site-decision` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
+| SO-014 | done | Codex | `codex/docs-site-decision` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
 | SO-019 | done | Codex | `codex/evolution-notification-foundation` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
 | SO-020 | done | Codex | `codex/evolution-notification-foundation` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
 | SO-021 | done | Codex | `codex/evolution-notification-foundation` | Add agnostic architecture and Agent DNA | Docs define provider-neutral layers; generated portfolio agent includes `agent_dna.json` and quality score |
@@ -56,6 +56,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-038 | done | Codex | `codex/raw-conversation-import` | Add raw conversation import to generated agents | Generated agents include `import_conversation.py`, store saved chats in `memory/raw`, append manifest metadata, and avoid strategy mutation |
 | SO-039 | done | Codex | `codex/structured-memory-drafts` | Add structured memory extraction drafts | Generated agents include `extract_memory.py` that converts raw imports into review-only `memory/structured` drafts without mutating strategy or policy |
 | SO-040 | done | Codex | `codex/portfolio-concentration-alerts` | Add Portfolio concentration warning reports | Generated Portfolio Manager daily reports warn when a single holding is above the local review threshold and emit a warning notification |
+| SO-041 | review | Codex | `codex/portfolio-snapshot-import` | Add read-only portfolio snapshot import | Generated Portfolio Manager agents can import validated local holdings CSV snapshots, write an import manifest, and avoid storing broker credentials |
 
 ## Backlog Rules
 

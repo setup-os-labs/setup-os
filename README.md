@@ -114,7 +114,7 @@ For conversation structure and vertical planning templates, see [docs/conversati
 - Specs and state: JSON files, JSONL audit logs, JSONL timelines, and Markdown proposals.
 - Generated agents: local Python scaffolds with sample data, reports, notifications, `verify.py`, and release metadata.
 - Tests: stdlib `unittest` with GitHub Actions.
-- Current adapters: Markdown/TXT conversation import, console notifications, local notification inbox, optional disabled-by-default ntfy push.
+- Current adapters: Markdown/TXT conversation import, read-only holdings CSV snapshot import, console notifications, local notification inbox, optional disabled-by-default ntfy push.
 - Planned adapters: Apprise, MCP-style connectors, richer schedulers, and additional vertical blueprints.
 
 ## App Direction
