@@ -8,6 +8,10 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Native Tauri CI validation with Linux prerequisites and `tauri build --no-bundle`.
+- Desktop Rust dependency pin for reproducible native Tauri builds.
+- Desktop Tauri icon asset required by the native build context.
+- Branch-retention workflow guidance for keeping merged Codex branches visible on GitHub.
 - ADR index and convention for keeping architecture decisions discoverable.
 - Generated-agent `health.py` runtime checks for required files, config policy, scheduler folder, reports folder, and notification inbox validity.
 - CI checks for the desktop frontend package, including npm install, TypeScript, production build, and dependency audit.

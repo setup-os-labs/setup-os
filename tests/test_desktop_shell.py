@@ -19,6 +19,7 @@ class DesktopShellTests(unittest.TestCase):
             "src/App.tsx",
             "src/lib/setupOs.ts",
             "src-tauri/Cargo.toml",
+            "src-tauri/icons/icon.png",
             "src-tauri/tauri.conf.json",
             "src-tauri/src/lib.rs",
         ]
