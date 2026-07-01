@@ -49,9 +49,14 @@ class BlueprintTests(unittest.TestCase):
             )
 
             self.assertEqual(report.returncode, 0)
-            self.assertTrue((output / "reports" / "daily_report.md").exists())
+            report_text = (output / "reports" / "daily_report.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn("## Concentration Alerts", report_text)
+            self.assertIn("VOO is", report_text)
             self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
             self.assertIn("NOTIFY[info]:", report.stdout)
+            self.assertIn("NOTIFY[warning]:", report.stdout)
 
             import_result = subprocess.run(
                 [

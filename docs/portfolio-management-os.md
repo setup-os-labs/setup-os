@@ -29,6 +29,7 @@ It is a local, advisory, alert-first investing assistant.
 - store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
 - produce daily Markdown portfolio reports
+- warn on concentration above the local review threshold
 - emit structured local notifications
 - track strategy and policy through Agent DNA
 - write audit and timeline events
