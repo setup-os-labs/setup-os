@@ -1,0 +1,16 @@
+[package]
+name = "setup-os-desktop"
+version = "0.0.0"
+description = "Setup OS desktop shell"
+authors = ["Setup OS"]
+edition = "2021"
+
+[lib]
+name = "setup_os_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }

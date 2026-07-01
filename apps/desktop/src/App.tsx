@@ -1,0 +1,168 @@
+import {
+  Bell,
+  Bot,
+  CheckCircle2,
+  FileText,
+  FolderInput,
+  Play,
+  RefreshCcw,
+  ShieldCheck,
+} from "lucide-react";
+import type { ReactNode } from "react";
+import { useState } from "react";
+import { getSetupOsHelp } from "./lib/setupOs";
+import "./styles.css";
+
+const agents = [
+  {
+    name: "Portfolio Management OS",
+    status: "Design locked",
+    detail: "Raw-first conversation memory, read-only Robinhood path, reports and alerts first.",
+    badge: "Next vertical",
+  },
+  {
+    name: "Health OS",
+    status: "Blueprint ready",
+    detail: "Local reports and medical-action safety boundaries.",
+    badge: "Scaffold",
+  },
+];
+
+const activity = [
+  "Portfolio stack research merged",
+  "Desktop packaging decision accepted",
+  "Notification inbox schema available",
+  "Evolution proposals require approval",
+];
+
+export function App() {
+  const [cliStatus, setCliStatus] = useState("Not checked");
+  const [cliOutput, setCliOutput] = useState("");
+
+  async function checkCli() {
+    setCliStatus("Checking");
+    try {
+      const output = await getSetupOsHelp();
+      setCliOutput(output);
+      setCliStatus("Ready");
+    } catch (error) {
+      setCliStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  return (
+    <main className="shell">
+      <aside className="sidebar">
+        <div className="brand">
+          <div className="brand-mark">SO</div>
+          <div>
+            <h1>Setup OS</h1>
+            <p>Local vertical agent launcher</p>
+          </div>
+        </div>
+        <nav aria-label="Primary">
+          <a className="active" href="#agents">
+            <Bot size={18} /> Agents
+          </a>
+          <a href="#import">
+            <FolderInput size={18} /> Imports
+          </a>
+          <a href="#proposals">
+            <FileText size={18} /> Proposals
+          </a>
+          <a href="#notifications">
+            <Bell size={18} /> Inbox
+          </a>
+        </nav>
+      </aside>
+
+      <section className="workspace">
+        <header className="topbar">
+          <div>
+            <p className="eyebrow">Desktop foundation</p>
+            <h2>Vertical Agent Launcher</h2>
+          </div>
+          <button className="primary" type="button" onClick={checkCli}>
+            <RefreshCcw size={17} /> Check engine
+          </button>
+        </header>
+
+        <section className="status-grid" aria-label="System status">
+          <StatusTile label="Python engine" value={cliStatus} icon={<CheckCircle2 size={20} />} />
+          <StatusTile label="Memory mode" value="Raw first" icon={<FolderInput size={20} />} />
+          <StatusTile label="Policy" value="Approval first" icon={<ShieldCheck size={20} />} />
+          <StatusTile label="Release mode" value="Candidate diffs" icon={<FileText size={20} />} />
+        </section>
+
+        <section id="agents" className="content-band">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Agents</p>
+              <h3>Generated systems</h3>
+            </div>
+            <button className="secondary" type="button">
+              <FolderInput size={17} /> Import conversation
+            </button>
+          </div>
+
+          <div className="agent-list">
+            {agents.map((agent) => (
+              <article className="agent-card" key={agent.name}>
+                <div>
+                  <span>{agent.badge}</span>
+                  <h4>{agent.name}</h4>
+                  <p>{agent.detail}</p>
+                </div>
+                <div className="agent-actions">
+                  <small>{agent.status}</small>
+                  <button aria-label={`Run ${agent.name}`} type="button">
+                    <Play size={17} />
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="split">
+          <div id="proposals" className="panel">
+            <p className="eyebrow">Timeline</p>
+            <h3>Recent work</h3>
+            <ul>
+              {activity.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div id="import" className="panel">
+            <p className="eyebrow">Engine output</p>
+            <h3>CLI contract</h3>
+            <pre>{cliOutput || "Run Check engine to call python -m setup_os.cli --help."}</pre>
+          </div>
+        </section>
+      </section>
+    </main>
+  );
+}
+
+function StatusTile({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon: ReactNode;
+}) {
+  return (
+    <div className="status-tile">
+      {icon}
+      <div>
+        <p>{label}</p>
+        <strong>{value}</strong>
+      </div>
+    </div>
+  );
+}
