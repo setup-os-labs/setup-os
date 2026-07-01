@@ -53,6 +53,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-035 | review | Codex | `codex/branch-history-policy` | Document retained branch history policy | CODEX explains archival/restored branch handling and identifies `codex/setup-os-brand` as superseded history |
 | SO-036 | review | Codex | `codex/diagram-output-pack` | Add standard generated diagram pack | Generated systems include offline HTML diagrams, editable D2 source, local icons, manifest, docs, and tests |
 | SO-037 | review | Codex | `codex/ci-speedups` | Speed up CI feedback | CI splits Python, desktop frontend, and native Tauri checks into parallel jobs while preserving the protected `checks` aggregate |
+| SO-038 | review | Codex | `codex/raw-conversation-import` | Add raw conversation import to generated agents | Generated agents include `import_conversation.py`, store saved chats in `memory/raw`, append manifest metadata, and avoid strategy mutation |
 
 ## Backlog Rules
 
