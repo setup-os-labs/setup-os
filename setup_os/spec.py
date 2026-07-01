@@ -16,6 +16,8 @@ class AgentSpec:
     inputs: list[str] = field(default_factory=list)
     outputs: list[str] = field(default_factory=list)
     safety: list[str] = field(default_factory=list)
+    runtime: str = ""
+    privacy: str = ""
     storage: str = "local"
     notifications: list[str] = field(default_factory=list)
     source: dict[str, Any] = field(default_factory=dict)
@@ -28,6 +30,8 @@ class AgentSpec:
             "inputs": self.inputs,
             "outputs": self.outputs,
             "safety": self.safety,
+            "runtime": self.runtime,
+            "privacy": self.privacy,
             "storage": self.storage,
             "notifications": self.notifications,
             "source": self.source,
@@ -52,6 +56,8 @@ def extract_agent_spec(envelope: ConversationEnvelope) -> AgentSpec:
                 "no automated trades",
                 "approval required before external actions",
             ],
+            runtime="local laptop or always-on local machine",
+            privacy="local-first",
             storage="local files",
             notifications=["console"],
             source={
