@@ -3,10 +3,26 @@ use std::process::Command;
 
 #[tauri::command]
 fn setup_os_help() -> Result<String, String> {
+    run_setup_os(["-m", "setup_os.cli", "--help"])
+}
+
+#[tauri::command]
+fn setup_os_create_portfolio_example() -> Result<String, String> {
+    run_setup_os([
+        "-m",
+        "setup_os.cli",
+        "create",
+        "examples/portfolio_conversation.md",
+        "--output",
+        "generated/desktop-portfolio-os",
+    ])
+}
+
+fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let repo_dir = setup_os_repo_dir()?;
     let output = Command::new(python)
-        .args(["-m", "setup_os.cli", "--help"])
+        .args(args)
         .current_dir(repo_dir)
         .output()
         .map_err(|error| format!("failed to start Setup OS Python engine: {error}"))?;
@@ -43,7 +59,10 @@ fn setup_os_repo_dir() -> Result<PathBuf, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![setup_os_help])
+        .invoke_handler(tauri::generate_handler![
+            setup_os_help,
+            setup_os_create_portfolio_example
+        ])
         .run(tauri::generate_context!())
         .expect("error while running Setup OS desktop app");
 }

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { getSetupOsHelp } from "./lib/setupOs";
+import { createPortfolioExample, getSetupOsHelp } from "./lib/setupOs";
 import "./styles.css";
 
 const agents = [
@@ -38,6 +38,7 @@ const activity = [
 export function App() {
   const [cliStatus, setCliStatus] = useState("Not checked");
   const [cliOutput, setCliOutput] = useState("");
+  const [actionStatus, setActionStatus] = useState("Ready");
 
   async function checkCli() {
     setCliStatus("Checking");
@@ -47,6 +48,20 @@ export function App() {
       setCliStatus("Ready");
     } catch (error) {
       setCliStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function createPortfolioAgent() {
+    setActionStatus("Generating");
+    setCliOutput("Creating Portfolio Management OS in generated/desktop-portfolio-os...");
+    try {
+      const output = await createPortfolioExample();
+      setCliOutput(output);
+      setActionStatus("Generated");
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
     }
   }
@@ -116,7 +131,17 @@ export function App() {
                 </div>
                 <div className="agent-actions">
                   <small>{agent.status}</small>
-                  <button aria-label={`Run ${agent.name}`} type="button">
+                  <button
+                    aria-label={`Run ${agent.name}`}
+                    disabled={agent.name !== "Portfolio Management OS" || actionStatus === "Generating"}
+                    title={
+                      agent.name === "Portfolio Management OS"
+                        ? "Generate the local Portfolio Management OS example"
+                        : "This blueprint is available from the CLI"
+                    }
+                    type="button"
+                    onClick={agent.name === "Portfolio Management OS" ? createPortfolioAgent : undefined}
+                  >
                     <Play size={17} />
                   </button>
                 </div>
@@ -139,6 +164,7 @@ export function App() {
           <div id="import" className="panel">
             <p className="eyebrow">Engine output</p>
             <h3>CLI contract</h3>
+            <p className="panel-status">Portfolio action: {actionStatus}</p>
             <pre>{cliOutput || "Run Check engine to call python -m setup_os.cli --help."}</pre>
           </div>
         </section>

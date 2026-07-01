@@ -47,10 +47,14 @@ class DesktopShellTests(unittest.TestCase):
         lib_rs = (DESKTOP / "src-tauri" / "src" / "lib.rs").read_text(encoding="utf-8")
 
         self.assertIn("setup_os_help", lib_rs)
+        self.assertIn("setup_os_create_portfolio_example", lib_rs)
         self.assertIn("setup_os_repo_dir", lib_rs)
         self.assertIn("SETUP_OS_REPO_DIR", lib_rs)
         self.assertIn('"setup_os.cli"', lib_rs)
         self.assertIn('"--help"', lib_rs)
+        self.assertIn('"create"', lib_rs)
+        self.assertIn('"examples/portfolio_conversation.md"', lib_rs)
+        self.assertIn('"generated/desktop-portfolio-os"', lib_rs)
 
         result = subprocess.run(
             [sys.executable, "-m", "setup_os.cli", "--help"],

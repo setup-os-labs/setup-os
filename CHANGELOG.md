@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Desktop launcher action for generating the Portfolio Management OS example through the Python CLI.
 - Generated Portfolio Manager offline performance summary using holdings cost basis and local market snapshots.
 - Generated Portfolio Manager read-only market snapshot CSV importer and market-aware report pricing.
 - Generated Portfolio Manager read-only watchlist CSV importer and watchlist report section.
