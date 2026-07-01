@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Sequence
+import json
+from pathlib import Path
 
 from setup_os import __version__
+from setup_os.conversation import parse_conversation_file
+from setup_os.spec import extract_agent_spec
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -29,6 +33,12 @@ def build_parser() -> argparse.ArgumentParser:
         "conversation",
         help="Path to a Markdown, TXT, or JSON planning conversation.",
     )
+    create.add_argument(
+        "-o",
+        "--output",
+        default="generated/setup-os-agent",
+        help="Directory for generated Setup OS files.",
+    )
     create.set_defaults(handler=_create)
 
     evolve = subparsers.add_parser(
@@ -45,8 +55,19 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _create(args: argparse.Namespace) -> int:
-    print(f"create is not implemented yet: {args.conversation}")
-    return 1
+    envelope = parse_conversation_file(args.conversation)
+    spec = extract_agent_spec(envelope)
+
+    output_dir = Path(args.output)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    spec_path = output_dir / "agent_spec.json"
+    spec_path.write_text(
+        json.dumps(spec.to_dict(), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    print(f"Wrote {spec_path}")
+    return 0
 
 
 def _evolve(args: argparse.Namespace) -> int:
