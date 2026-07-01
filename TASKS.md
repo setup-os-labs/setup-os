@@ -34,7 +34,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-012 | todo | Codex | `codex/ntfy-adapter` | Add optional ntfy adapter | Adapter is disabled by default and documented |
 | SO-013 | todo | Codex | `codex/adr-index` | Add ADR index generator or convention | ADRs are easy to discover and link from PRs |
 | SO-014 | todo | Codex | `codex/docs-site` | Evaluate docs site need | Decision recorded; no site built unless it reduces contributor friction |
-| SO-019 | todo | Codex | `codex/notification-events` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
+| SO-019 | review | Codex | `codex/evolution-notification-foundation` | Add notification event schema and inbox file | Generated agents can emit structured notification events with snooze/done/dismiss states |
 | SO-020 | todo | Codex | `codex/vertical-health-template` | Add Health OS blueprint detection | Health planning conversation creates a health-oriented spec and architecture proposal |
 
 ## Backlog Rules

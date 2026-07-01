@@ -76,16 +76,30 @@ BND,Vanguard Total Bond Market ETF,15,73.00,1110.00
 
 import csv
 from datetime import date
+from datetime import datetime, timezone
+import json
 from pathlib import Path
 
 
 ROOT = Path(__file__).parent
 DATA_PATH = ROOT / "data" / "holdings.csv"
 REPORT_PATH = ROOT / "reports" / "daily_report.md"
+INBOX_PATH = ROOT / ".setup_os" / "notifications.jsonl"
 
 
 def notify(title: str, body: str, severity: str = "info") -> None:
     print(f"NOTIFY[{severity}]: {title} - {body}")
+    INBOX_PATH.parent.mkdir(parents=True, exist_ok=True)
+    event = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "source": "portfolio-manager-agent",
+        "title": title,
+        "body": body,
+        "severity": severity,
+        "status": "new",
+    }
+    with INBOX_PATH.open("a", encoding="utf-8") as file:
+        file.write(json.dumps(event, sort_keys=True) + "\\n")
 
 
 def load_holdings() -> list[dict[str, str]]:

@@ -42,6 +42,7 @@ class BlueprintTests(unittest.TestCase):
 
             self.assertEqual(report.returncode, 0)
             self.assertTrue((output / "reports" / "daily_report.md").exists())
+            self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
             self.assertIn("NOTIFY[info]:", report.stdout)
 
 
