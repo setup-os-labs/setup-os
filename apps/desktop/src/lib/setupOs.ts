@@ -11,3 +11,7 @@ export async function createPortfolioExample(): Promise<string> {
 export async function runPortfolioReport(): Promise<string> {
   return invoke<string>("setup_os_run_portfolio_report");
 }
+
+export async function checkPortfolioHealth(): Promise<string> {
+  return invoke<string>("setup_os_check_portfolio_health");
+}

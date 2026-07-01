@@ -23,12 +23,7 @@ fn setup_os_create_portfolio_example() -> Result<String, String> {
 fn setup_os_run_portfolio_report() -> Result<String, String> {
     let repo_dir = setup_os_repo_dir()?;
     let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
-    if !agent_dir.join("report.py").exists() {
-        return Err(
-            "generated/desktop-portfolio-os is missing; create the Portfolio Management OS first"
-                .to_string(),
-        );
-    }
+    ensure_generated_portfolio_file(&agent_dir, "report.py")?;
 
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let output = Command::new(python)
@@ -49,6 +44,40 @@ fn setup_os_run_portfolio_report() -> Result<String, String> {
     let report = fs::read_to_string(&report_path)
         .map_err(|error| format!("failed to read {}: {error}", report_path.display()))?;
     Ok(report)
+}
+
+#[tauri::command]
+fn setup_os_check_portfolio_health() -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+    ensure_generated_portfolio_file(&agent_dir, "health.py")?;
+
+    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let output = Command::new(python)
+        .arg("health.py")
+        .current_dir(&agent_dir)
+        .output()
+        .map_err(|error| format!("failed to run generated Portfolio health check: {error}"))?;
+
+    if output.status.success() {
+        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+        Err(format!(
+            "generated Portfolio health check exited with {}: {stderr}",
+            output.status
+        ))
+    }
+}
+
+fn ensure_generated_portfolio_file(agent_dir: &PathBuf, file_name: &str) -> Result<(), String> {
+    if agent_dir.join(file_name).exists() {
+        return Ok(());
+    }
+
+    Err(format!(
+        "generated/desktop-portfolio-os is missing {file_name}; create the Portfolio Management OS first"
+    ))
 }
 
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
@@ -95,7 +124,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             setup_os_help,
             setup_os_create_portfolio_example,
-            setup_os_run_portfolio_report
+            setup_os_run_portfolio_report,
+            setup_os_check_portfolio_health
         ])
         .run(tauri::generate_context!())
         .expect("error while running Setup OS desktop app");

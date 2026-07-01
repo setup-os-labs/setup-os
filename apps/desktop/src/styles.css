@@ -107,6 +107,7 @@ nav a:hover {
 .section-heading,
 .agent-card,
 .agent-actions,
+.button-row,
 .status-tile {
   display: flex;
   align-items: center;
@@ -222,6 +223,12 @@ button:disabled {
   flex-shrink: 0;
 }
 
+.button-row {
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .agent-actions button {
   width: 38px;
   padding: 0;
@@ -304,6 +311,10 @@ pre {
   .agent-card {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .button-row {
+    justify-content: flex-start;
   }
 
   nav,

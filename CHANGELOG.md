@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Desktop launcher action for running the generated Portfolio Management OS health check.
 - Desktop launcher action for running the generated Portfolio Management OS report and displaying the Markdown output.
 - Desktop launcher action for generating the Portfolio Management OS example through the Python CLI.
 - Generated Portfolio Manager offline performance summary using holdings cost basis and local market snapshots.
