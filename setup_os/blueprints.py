@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from textwrap import dedent
 
+from setup_os.policy import policy_for_slug
 from setup_os.quality import agent_dna
 from setup_os.spec import AgentSpec
 
@@ -27,7 +28,8 @@ def create_agent_directories(output_dir: Path) -> None:
         (output_dir / directory).mkdir(parents=True, exist_ok=True)
 
 
-def write_agent_metadata(spec: AgentSpec, output_dir: Path, approval_required_for: list[str]) -> None:
+def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
+    policy = policy_for_slug(spec.slug)
     _write(
         output_dir / "config.json",
         json.dumps(
@@ -37,7 +39,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path, approval_required_fo
                 "mode": "advisory",
                 "storage": spec.storage,
                 "notifications": spec.notifications,
-                "approval_required_for": approval_required_for,
+                "action_policy": policy.to_dict(),
             },
             indent=2,
             sort_keys=True,
@@ -127,16 +129,7 @@ python report.py
 """,
     )
 
-    write_agent_metadata(
-        spec,
-        output_dir,
-        [
-            "broker_connection",
-            "trade_execution",
-            "strategy_update",
-            "external_action",
-        ],
-    )
+    write_agent_metadata(spec, output_dir)
 
     _write(
         output_dir / "data" / "holdings.csv",
@@ -261,16 +254,7 @@ python report.py
 """,
     )
 
-    write_agent_metadata(
-        spec,
-        output_dir,
-        [
-            "diagnosis",
-            "medication_change",
-            "medical_decision",
-            "external_action",
-        ],
-    )
+    write_agent_metadata(spec, output_dir)
 
     _write(
         output_dir / "data" / "health_notes.csv",

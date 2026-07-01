@@ -72,3 +72,13 @@ Future conversations should produce schema-constrained, confidence-scored, confl
 Generated agents should preserve an append-only timeline for created systems, proposed changes, approvals, and future runtime events.
 
 Calendars and notifications can mirror timeline events, but they are not the canonical memory.
+
+## 10. Action Permissions Are Graduated
+
+Actions should move through explicit trust levels:
+
+```text
+read -> alert -> draft -> approve -> execute -> auto_execute
+```
+
+High-risk domains such as finance and health should start at `alert` and prohibit dangerous automation by default.
