@@ -8,21 +8,21 @@ fn setup_os_help() -> Result<String, String> {
 }
 
 #[tauri::command]
-fn setup_os_create_portfolio_example() -> Result<String, String> {
+fn setup_os_create_portfolio_example(agent_dir: String) -> Result<String, String> {
+    let output_dir = normalize_required_path(&agent_dir, "agent output path is required")?;
     run_setup_os([
         "-m",
         "setup_os.cli",
         "create",
         "examples/portfolio_conversation.md",
         "--output",
-        "generated/desktop-portfolio-os",
+        output_dir.as_str(),
     ])
 }
 
 #[tauri::command]
-fn setup_os_run_portfolio_report() -> Result<String, String> {
-    let repo_dir = setup_os_repo_dir()?;
-    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+fn setup_os_run_portfolio_report(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "report.py")?;
 
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
@@ -47,9 +47,8 @@ fn setup_os_run_portfolio_report() -> Result<String, String> {
 }
 
 #[tauri::command]
-fn setup_os_check_portfolio_health() -> Result<String, String> {
-    let repo_dir = setup_os_repo_dir()?;
-    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+fn setup_os_check_portfolio_health(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "health.py")?;
 
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
@@ -71,8 +70,12 @@ fn setup_os_check_portfolio_health() -> Result<String, String> {
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_conversation(conversation_path: String) -> Result<String, String> {
+fn setup_os_import_portfolio_conversation(
+    agent_dir: String,
+    conversation_path: String,
+) -> Result<String, String> {
     run_generated_portfolio_script(
+        &agent_dir,
         "import_conversation.py",
         &[conversation_path.as_str()],
         "conversation path is required",
@@ -82,8 +85,9 @@ fn setup_os_import_portfolio_conversation(conversation_path: String) -> Result<S
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_holdings(holdings_path: String) -> Result<String, String> {
+fn setup_os_import_portfolio_holdings(agent_dir: String, holdings_path: String) -> Result<String, String> {
     run_generated_portfolio_script(
+        &agent_dir,
         "import_portfolio_snapshot.py",
         &[holdings_path.as_str(), "--source", "desktop-local-file"],
         "holdings path is required",
@@ -93,8 +97,12 @@ fn setup_os_import_portfolio_holdings(holdings_path: String) -> Result<String, S
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_transactions(transactions_path: String) -> Result<String, String> {
+fn setup_os_import_portfolio_transactions(
+    agent_dir: String,
+    transactions_path: String,
+) -> Result<String, String> {
     run_generated_portfolio_script(
+        &agent_dir,
         "import_portfolio_transactions.py",
         &[transactions_path.as_str(), "--source", "desktop-local-file"],
         "transactions path is required",
@@ -104,8 +112,9 @@ fn setup_os_import_portfolio_transactions(transactions_path: String) -> Result<S
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_cash(cash_path: String) -> Result<String, String> {
+fn setup_os_import_portfolio_cash(agent_dir: String, cash_path: String) -> Result<String, String> {
     run_generated_portfolio_script(
+        &agent_dir,
         "import_portfolio_cash.py",
         &[cash_path.as_str(), "--source", "desktop-local-file"],
         "cash path is required",
@@ -115,8 +124,9 @@ fn setup_os_import_portfolio_cash(cash_path: String) -> Result<String, String> {
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_watchlist(watchlist_path: String) -> Result<String, String> {
+fn setup_os_import_portfolio_watchlist(agent_dir: String, watchlist_path: String) -> Result<String, String> {
     run_generated_portfolio_script(
+        &agent_dir,
         "import_portfolio_watchlist.py",
         &[watchlist_path.as_str(), "--source", "desktop-local-file"],
         "watchlist path is required",
@@ -126,8 +136,12 @@ fn setup_os_import_portfolio_watchlist(watchlist_path: String) -> Result<String,
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_market_data(market_data_path: String) -> Result<String, String> {
+fn setup_os_import_portfolio_market_data(
+    agent_dir: String,
+    market_data_path: String,
+) -> Result<String, String> {
     run_generated_portfolio_script(
+        &agent_dir,
         "import_portfolio_market_data.py",
         &[market_data_path.as_str(), "--source", "desktop-local-file"],
         "market data path is required",
@@ -137,9 +151,8 @@ fn setup_os_import_portfolio_market_data(market_data_path: String) -> Result<Str
 }
 
 #[tauri::command]
-fn setup_os_extract_portfolio_memory() -> Result<String, String> {
-    let repo_dir = setup_os_repo_dir()?;
-    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+fn setup_os_extract_portfolio_memory(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "extract_memory.py")?;
 
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
@@ -161,9 +174,8 @@ fn setup_os_extract_portfolio_memory() -> Result<String, String> {
 }
 
 #[tauri::command]
-fn setup_os_portfolio_status() -> Result<String, String> {
-    let repo_dir = setup_os_repo_dir()?;
-    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+fn setup_os_portfolio_status(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
     let checks = [
         ("Generated Portfolio OS", agent_dir.exists()),
         ("Report command", agent_dir.join("report.py").exists()),
@@ -199,62 +211,63 @@ fn setup_os_portfolio_status() -> Result<String, String> {
 }
 
 #[tauri::command]
-fn setup_os_run_portfolio_demo_flow() -> Result<String, String> {
+fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String> {
     let mut transcript = Vec::new();
 
     append_demo_step(
         &mut transcript,
         "Create Portfolio Management OS",
-        setup_os_create_portfolio_example(),
+        setup_os_create_portfolio_example(agent_dir.clone()),
     )?;
     append_demo_step(
         &mut transcript,
         "Import holdings",
-        setup_os_import_portfolio_holdings("../../examples/portfolio_snapshot.csv".to_string()),
+        setup_os_import_portfolio_holdings(agent_dir.clone(), "examples/portfolio_snapshot.csv".to_string()),
     )?;
     append_demo_step(
         &mut transcript,
         "Import transactions",
         setup_os_import_portfolio_transactions(
-            "../../examples/portfolio_transactions.csv".to_string(),
+            agent_dir.clone(),
+            "examples/portfolio_transactions.csv".to_string(),
         ),
     )?;
     append_demo_step(
         &mut transcript,
         "Import cash",
-        setup_os_import_portfolio_cash("../../examples/portfolio_cash.csv".to_string()),
+        setup_os_import_portfolio_cash(agent_dir.clone(), "examples/portfolio_cash.csv".to_string()),
     )?;
     append_demo_step(
         &mut transcript,
         "Import watchlist",
-        setup_os_import_portfolio_watchlist("../../examples/portfolio_watchlist.csv".to_string()),
+        setup_os_import_portfolio_watchlist(agent_dir.clone(), "examples/portfolio_watchlist.csv".to_string()),
     )?;
     append_demo_step(
         &mut transcript,
         "Import market data",
-        setup_os_import_portfolio_market_data("../../examples/portfolio_market_data.csv".to_string()),
+        setup_os_import_portfolio_market_data(agent_dir.clone(), "examples/portfolio_market_data.csv".to_string()),
     )?;
     append_demo_step(
         &mut transcript,
         "Import saved conversation",
-        setup_os_import_portfolio_conversation("../../examples/portfolio_update.md".to_string()),
+        setup_os_import_portfolio_conversation(agent_dir.clone(), "examples/portfolio_update.md".to_string()),
     )?;
     append_demo_step(
         &mut transcript,
         "Extract memory drafts",
-        setup_os_extract_portfolio_memory(),
+        setup_os_extract_portfolio_memory(agent_dir.clone()),
     )?;
     append_demo_step(
         &mut transcript,
         "Run health check",
-        setup_os_check_portfolio_health(),
+        setup_os_check_portfolio_health(agent_dir.clone()),
     )?;
     append_demo_step(
         &mut transcript,
         "Run daily report",
-        setup_os_run_portfolio_report(),
+        setup_os_run_portfolio_report(agent_dir.clone()),
     )?;
-    append_demo_step(&mut transcript, "Refresh status", setup_os_portfolio_status())?;
+    append_demo_step(&mut transcript, "Refresh status", setup_os_portfolio_status(agent_dir))?;
 
     Ok(transcript.join("\n\n"))
 }
@@ -283,11 +296,13 @@ fn ensure_generated_portfolio_file(agent_dir: &PathBuf, file_name: &str) -> Resu
     }
 
     Err(format!(
-        "generated/desktop-portfolio-os is missing {file_name}; create the Portfolio Management OS first"
+        "{} is missing {file_name}; create the Portfolio Management OS first",
+        agent_dir.display()
     ))
 }
 
 fn run_generated_portfolio_script(
+    agent_dir: &str,
     script_name: &str,
     args: &[&str],
     empty_path_error: &str,
@@ -299,13 +314,24 @@ fn run_generated_portfolio_script(
     }
 
     let repo_dir = setup_os_repo_dir()?;
-    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+    let agent_dir = resolve_agent_dir(agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, script_name)?;
+    let mut resolved_args = Vec::new();
+    for argument in args {
+        let trimmed = argument.trim();
+        if trimmed.starts_with("--") {
+            resolved_args.push(trimmed.to_string());
+        } else if resolved_args.last().map_or(false, |last| last == "--source") {
+            resolved_args.push(trimmed.to_string());
+        } else {
+            resolved_args.push(resolve_user_path(&repo_dir, trimmed)?.display().to_string());
+        }
+    }
 
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let output = Command::new(python)
         .arg(script_name)
-        .args(args.iter().map(|argument| argument.trim()))
+        .args(resolved_args)
         .current_dir(&agent_dir)
         .output()
         .map_err(|error| format!("{start_error}: {error}"))?;
@@ -315,6 +341,35 @@ fn run_generated_portfolio_script(
     } else {
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
         Err(format!("{label} exited with {}: {stderr}", output.status))
+    }
+}
+
+fn normalize_required_path(path: &str, empty_error: &str) -> Result<String, String> {
+    let trimmed = path.trim();
+    if trimmed.is_empty() {
+        return Err(empty_error.to_string());
+    }
+    Ok(trimmed.replace('\\', "/"))
+}
+
+fn resolve_agent_dir(agent_dir: &str) -> Result<PathBuf, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let normalized = normalize_required_path(agent_dir, "agent output path is required")?;
+    let path = PathBuf::from(&normalized);
+    if path.is_absolute() {
+        Ok(path)
+    } else {
+        Ok(repo_dir.join(path))
+    }
+}
+
+fn resolve_user_path(repo_dir: &PathBuf, path: &str) -> Result<PathBuf, String> {
+    let normalized = normalize_required_path(path, "input path is required")?;
+    let path = PathBuf::from(&normalized);
+    if path.is_absolute() {
+        Ok(path)
+    } else {
+        Ok(repo_dir.join(path))
     }
 }
 
