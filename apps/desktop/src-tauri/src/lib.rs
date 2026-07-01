@@ -309,6 +309,43 @@ fn setup_os_portfolio_status(agent_dir: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+fn setup_os_portfolio_summary(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let report_path = agent_dir.join("reports").join("daily_report.md");
+    let notifications_path = agent_dir.join(".setup_os").join("notifications.jsonl");
+    let drafts_path = agent_dir
+        .join("memory")
+        .join("structured")
+        .join("extraction_drafts.jsonl");
+
+    let mut lines = vec![
+        "Portfolio Management OS summary".to_string(),
+        format!("Workspace: {}", agent_dir.display()),
+        format!("- {}", existence_line("Health command", agent_dir.join("health.py").exists())),
+        format!("- {}", existence_line("Latest report", report_path.exists())),
+        format!("- {}", count_line("Notifications", &notifications_path)?),
+        format!("- {}", count_line("Structured memory drafts", &drafts_path)?),
+    ];
+
+    if report_path.exists() {
+        let report = fs::read_to_string(&report_path)
+            .map_err(|error| format!("failed to read {}: {error}", report_path.display()))?;
+        let preview = report
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .take(8)
+            .collect::<Vec<_>>()
+            .join("\n");
+        lines.push("\nLatest report preview".to_string());
+        lines.push(preview);
+    } else {
+        lines.push("\nNext: run the daily report to populate the summary preview.".to_string());
+    }
+
+    Ok(lines.join("\n"))
+}
+
+#[tauri::command]
 fn setup_os_read_portfolio_notifications(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     let inbox_path = agent_dir.join(".setup_os").join("notifications.jsonl");
@@ -514,6 +551,20 @@ fn marker(ok: bool) -> &'static str {
     }
 }
 
+fn existence_line(label: &str, ok: bool) -> String {
+    format!("{}: {label}", marker(ok))
+}
+
+fn count_line(label: &str, path: &PathBuf) -> Result<String, String> {
+    if !path.exists() {
+        return Ok(format!("MISSING: {label}"));
+    }
+    let content =
+        fs::read_to_string(path).map_err(|error| format!("failed to read {}: {error}", path.display()))?;
+    let count = content.lines().filter(|line| !line.trim().is_empty()).count();
+    Ok(format!("OK: {label} ({count})"))
+}
+
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let repo_dir = setup_os_repo_dir()?;
@@ -570,6 +621,7 @@ pub fn run() {
             setup_os_extract_portfolio_memory,
             setup_os_review_portfolio_memory_drafts,
             setup_os_portfolio_status,
+            setup_os_portfolio_summary,
             setup_os_read_portfolio_notifications,
             setup_os_run_portfolio_demo_flow
         ])

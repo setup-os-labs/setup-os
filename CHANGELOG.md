@@ -20,6 +20,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop readiness check for repo root, Python engine, seed conversation, and selected Portfolio workspace.
 - Desktop Portfolio actions now validate required paths before invoking backend commands and show immediate next-step messages.
 - Desktop Portfolio launcher can review structured memory draft JSONL files after extraction.
+- Desktop Portfolio launcher can load a summary of workspace state, latest report preview, notification count, and memory draft count.
 - Cross-platform native desktop CI matrix for Linux, Windows, and macOS Tauri compile checks.
 - Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
 - Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.

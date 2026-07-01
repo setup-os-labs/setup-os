@@ -17,6 +17,7 @@ import {
   createPortfolioExample,
   extractPortfolioMemory,
   getSetupOsHelp,
+  getPortfolioSummary,
   getPortfolioStatus,
   importPortfolioCash,
   importPortfolioConversation as importPortfolioConversationFile,
@@ -322,6 +323,22 @@ export function App() {
     }
   }
 
+  async function loadPortfolioSummary() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Loading summary");
+    try {
+      const output = await getPortfolioSummary(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Summary loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function readPortfolioInbox() {
     if (!requirePortfolioOutput()) {
       return;
@@ -415,6 +432,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
                 <RefreshCcw size={17} /> Refresh status
+              </button>
+              <button className="secondary" type="button" onClick={loadPortfolioSummary}>
+                <FileText size={17} /> Load summary
               </button>
               <button className="secondary" type="button" onClick={readPortfolioInbox}>
                 <Bell size={17} /> Read inbox
