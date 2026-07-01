@@ -94,6 +94,30 @@ fn setup_os_import_portfolio_conversation_example() -> Result<String, String> {
     }
 }
 
+#[tauri::command]
+fn setup_os_extract_portfolio_memory() -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let agent_dir = repo_dir.join("generated").join("desktop-portfolio-os");
+    ensure_generated_portfolio_file(&agent_dir, "extract_memory.py")?;
+
+    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let output = Command::new(python)
+        .arg("extract_memory.py")
+        .current_dir(&agent_dir)
+        .output()
+        .map_err(|error| format!("failed to extract Portfolio memory drafts: {error}"))?;
+
+    if output.status.success() {
+        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+        Err(format!(
+            "Portfolio memory extraction exited with {}: {stderr}",
+            output.status
+        ))
+    }
+}
+
 fn ensure_generated_portfolio_file(agent_dir: &PathBuf, file_name: &str) -> Result<(), String> {
     if agent_dir.join(file_name).exists() {
         return Ok(());
@@ -150,7 +174,8 @@ pub fn run() {
             setup_os_create_portfolio_example,
             setup_os_run_portfolio_report,
             setup_os_check_portfolio_health,
-            setup_os_import_portfolio_conversation_example
+            setup_os_import_portfolio_conversation_example,
+            setup_os_extract_portfolio_memory
         ])
         .run(tauri::generate_context!())
         .expect("error while running Setup OS desktop app");

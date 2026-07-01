@@ -53,6 +53,13 @@ cd generated/desktop-portfolio-os
 python import_conversation.py ../../examples/portfolio_update.md
 ```
 
+The shell can then create review-only structured memory drafts:
+
+```bash
+cd generated/desktop-portfolio-os
+python extract_memory.py
+```
+
 ## Packaging Direction
 
 Tauri release builds should bundle a Python sidecar later. The sidecar must keep the same command behavior as development mode before the desktop app grows a local API or FastAPI service.

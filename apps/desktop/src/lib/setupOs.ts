@@ -19,3 +19,7 @@ export async function checkPortfolioHealth(): Promise<string> {
 export async function importPortfolioConversationExample(): Promise<string> {
   return invoke<string>("setup_os_import_portfolio_conversation_example");
 }
+
+export async function extractPortfolioMemory(): Promise<string> {
+  return invoke<string>("setup_os_extract_portfolio_memory");
+}
