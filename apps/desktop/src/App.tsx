@@ -25,6 +25,7 @@ import {
   importPortfolioTransactions,
   importPortfolioWatchlist,
   readPortfolioNotifications,
+  reviewPortfolioMemoryDrafts,
   runPortfolioDemoFlow,
   runPortfolioReport,
 } from "./lib/setupOs";
@@ -289,6 +290,22 @@ export function App() {
     }
   }
 
+  async function reviewPortfolioDrafts() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Reviewing drafts");
+    try {
+      const output = await reviewPortfolioMemoryDrafts(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Drafts loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function refreshPortfolioStatus() {
     if (!requirePortfolioOutput()) {
       return;
@@ -431,6 +448,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={extractPortfolioMemoryDrafts}>
                 <FileText size={17} /> Extract drafts
+              </button>
+              <button className="secondary" type="button" onClick={reviewPortfolioDrafts}>
+                <FileText size={17} /> Review drafts
               </button>
               <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
                 <Stethoscope size={17} /> Check health

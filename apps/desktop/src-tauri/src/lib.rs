@@ -242,6 +242,36 @@ fn setup_os_extract_portfolio_memory(agent_dir: String) -> Result<String, String
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_memory_drafts(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let drafts_path = agent_dir
+        .join("memory")
+        .join("structured")
+        .join("extraction_drafts.jsonl");
+    if !drafts_path.exists() {
+        return Ok(format!(
+            "No structured memory drafts yet.\nExpected drafts: {}\nNext: import a saved conversation, then run Extract drafts.",
+            drafts_path.display()
+        ));
+    }
+
+    let drafts = fs::read_to_string(&drafts_path)
+        .map_err(|error| format!("failed to read {}: {error}", drafts_path.display()))?;
+    if drafts.trim().is_empty() {
+        return Ok(format!(
+            "Structured memory draft file is empty.\nDrafts: {}\nNext: run Extract drafts again after importing a conversation.",
+            drafts_path.display()
+        ));
+    }
+
+    Ok(format!(
+        "Structured memory drafts\n{}\n\n{}",
+        drafts_path.display(),
+        drafts
+    ))
+}
+
+#[tauri::command]
 fn setup_os_portfolio_status(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     let checks = [
@@ -538,6 +568,7 @@ pub fn run() {
             setup_os_import_portfolio_watchlist,
             setup_os_import_portfolio_market_data,
             setup_os_extract_portfolio_memory,
+            setup_os_review_portfolio_memory_drafts,
             setup_os_portfolio_status,
             setup_os_read_portfolio_notifications,
             setup_os_run_portfolio_demo_flow

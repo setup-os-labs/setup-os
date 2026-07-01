@@ -48,6 +48,10 @@ export async function extractPortfolioMemory(agentDir: string): Promise<string> 
   return invoke<string>("setup_os_extract_portfolio_memory", { agentDir });
 }
 
+export async function reviewPortfolioMemoryDrafts(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_review_portfolio_memory_drafts", { agentDir });
+}
+
 export async function getPortfolioStatus(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_portfolio_status", { agentDir });
 }
