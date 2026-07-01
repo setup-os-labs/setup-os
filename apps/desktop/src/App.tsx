@@ -12,6 +12,7 @@ import {
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import {
+  checkDesktopReadiness,
   checkPortfolioHealth,
   createPortfolioExample,
   extractPortfolioMemory,
@@ -123,6 +124,21 @@ export function App() {
       setCliStatus("Ready");
     } catch (error) {
       setCliStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function checkReadiness() {
+    setCliStatus("Checking");
+    setActionStatus("Checking readiness");
+    try {
+      const output = await checkDesktopReadiness(portfolioOutputPath, seedConversationPath);
+      setCliOutput(output);
+      setCliStatus(output.includes("MISSING") ? "Needs attention" : "Ready");
+      setActionStatus("Readiness checked");
+    } catch (error) {
+      setCliStatus("Needs attention");
+      setActionStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
     }
   }
@@ -322,6 +338,9 @@ export function App() {
             <div className="button-row">
               <button className="primary" type="button" onClick={runFullPortfolioFlow}>
                 <Play size={17} /> Run demo flow
+              </button>
+              <button className="secondary" type="button" onClick={checkReadiness}>
+                <ShieldCheck size={17} /> Check readiness
               </button>
               <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
                 <RefreshCcw size={17} /> Refresh status
