@@ -34,8 +34,10 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "data" / "holdings.csv").exists())
             self.assertTrue((output / "data" / "allocation_targets.csv").exists())
             self.assertTrue((output / "data" / "transactions.csv").exists())
+            self.assertTrue((output / "data" / "cash.csv").exists())
             self.assertTrue((output / "import_portfolio_snapshot.py").exists())
             self.assertTrue((output / "import_portfolio_transactions.py").exists())
+            self.assertTrue((output / "import_portfolio_cash.py").exists())
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "report.py").exists())
@@ -64,6 +66,8 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("vs target", report_text)
             self.assertIn("## Concentration Alerts", report_text)
             self.assertIn("VOO is", report_text)
+            self.assertIn("## Cash", report_text)
+            self.assertIn("Cash value:", report_text)
             self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
             self.assertIn("NOTIFY[info]:", report.stdout)
             self.assertIn("NOTIFY[warning]:", report.stdout)
@@ -158,6 +162,47 @@ class BlueprintTests(unittest.TestCase):
             self.assertEqual(transaction_report.returncode, 0)
             self.assertIn("MSFT", transaction_report_text)
             self.assertIn("DIVIDEND", transaction_report_text)
+
+            import_cash = subprocess.run(
+                [
+                    sys.executable,
+                    "import_portfolio_cash.py",
+                    str(Path.cwd() / "examples" / "portfolio_cash.csv"),
+                    "--source",
+                    "robinhood-readonly-export",
+                ],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(import_cash.returncode, 0)
+            self.assertIn("No broker credentials were stored.", import_cash.stdout)
+
+            cash_manifest_path = output / "data" / "cash_import_manifest.jsonl"
+            self.assertTrue(cash_manifest_path.exists())
+            cash_manifest = [
+                json.loads(line)
+                for line in cash_manifest_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(cash_manifest[0]["source_type"], "robinhood-readonly-export")
+            self.assertFalse(cash_manifest[0]["credentials_stored"])
+            self.assertEqual(cash_manifest[0]["mode"], "read_only_cash")
+
+            cash_report = subprocess.run(
+                [sys.executable, "report.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            cash_report_text = (output / "reports" / "daily_report.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertEqual(cash_report.returncode, 0)
+            self.assertIn("retirement: USD 1,250.00", cash_report_text)
+            self.assertIn("Cash value: $2,000.00", cash_report_text)
 
             import_result = subprocess.run(
                 [
