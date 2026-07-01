@@ -58,6 +58,7 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("setup_os_import_portfolio_market_data", lib_rs)
         self.assertIn("setup_os_extract_portfolio_memory", lib_rs)
         self.assertIn("setup_os_portfolio_status", lib_rs)
+        self.assertIn("setup_os_run_portfolio_demo_flow", lib_rs)
         self.assertIn("setup_os_repo_dir", lib_rs)
         self.assertIn("SETUP_OS_REPO_DIR", lib_rs)
         self.assertIn('"setup_os.cli"', lib_rs)
@@ -78,6 +79,8 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn('"reports"', lib_rs)
         self.assertIn('"daily_report.md"', lib_rs)
         self.assertIn("Portfolio Management OS status", lib_rs)
+        self.assertIn("Create Portfolio Management OS", lib_rs)
+        self.assertIn("Run daily report", lib_rs)
 
         result = subprocess.run(
             [sys.executable, "-m", "setup_os.cli", "--help"],

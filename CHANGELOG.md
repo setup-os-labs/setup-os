@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
 - Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.
 - Desktop Portfolio conversation import now accepts an editable conversation path.
 - Desktop launcher action for refreshing generated Portfolio Management OS artifact status.

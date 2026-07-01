@@ -55,6 +55,8 @@ python import_conversation.py ../../examples/portfolio_update.md
 
 The desktop can also import generated Portfolio CSV data files for holdings, transactions, cash, watchlist, and market snapshots. The default paths point at repo examples and can be replaced with local exports.
 
+For smoke testing, the shell exposes a full demo flow that creates the Portfolio OS, imports bundled sample data, imports a saved conversation, extracts memory drafts, runs health, runs the report, and refreshes status.
+
 The shell can then create review-only structured memory drafts:
 
 ```bash
