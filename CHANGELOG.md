@@ -22,6 +22,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop Portfolio launcher can review structured memory draft JSONL files after extraction.
 - Desktop Portfolio launcher can load a summary of workspace state, latest report preview, notification count, and memory draft count.
 - Desktop Portfolio launcher can archive and recreate the selected generated workspace from the selected seed conversation.
+- Desktop Portfolio memory draft review now formats draft source, status, confidence, strategy notes, risk rules, and watchlist items for easier review.
 - Cross-platform native desktop CI matrix for Linux, Windows, and macOS Tauri compile checks.
 - Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
 - Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.

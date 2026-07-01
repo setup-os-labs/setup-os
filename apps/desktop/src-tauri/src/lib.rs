@@ -322,10 +322,18 @@ fn setup_os_review_portfolio_memory_drafts(agent_dir: String) -> Result<String, 
         ));
     }
 
+    let readable_drafts = drafts
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .enumerate()
+        .map(|(index, line)| format_memory_draft(index + 1, line))
+        .collect::<Vec<_>>()
+        .join("\n\n");
+
     Ok(format!(
         "Structured memory drafts\n{}\n\n{}",
         drafts_path.display(),
-        drafts
+        readable_drafts
     ))
 }
 
@@ -621,6 +629,89 @@ fn count_line(label: &str, path: &PathBuf) -> Result<String, String> {
         fs::read_to_string(path).map_err(|error| format!("failed to read {}: {error}", path.display()))?;
     let count = content.lines().filter(|line| !line.trim().is_empty()).count();
     Ok(format!("OK: {label} ({count})"))
+}
+
+fn format_memory_draft(index: usize, json_line: &str) -> String {
+    let source = json_string_value(json_line, "source_name").unwrap_or_else(|| "unknown source".to_string());
+    let status = json_string_value(json_line, "status").unwrap_or_else(|| "unknown".to_string());
+    let confidence = json_number_value(json_line, "confidence").unwrap_or_else(|| "unknown".to_string());
+    let strategy_notes = json_array_values(json_line, "strategy_notes");
+    let risk_rules = json_array_values(json_line, "risk_rules");
+    let watchlist = json_array_values(json_line, "watchlist");
+
+    [
+        format!("Draft {index}"),
+        format!("- Source: {source}"),
+        format!("- Status: {status}"),
+        format!("- Confidence: {confidence}"),
+        format!("- Strategy notes: {}", list_or_none(&strategy_notes)),
+        format!("- Risk rules: {}", list_or_none(&risk_rules)),
+        format!("- Watchlist: {}", list_or_none(&watchlist)),
+        "- Next: review these drafts before changing strategy, policy, or alerts.".to_string(),
+    ]
+    .join("\n")
+}
+
+fn json_string_value(json_line: &str, key: &str) -> Option<String> {
+    let needle = format!("\"{key}\":");
+    let start = json_line.find(&needle)? + needle.len();
+    let after_key = json_line[start..].trim_start();
+    if after_key.starts_with("null") {
+        return None;
+    }
+    let value_start = after_key.find('"')? + 1;
+    let remainder = &after_key[value_start..];
+    let value_end = remainder.find('"')?;
+    Some(remainder[..value_end].to_string())
+}
+
+fn json_number_value(json_line: &str, key: &str) -> Option<String> {
+    let needle = format!("\"{key}\":");
+    let start = json_line.find(&needle)? + needle.len();
+    let after_key = json_line[start..].trim_start();
+    let value = after_key
+        .chars()
+        .take_while(|character| character.is_ascii_digit() || *character == '.')
+        .collect::<String>();
+    if value.is_empty() {
+        None
+    } else {
+        Some(value)
+    }
+}
+
+fn json_array_values(json_line: &str, key: &str) -> Vec<String> {
+    let needle = format!("\"{key}\":");
+    let Some(start) = json_line.find(&needle) else {
+        return Vec::new();
+    };
+    let after_key = &json_line[start + needle.len()..];
+    let Some(open) = after_key.find('[') else {
+        return Vec::new();
+    };
+    let Some(close) = after_key[open..].find(']') else {
+        return Vec::new();
+    };
+    let array_body = &after_key[open + 1..open + close];
+    array_body
+        .split('"')
+        .enumerate()
+        .filter_map(|(index, segment)| {
+            if index % 2 == 1 && !segment.trim().is_empty() {
+                Some(segment.to_string())
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
+fn list_or_none(values: &[String]) -> String {
+    if values.is_empty() {
+        "none found".to_string()
+    } else {
+        values.join("; ")
+    }
 }
 
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
