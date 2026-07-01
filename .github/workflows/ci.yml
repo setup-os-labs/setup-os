@@ -7,8 +7,12 @@ on:
       - master
       - main
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  checks:
+  python:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,13 +22,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: "npm"
-          cache-dependency-path: apps/desktop/package-lock.json
 
       - name: Check repository shape
         run: |
@@ -41,21 +38,57 @@ jobs:
             echo "No tests yet."
           fi
 
-      - name: Install desktop dependencies
+  desktop-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - name: Install dependencies
         working-directory: apps/desktop
         run: npm ci
 
-      - name: Typecheck desktop
+      - name: Typecheck
         working-directory: apps/desktop
         run: npm run typecheck
 
-      - name: Build desktop frontend
+      - name: Build frontend
         working-directory: apps/desktop
         run: npm run build
 
-      - name: Audit desktop dependencies
+      - name: Audit dependencies
         working-directory: apps/desktop
         run: npm audit --audit-level=moderate
+
+  desktop-native:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri -> target
+          key: tauri-native
+
+      - name: Install desktop dependencies
+        working-directory: apps/desktop
+        run: npm ci
 
       - name: Install Tauri Linux dependencies
         run: |
@@ -74,3 +107,17 @@ jobs:
       - name: Build desktop native shell
         working-directory: apps/desktop
         run: npm run tauri -- build --no-bundle --ci
+
+  checks:
+    runs-on: ubuntu-latest
+    needs:
+      - python
+      - desktop-frontend
+      - desktop-native
+    if: always()
+    steps:
+      - name: Verify required jobs
+        run: |
+          test "${{ needs.python.result }}" = "success"
+          test "${{ needs.desktop-frontend.result }}" = "success"
+          test "${{ needs.desktop-native.result }}" = "success"
