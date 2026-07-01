@@ -35,9 +35,11 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "data" / "allocation_targets.csv").exists())
             self.assertTrue((output / "data" / "transactions.csv").exists())
             self.assertTrue((output / "data" / "cash.csv").exists())
+            self.assertTrue((output / "data" / "watchlist.csv").exists())
             self.assertTrue((output / "import_portfolio_snapshot.py").exists())
             self.assertTrue((output / "import_portfolio_transactions.py").exists())
             self.assertTrue((output / "import_portfolio_cash.py").exists())
+            self.assertTrue((output / "import_portfolio_watchlist.py").exists())
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "report.py").exists())
@@ -68,6 +70,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("VOO is", report_text)
             self.assertIn("## Cash", report_text)
             self.assertIn("Cash value:", report_text)
+            self.assertIn("## Watchlist", report_text)
             self.assertTrue((output / ".setup_os" / "notifications.jsonl").exists())
             self.assertIn("NOTIFY[info]:", report.stdout)
             self.assertIn("NOTIFY[warning]:", report.stdout)
@@ -203,6 +206,49 @@ class BlueprintTests(unittest.TestCase):
             self.assertEqual(cash_report.returncode, 0)
             self.assertIn("retirement: USD 1,250.00", cash_report_text)
             self.assertIn("Cash value: $2,000.00", cash_report_text)
+
+            import_watchlist = subprocess.run(
+                [
+                    sys.executable,
+                    "import_portfolio_watchlist.py",
+                    str(Path.cwd() / "examples" / "portfolio_watchlist.csv"),
+                    "--source",
+                    "conversation-draft",
+                ],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(import_watchlist.returncode, 0)
+            self.assertIn("No broker credentials were stored.", import_watchlist.stdout)
+
+            watchlist_manifest_path = output / "data" / "watchlist_import_manifest.jsonl"
+            self.assertTrue(watchlist_manifest_path.exists())
+            watchlist_manifest = [
+                json.loads(line)
+                for line in watchlist_manifest_path.read_text(
+                    encoding="utf-8"
+                ).splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(watchlist_manifest[0]["source_type"], "conversation-draft")
+            self.assertFalse(watchlist_manifest[0]["credentials_stored"])
+            self.assertEqual(watchlist_manifest[0]["mode"], "read_only_watchlist")
+
+            watchlist_report = subprocess.run(
+                [sys.executable, "report.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            watchlist_report_text = (
+                output / "reports" / "daily_report.md"
+            ).read_text(encoding="utf-8")
+            self.assertEqual(watchlist_report.returncode, 0)
+            self.assertIn("NVDA", watchlist_report_text)
+            self.assertIn("Dividend quality candidate", watchlist_report_text)
 
             import_result = subprocess.run(
                 [

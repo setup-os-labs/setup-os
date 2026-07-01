@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Generated Portfolio Manager read-only watchlist CSV importer and watchlist report section.
 - Generated Portfolio Manager read-only cash CSV importer and cash-aware total portfolio value reporting.
 - Generated Portfolio Manager read-only transaction CSV importer and recent-activity report section.
 - Generated Portfolio Manager allocation drift warnings against local target weights.
