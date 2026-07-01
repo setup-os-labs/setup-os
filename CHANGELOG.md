@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- Generated-agent `health.py` runtime checks for required files, config policy, scheduler folder, reports folder, and notification inbox validity.
 - CI checks for the desktop frontend package, including npm install, TypeScript, production build, and dependency audit.
 - Tauri-ready desktop shell scaffold with React/TypeScript launcher UI and a Python CLI command contract.
 - Portfolio Management OS building-block research with ranked stack options, rejected alternatives, and plug-and-play architecture guidance.
