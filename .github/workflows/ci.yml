@@ -68,7 +68,15 @@ jobs:
         run: npm audit --audit-level=moderate
 
   desktop-native:
-    runs-on: ubuntu-latest
+    name: desktop-native (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -84,13 +92,14 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: apps/desktop/src-tauri -> target
-          key: tauri-native
+          key: tauri-native-${{ matrix.os }}
 
       - name: Install desktop dependencies
         working-directory: apps/desktop
         run: npm ci
 
       - name: Install Tauri Linux dependencies
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
