@@ -15,6 +15,7 @@ import {
   checkPortfolioHealth,
   createPortfolioExample,
   getSetupOsHelp,
+  importPortfolioConversationExample,
   runPortfolioReport,
 } from "./lib/setupOs";
 import "./styles.css";
@@ -100,6 +101,20 @@ export function App() {
     }
   }
 
+  async function importPortfolioConversation() {
+    setActionStatus("Importing conversation");
+    setCliOutput("Importing examples/portfolio_update.md into raw Portfolio memory...");
+    try {
+      const output = await importPortfolioConversationExample();
+      setCliOutput(output);
+      setActionStatus("Conversation imported");
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   return (
     <main className="shell">
       <aside className="sidebar">
@@ -151,6 +166,9 @@ export function App() {
               <h3>Generated systems</h3>
             </div>
             <div className="button-row">
+              <button className="secondary" type="button" onClick={importPortfolioConversation}>
+                <FolderInput size={17} /> Import conversation
+              </button>
               <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
                 <Stethoscope size={17} /> Check health
               </button>
