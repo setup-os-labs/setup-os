@@ -164,6 +164,8 @@ setup-os/
 
 See [ADR 0001](docs/adr/0001-open-core-monorepo.md) for the eventual repo split policy.
 
+Docs stay repository-native Markdown through MVP. See [ADR 0005](docs/adr/0005-docs-site-timing.md) for the docs-site timing decision.
+
 ## Development Workflow
 
 Use short-lived branches and PRs for every meaningful change.

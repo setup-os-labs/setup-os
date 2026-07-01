@@ -8,6 +8,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- ADR 0005 documenting that repository-native Markdown remains canonical through MVP before adding a docs site.
 - Optional disabled-by-default ntfy notification adapter for core notifications and generated agents.
 - Generated Portfolio Manager daily report concentration warnings with local warning notifications.
 - Generated-agent `extract_memory.py` command that turns raw conversation imports into review-only structured memory drafts.

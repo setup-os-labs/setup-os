@@ -10,6 +10,7 @@ Setup OS keeps architecture decisions in this folder so product direction does n
 | [0002: v0 Portfolio Agent](0002-v0-portfolio-agent.md) | Accepted | Make the first proof vertical a local, alert-only Portfolio Manager Agent. |
 | [0003: Human Approval First](0003-human-approval-first.md) | Accepted | Keep generated system changes reviewable and require explicit approval for risky actions. |
 | [0004: Cross-Platform Desktop App Stack](0004-desktop-app-stack.md) | Accepted | Use Python for the engine and Tauri v2, React, and TypeScript for the desktop shell. |
+| [0005: Docs Site Timing](0005-docs-site-timing.md) | Accepted | Keep repository-native Markdown as canonical docs through MVP and add a docs site only when it reduces contributor or launch friction. |
 
 ## Convention
 
