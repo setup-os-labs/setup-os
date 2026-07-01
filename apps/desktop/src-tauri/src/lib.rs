@@ -219,6 +219,33 @@ fn setup_os_portfolio_status(agent_dir: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+fn setup_os_read_portfolio_notifications(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let inbox_path = agent_dir.join(".setup_os").join("notifications.jsonl");
+    if !inbox_path.exists() {
+        return Ok(format!(
+            "No Portfolio notifications yet.\nExpected inbox: {}",
+            inbox_path.display()
+        ));
+    }
+
+    let inbox = fs::read_to_string(&inbox_path)
+        .map_err(|error| format!("failed to read {}: {error}", inbox_path.display()))?;
+    if inbox.trim().is_empty() {
+        return Ok(format!(
+            "Portfolio notification inbox is empty.\nInbox: {}",
+            inbox_path.display()
+        ));
+    }
+
+    Ok(format!(
+        "Portfolio notification inbox\n{}\n\n{}",
+        inbox_path.display(),
+        inbox
+    ))
+}
+
+#[tauri::command]
 fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String> {
     let mut transcript = Vec::new();
 
@@ -277,6 +304,11 @@ fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String>
         &mut transcript,
         "Run daily report",
         setup_os_run_portfolio_report(agent_dir.clone()),
+    )?;
+    append_demo_step(
+        &mut transcript,
+        "Read notification inbox",
+        setup_os_read_portfolio_notifications(agent_dir.clone()),
     )?;
     append_demo_step(&mut transcript, "Refresh status", setup_os_portfolio_status(agent_dir))?;
 
@@ -438,6 +470,7 @@ pub fn run() {
             setup_os_import_portfolio_market_data,
             setup_os_extract_portfolio_memory,
             setup_os_portfolio_status,
+            setup_os_read_portfolio_notifications,
             setup_os_run_portfolio_demo_flow
         ])
         .run(tauri::generate_context!())

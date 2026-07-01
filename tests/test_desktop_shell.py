@@ -78,6 +78,7 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("setup_os_import_portfolio_market_data", lib_rs)
         self.assertIn("setup_os_extract_portfolio_memory", lib_rs)
         self.assertIn("setup_os_portfolio_status", lib_rs)
+        self.assertIn("setup_os_read_portfolio_notifications", lib_rs)
         self.assertIn("setup_os_run_portfolio_demo_flow", lib_rs)
         self.assertIn("agent_dir: String", lib_rs)
         self.assertIn("seed_conversation_path: String", lib_rs)
@@ -103,6 +104,8 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("conversation path is required", lib_rs)
         self.assertIn('"reports"', lib_rs)
         self.assertIn('"daily_report.md"', lib_rs)
+        self.assertIn('"notifications.jsonl"', lib_rs)
+        self.assertIn("Portfolio notification inbox", lib_rs)
         self.assertIn("Portfolio Management OS status", lib_rs)
         self.assertIn("Create Portfolio Management OS", lib_rs)
         self.assertIn("Run daily report", lib_rs)
@@ -125,9 +128,12 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn('"examples/portfolio_snapshot.csv"', app)
         self.assertIn("createPortfolioExample(portfolioOutputPath, seedConversationPath)", app)
         self.assertIn("runPortfolioDemoFlow(portfolioOutputPath)", app)
+        self.assertIn("readPortfolioNotifications(portfolioOutputPath)", app)
+        self.assertIn("Read inbox", app)
         self.assertIn("agentDir: string", setup_os)
         self.assertIn("seedConversationPath: string", setup_os)
         self.assertIn('"setup_os_create_portfolio_example", { agentDir, seedConversationPath }', setup_os)
+        self.assertIn('"setup_os_read_portfolio_notifications", { agentDir }', setup_os)
 
         result = subprocess.run(
             [sys.executable, "-m", "setup_os.cli", "--help"],

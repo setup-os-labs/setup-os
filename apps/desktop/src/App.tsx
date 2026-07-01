@@ -23,6 +23,7 @@ import {
   importPortfolioMarketData,
   importPortfolioTransactions,
   importPortfolioWatchlist,
+  readPortfolioNotifications,
   runPortfolioDemoFlow,
   runPortfolioReport,
 } from "./lib/setupOs";
@@ -242,6 +243,18 @@ export function App() {
     }
   }
 
+  async function readPortfolioInbox() {
+    setActionStatus("Reading inbox");
+    try {
+      const output = await readPortfolioNotifications(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Inbox loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function runFullPortfolioFlow() {
     setActionStatus("Running full flow");
     setCliOutput("Running the full local Portfolio Management OS flow...");
@@ -312,6 +325,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
                 <RefreshCcw size={17} /> Refresh status
+              </button>
+              <button className="secondary" type="button" onClick={readPortfolioInbox}>
+                <Bell size={17} /> Read inbox
               </button>
               <label className="path-field">
                 <span>Output</span>
