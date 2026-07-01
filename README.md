@@ -84,6 +84,8 @@ python -m setup_os.cli evolve examples/portfolio_update.md
 
 See [docs/roadmap.md](docs/roadmap.md) and [TASKS.md](TASKS.md).
 
+For conversation structure and vertical planning templates, see [docs/conversation-planning-guide.md](docs/conversation-planning-guide.md) and [templates/conversation-guides/](templates/conversation-guides/).
+
 ## Repository Layout
 
 The repo is intentionally a monorepo through MVP. Use it for the actual system while the architecture is still evolving; split repos only when a folder becomes a product, API, or community surface of its own.
