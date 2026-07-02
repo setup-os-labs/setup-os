@@ -98,7 +98,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-080 | done | Codex | `codex/desktop-runtime-node-log` | Add desktop runtime-node log review | Desktop shell can read recent generated `.setup_os/runtime_node.jsonl` cycles from the selected workspace |
 | SO-081 | done | Codex | `codex/desktop-portfolio-insights` | Add desktop Portfolio insight review | Desktop shell can extract generated report holdings, alerts, transactions, cash, watchlist, market snapshot, and performance sections |
 | SO-082 | done | Codex | `codex/desktop-release-readiness` | Add desktop release readiness check | Desktop shell can report packaging workflow, Tauri config, icons, CI, CLI, and release-note readiness before public release |
-| SO-083 | review | Codex | `codex/python-sidecar-contract` | Add Python sidecar packaging contract | Docs and desktop release readiness checks define the future bundled Python sidecar layout, resolver order, and release gates |
+| SO-083 | done | Codex | `codex/python-sidecar-contract` | Add Python sidecar packaging contract | Docs and desktop release readiness checks define the future bundled Python sidecar layout, resolver order, and release gates |
+| SO-084 | review | Codex | `codex/python-sidecar-resolver` | Add desktop Python sidecar resolver | Desktop commands resolve `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through one command path |
 
 ## Backlog Rules
 
