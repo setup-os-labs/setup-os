@@ -30,6 +30,7 @@ import {
   readRuntimeNodeLog,
   resetPortfolioWorkspace,
   reviewPortfolioMemoryDrafts,
+  reviewPortfolioInsights,
   reviewPortfolioReportSections,
   runPortfolioDemoFlow,
   runPortfolioReport,
@@ -304,6 +305,22 @@ export function App() {
       setCliOutput(output);
       setActionStatus("Healthy");
       setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function reviewPortfolioDashboardInsights() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Reviewing insights");
+    try {
+      const output = await reviewPortfolioInsights(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Insights loaded");
     } catch (error) {
       setActionStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
@@ -618,6 +635,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={reviewPortfolioReport}>
                 <FileText size={17} /> Review report
+              </button>
+              <button className="secondary" type="button" onClick={reviewPortfolioDashboardInsights}>
+                <FileText size={17} /> Review insights
               </button>
             </div>
           </div>
