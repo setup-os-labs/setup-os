@@ -22,6 +22,7 @@ class DesktopShellTests(unittest.TestCase):
             "src-tauri/Cargo.toml",
             "src-tauri/icons/icon.png",
             "src-tauri/icons/icon.ico",
+            "src-tauri/sidecar/README.md",
             "src-tauri/tauri.conf.json",
             "src-tauri/src/lib.rs",
         ]
@@ -106,6 +107,8 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Future release target: bundled Python sidecar", lib_rs)
         self.assertIn("Setup OS desktop release readiness", lib_rs)
         self.assertIn("Manual desktop release workflow", lib_rs)
+        self.assertIn("Python sidecar placeholder", lib_rs)
+        self.assertIn("Python sidecar packaging notes", lib_rs)
         self.assertIn("Still required before public release", lib_rs)
         self.assertIn('"setup_os.cli"', lib_rs)
         self.assertIn('"--help"', lib_rs)
@@ -215,6 +218,11 @@ class DesktopShellTests(unittest.TestCase):
         styles = (DESKTOP / "src" / "styles.css").read_text(encoding="utf-8")
         self.assertIn(".dashboard-grid", styles)
         self.assertIn(".dashboard-card", styles)
+
+        sidecar_notes = (ROOT / "docs" / "python-sidecar-packaging.md").read_text(encoding="utf-8")
+        self.assertIn("Resolver Order", sidecar_notes)
+        self.assertIn("SETUP_OS_PYTHON", sidecar_notes)
+        self.assertIn("Bundled sidecar Python", sidecar_notes)
 
         result = subprocess.run(
             [sys.executable, "-m", "setup_os.cli", "--help"],

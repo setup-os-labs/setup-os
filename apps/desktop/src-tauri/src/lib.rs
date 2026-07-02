@@ -107,6 +107,18 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
             desktop_dir.join("src-tauri").join("Cargo.toml").exists(),
         ),
         (
+            "Python sidecar placeholder",
+            desktop_dir
+                .join("src-tauri")
+                .join("sidecar")
+                .join("README.md")
+                .exists(),
+        ),
+        (
+            "Python sidecar packaging notes",
+            repo_dir.join("docs").join("python-sidecar-packaging.md").exists(),
+        ),
+        (
             "Desktop icon PNG",
             desktop_dir
                 .join("src-tauri")
