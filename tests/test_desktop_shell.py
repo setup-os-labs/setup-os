@@ -115,6 +115,9 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Python sidecar placeholder", lib_rs)
         self.assertIn("Python sidecar packaging notes", lib_rs)
         self.assertIn("Signing and notarization plan", lib_rs)
+        self.assertIn("Packaged app smoke tests", lib_rs)
+        self.assertIn("Sidecar release workflow scaffold", lib_rs)
+        self.assertIn("Release contract CI check", lib_rs)
         self.assertIn("Still required before public release", lib_rs)
         self.assertIn('"setup_os.cli"', lib_rs)
         self.assertIn('"--help"', lib_rs)
@@ -234,6 +237,16 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Windows Release Requirements", signing_notes)
         self.assertIn("macOS Release Requirements", signing_notes)
         self.assertIn("Do not add real secrets to the repo", signing_notes)
+
+        smoke_tests = (ROOT / "docs" / "packaged-app-smoke-tests.md").read_text(encoding="utf-8")
+        self.assertIn("Windows", smoke_tests)
+        self.assertIn("macOS", smoke_tests)
+        self.assertIn("Run **Release readiness**", smoke_tests)
+
+        release_contract = (ROOT / "scripts" / "check_desktop_release_contract.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Desktop release contract OK", release_contract)
 
         result = subprocess.run(
             [sys.executable, "-m", "setup_os.cli", "--help"],
