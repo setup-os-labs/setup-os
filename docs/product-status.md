@@ -4,6 +4,8 @@ Current checkpoint: Setup OS has crossed the 75% local desktop MVP milestone, bu
 
 For a visual view of local utility, Portfolio Management OS, and public release tracks, see [Development and release timeline](development-release-timeline.md).
 
+For the practical Windows-first path to using Setup OS as your own local utility, see [Personal local setup guide](personal-local-setup.md).
+
 ## Completion Estimate
 
 - Setup OS desktop MVP: about 95%.
@@ -36,6 +38,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - CI runs a desktop release contract smoke check for sidecar, signing, release workflow, and readiness docs.
 - CI runs a local utility smoke test that generates Portfolio OS, runs health/report/runtime node, imports a conversation, and extracts memory drafts.
 - Desktop can run the local utility smoke test from the launcher to validate the same local loop interactively.
+- Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Sidecar release workflow scaffold defines how future release jobs should assemble Python without committing runtime binaries.
 - Development and release timeline visualizes the local-first utility path, Portfolio OS path, and public commercial release path.
