@@ -125,12 +125,13 @@ Setup OS is CLI-first for the engine, but the product should become desktop-firs
 - Desktop shell: Tauri v2 + React + TypeScript.
 - Python process mode: CLI subprocess in development, bundled Python sidecar for desktop releases; FastAPI only if the desktop shell needs a long-running local service.
 - Local data: files and JSONL first; SQLite when the desktop needs indexed local state.
+- Always-on runtime: personal node first, such as a Mac mini, NAS, mini PC, spare laptop, or private VPS, for schedulers, watchers, and phone notification dispatch.
 - First desktop surface: richer vertical agent launcher and dashboard shell.
 - First generated vertical: [Portfolio Management OS](docs/portfolio-management-os.md).
 - Current checkpoint: [Product status](docs/product-status.md).
 - Unsigned release artifact testing: [Desktop release testing](docs/desktop-release-testing.md).
 
-See [ADR 0004](docs/adr/0004-desktop-app-stack.md) for the desktop stack decision.
+See [ADR 0004](docs/adr/0004-desktop-app-stack.md) for the desktop stack decision and [ADR 0006](docs/adr/0006-personal-runtime-node.md) for the personal runtime node decision.
 
 ## Repository Layout
 

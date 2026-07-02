@@ -21,6 +21,23 @@ Setup OS v0 includes console notifications, a local JSONL notification inbox, an
 
 Full Notification OS is out of scope until the generated-agent pipeline is stable.
 
+## Always-On Runtime
+
+Phone notifications require something to be awake when the desktop app is closed.
+
+The first target is a personal runtime node:
+
+- Mac mini
+- home server
+- NAS
+- mini PC
+- spare laptop
+- private VPS
+
+Generated agents should be able to emit notification events locally. The runtime node should run scheduled jobs and dispatch events through local inbox, ntfy, Apprise, or a future mobile push path.
+
+This is personal-scale reliability before web-scale microservices. See [ADR 0006](adr/0006-personal-runtime-node.md).
+
 ## Target Flow
 
 ```text
