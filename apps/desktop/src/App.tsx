@@ -16,6 +16,7 @@ import {
   checkPortfolioHealth,
   createPortfolioExample,
   extractPortfolioMemory,
+  getPythonRuntimeStatus,
   getSetupOsHelp,
   getPortfolioSummary,
   getPortfolioStatus,
@@ -142,6 +143,21 @@ export function App() {
       setCliStatus("Ready");
     } catch (error) {
       setCliStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function checkPythonRuntime() {
+    setCliStatus("Checking");
+    setActionStatus("Checking runtime");
+    try {
+      const output = await getPythonRuntimeStatus();
+      setCliOutput(output);
+      setCliStatus(output.includes("MISSING") || output.includes("failed") ? "Needs attention" : "Ready");
+      setActionStatus("Runtime checked");
+    } catch (error) {
+      setCliStatus("Needs attention");
+      setActionStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
     }
   }
@@ -451,6 +467,9 @@ export function App() {
           </div>
           <button className="primary" type="button" onClick={checkCli}>
             <RefreshCcw size={17} /> Check engine
+          </button>
+          <button className="secondary" type="button" onClick={checkPythonRuntime}>
+            <Stethoscope size={17} /> Runtime details
           </button>
         </header>
 

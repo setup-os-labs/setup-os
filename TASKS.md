@@ -90,7 +90,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-072 | done | Codex | `codex/desktop-readable-memory-drafts` | Add readable desktop memory draft review | Desktop shell formats structured Portfolio memory drafts into source, status, confidence, strategy, risk, and watchlist review sections |
 | SO-073 | done | Codex | `codex/desktop-report-sections` | Add desktop Portfolio report section review | Desktop shell can display generated Portfolio daily reports grouped by Markdown section headings |
 | SO-074 | done | Codex | `codex/desktop-release-test-notes` | Add desktop release testing notes | Docs explain how to run the manual release workflow and validate unsigned Linux, Windows, and macOS artifacts |
-| SO-075 | review | Codex | `codex/personal-runtime-node-adr` | Add personal runtime node architecture decision | ADR and docs define the always-on personal node for schedulers, generated agents, and phone notification dispatch |
+| SO-075 | done | Codex | `codex/personal-runtime-node-adr` | Add personal runtime node architecture decision | ADR and docs define the always-on personal node for schedulers, generated agents, and phone notification dispatch |
+| SO-076 | review | Codex | `codex/desktop-python-runtime-diagnostics` | Add desktop Python runtime diagnostics | Desktop shell can report configured Python executable, version, repo root, CLI import status, and sidecar next-step guidance |
 
 ## Backlog Rules
 
