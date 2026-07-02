@@ -170,6 +170,7 @@ button:disabled {
 }
 
 .status-tile,
+.dashboard-card,
 .agent-card,
 .panel {
   border: 1px solid #d8ded6;
@@ -190,6 +191,37 @@ button:disabled {
 
 .content-band {
   margin-bottom: 24px;
+}
+
+.dashboard-band {
+  margin-bottom: 28px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(4, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.dashboard-card {
+  min-height: 88px;
+  padding: 16px;
+}
+
+.dashboard-card p {
+  margin: 0 0 8px;
+  color: #66756d;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.dashboard-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  line-height: 1.35;
 }
 
 .agent-list {
@@ -345,6 +377,10 @@ pre {
   .status-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 620px) {
@@ -366,6 +402,7 @@ pre {
 
   nav,
   .status-grid,
+  .dashboard-grid,
   .data-import-row {
     grid-template-columns: 1fr;
   }
