@@ -10,6 +10,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 - Desktop release workflow now uses explicit Tauri bundle icons so Linux AppImage and Windows MSI packaging can find required icon assets.
 - Desktop release readiness check for packaging workflow, Tauri config, icons, CI, CLI, and release testing notes.
+- Python sidecar packaging contract for future desktop releases that run without requiring local Python.
 - Desktop ICO asset now has matching ICO directory and embedded PNG dimensions for macOS icon conversion during release packaging.
 - Manual desktop release workflow for unsigned Linux, Windows, and macOS Tauri bundle artifacts.
 - Verified manual desktop release workflow uploads Linux, Windows, and macOS unsigned bundle artifacts from `main`.
