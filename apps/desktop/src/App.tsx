@@ -28,6 +28,7 @@ import {
   readPortfolioNotifications,
   resetPortfolioWorkspace,
   reviewPortfolioMemoryDrafts,
+  reviewPortfolioReportSections,
   runPortfolioDemoFlow,
   runPortfolioReport,
 } from "./lib/setupOs";
@@ -220,6 +221,22 @@ export function App() {
       setCliOutput(output);
       setActionStatus("Report ready");
       setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function reviewPortfolioReport() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Reviewing report");
+    try {
+      const output = await reviewPortfolioReportSections(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Report sections loaded");
     } catch (error) {
       setActionStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
@@ -507,6 +524,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={runPortfolioAgentReport}>
                 <FileText size={17} /> Run report
+              </button>
+              <button className="secondary" type="button" onClick={reviewPortfolioReport}>
+                <FileText size={17} /> Review report
               </button>
             </div>
           </div>

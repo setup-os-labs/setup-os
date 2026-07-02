@@ -20,6 +20,10 @@ export async function runPortfolioReport(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_run_portfolio_report", { agentDir });
 }
 
+export async function reviewPortfolioReportSections(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_review_portfolio_report_sections", { agentDir });
+}
+
 export async function checkPortfolioHealth(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_check_portfolio_health", { agentDir });
 }

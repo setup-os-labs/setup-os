@@ -87,7 +87,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-069 | done | Codex | `codex/desktop-memory-draft-review` | Add desktop memory draft review | Desktop shell can display generated Portfolio structured memory draft JSONL files with next-step guidance when missing |
 | SO-070 | done | Codex | `codex/desktop-portfolio-summary` | Add desktop Portfolio summary | Desktop shell can summarize selected Portfolio workspace state, latest report preview, notifications, and structured memory drafts |
 | SO-071 | done | Codex | `codex/desktop-reset-recreate-flow` | Add desktop Portfolio reset/recreate flow | Desktop shell can archive the selected generated Portfolio workspace and recreate it from the selected seed conversation |
-| SO-072 | review | Codex | `codex/desktop-readable-memory-drafts` | Add readable desktop memory draft review | Desktop shell formats structured Portfolio memory drafts into source, status, confidence, strategy, risk, and watchlist review sections |
+| SO-072 | done | Codex | `codex/desktop-readable-memory-drafts` | Add readable desktop memory draft review | Desktop shell formats structured Portfolio memory drafts into source, status, confidence, strategy, risk, and watchlist review sections |
+| SO-073 | review | Codex | `codex/desktop-report-sections` | Add desktop Portfolio report section review | Desktop shell can display generated Portfolio daily reports grouped by Markdown section headings |
 
 ## Backlog Rules
 
