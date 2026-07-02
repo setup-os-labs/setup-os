@@ -16,6 +16,7 @@ import {
   checkPortfolioHealth,
   createPortfolioExample,
   extractPortfolioMemory,
+  getDesktopReleaseReadiness,
   getPythonRuntimeStatus,
   getSetupOsHelp,
   getPortfolioSummary,
@@ -210,6 +211,18 @@ export function App() {
       setActionStatus("Readiness checked");
     } catch (error) {
       setCliStatus("Needs attention");
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function checkReleaseReadiness() {
+    setActionStatus("Checking release readiness");
+    try {
+      const output = await getDesktopReleaseReadiness();
+      setCliOutput(output);
+      setActionStatus("Release readiness checked");
+    } catch (error) {
       setActionStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
     }
@@ -537,6 +550,9 @@ export function App() {
           </button>
           <button className="secondary" type="button" onClick={checkPythonRuntime}>
             <Stethoscope size={17} /> Runtime details
+          </button>
+          <button className="secondary" type="button" onClick={checkReleaseReadiness}>
+            <ShieldCheck size={17} /> Release readiness
           </button>
         </header>
 
