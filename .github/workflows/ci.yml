@@ -41,6 +41,9 @@ jobs:
       - name: Check desktop release contract
         run: python scripts/check_desktop_release_contract.py
 
+      - name: Smoke test local utility path
+        run: python scripts/smoke_local_utility.py
+
   desktop-frontend:
     runs-on: ubuntu-latest
     steps:

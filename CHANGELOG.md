@@ -14,6 +14,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop Python command runner now resolves `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through a single resolver.
 - Desktop signing and notarization plan for future Windows and macOS public release gates.
 - Desktop release contract CI smoke check for sidecar, signing, release workflow, and packaged-app readiness docs.
+- Local utility smoke test for generating Portfolio OS, running health/report/runtime node, importing a conversation, and extracting memory drafts.
 - Packaged app smoke-test notes for Windows and macOS verification.
 - Sidecar release workflow scaffold for future bundled Python artifacts without committing runtime binaries.
 - Development and release timeline visualizing the local utility, Portfolio Management OS, and public commercial release tracks.

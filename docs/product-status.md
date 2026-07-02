@@ -34,6 +34,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Desktop Python runner now resolves `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through one command path.
 - Signing and notarization plan defines Windows and macOS public-release gates without committing secrets.
 - CI runs a desktop release contract smoke check for sidecar, signing, release workflow, and readiness docs.
+- CI runs a local utility smoke test that generates Portfolio OS, runs health/report/runtime node, imports a conversation, and extracts memory drafts.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Sidecar release workflow scaffold defines how future release jobs should assemble Python without committing runtime binaries.
 - Development and release timeline visualizes the local-first utility path, Portfolio OS path, and public commercial release path.
