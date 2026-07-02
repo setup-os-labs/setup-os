@@ -33,6 +33,7 @@ import {
   reviewPortfolioMemoryDrafts,
   reviewPortfolioInsights,
   reviewPortfolioReportSections,
+  runLocalUtilitySmokeTest,
   runPortfolioDemoFlow,
   runPortfolioReport,
 } from "./lib/setupOs";
@@ -224,6 +225,21 @@ export function App() {
       setActionStatus("Release readiness checked");
     } catch (error) {
       setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function runLocalSmokeTest() {
+    setActionStatus("Running local smoke test");
+    setCliOutput("Running the local Setup OS utility smoke test...");
+    try {
+      const output = await runLocalUtilitySmokeTest();
+      setCliOutput(output);
+      setActionStatus("Smoke test passed");
+      setCliStatus("Ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
     }
   }
@@ -553,6 +569,9 @@ export function App() {
           </button>
           <button className="secondary" type="button" onClick={checkReleaseReadiness}>
             <ShieldCheck size={17} /> Release readiness
+          </button>
+          <button className="secondary" type="button" onClick={runLocalSmokeTest}>
+            <CheckCircle2 size={17} /> Local smoke test
           </button>
         </header>
 
