@@ -1,0 +1,65 @@
+# Desktop Release Testing
+
+Setup OS desktop release artifacts are currently unsigned test builds. They are intended for owner/developer validation before installer signing, auto-updates, or bundled Python sidecar work.
+
+## Build Artifacts
+
+Use the manual GitHub Actions workflow:
+
+1. Open GitHub Actions.
+2. Select `Desktop Release Build`.
+3. Run the workflow from `main`.
+4. Download the uploaded artifacts for the platform you want to test.
+
+The workflow builds Linux, Windows, and macOS Tauri bundles from the same desktop shell source.
+
+## Windows
+
+Expected artifact: unsigned MSI or Windows bundle output.
+
+Test checklist:
+
+- Install or extract the artifact on a Windows machine.
+- Launch Setup OS.
+- Run `Check engine`.
+- Set a Portfolio output path.
+- Run `Run demo flow`.
+- Run `Load summary`, `Review report`, `Review drafts`, and `Check health`.
+
+Current caveat: Windows may warn that the publisher is unknown until signing is added.
+
+## macOS
+
+Expected artifact: unsigned app bundle or DMG output.
+
+Test checklist:
+
+- Open the artifact on a macOS machine.
+- If Gatekeeper blocks it, use the system security prompt to allow the unsigned test app.
+- Launch Setup OS.
+- Run `Check engine`.
+- Run `Run demo flow`.
+- Run `Load summary`, `Review report`, `Review drafts`, and `Check health`.
+
+Current caveat: macOS notarization and signing are not configured yet.
+
+## Linux
+
+Expected artifact: AppImage or Linux bundle output.
+
+Test checklist:
+
+- Mark the AppImage executable if needed.
+- Launch Setup OS.
+- Run `Check engine`.
+- Run `Run demo flow`.
+- Run `Load summary`, `Review report`, `Review drafts`, and `Check health`.
+
+Current caveat: Linux desktop integration is still basic.
+
+## Known MVP Limitations
+
+- Python is not bundled as a sidecar yet; test machines need a working Python environment or future sidecar packaging.
+- Builds are unsigned.
+- Auto-update is not implemented.
+- Portfolio integrations are local-file only; Robinhood and live market data adapters are later work.
