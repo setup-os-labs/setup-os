@@ -92,7 +92,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-074 | done | Codex | `codex/desktop-release-test-notes` | Add desktop release testing notes | Docs explain how to run the manual release workflow and validate unsigned Linux, Windows, and macOS artifacts |
 | SO-075 | done | Codex | `codex/personal-runtime-node-adr` | Add personal runtime node architecture decision | ADR and docs define the always-on personal node for schedulers, generated agents, and phone notification dispatch |
 | SO-076 | done | Codex | `codex/desktop-python-runtime-diagnostics` | Add desktop Python runtime diagnostics | Desktop shell can report configured Python executable, version, repo root, CLI import status, and sidecar next-step guidance |
-| SO-077 | review | Codex | `codex/desktop-portfolio-dashboard-cards` | Add desktop Portfolio dashboard cards | Desktop shell summarizes selected workspace, health, latest report, notifications, and memory draft status as dashboard cards |
+| SO-077 | done | Codex | `codex/desktop-portfolio-dashboard-cards` | Add desktop Portfolio dashboard cards | Desktop shell summarizes selected workspace, health, latest report, notifications, and memory draft status as dashboard cards |
+| SO-078 | review | Codex | `codex/generated-runtime-node-scaffold` | Add generated runtime node scaffold | Generated agents include a one-shot `runtime_node.py` runner that logs health/report/inbox cycles for personal always-on nodes |
 
 ## Backlog Rules
 

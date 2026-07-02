@@ -47,6 +47,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
+            self.assertTrue((output / "runtime_node.py").exists())
             self.assertTrue((output / "memory" / "raw").is_dir())
             self.assertTrue((output / "evolution").is_dir())
             config = json.loads((output / "config.json").read_text(encoding="utf-8"))
@@ -81,6 +82,26 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("NOTIFY[info]:", report.stdout)
             self.assertIn("NOTIFY[warning]:", report.stdout)
             self.assertNotIn("NTFY[sent]", report.stdout)
+
+            runtime_node = subprocess.run(
+                [sys.executable, "runtime_node.py", "--skip-report"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(runtime_node.returncode, 0)
+            self.assertIn("Runtime node run complete.", runtime_node.stdout)
+            self.assertIn("OK: health", runtime_node.stdout)
+            runtime_log_path = output / ".setup_os" / "runtime_node.jsonl"
+            self.assertTrue(runtime_log_path.exists())
+            runtime_log = [
+                json.loads(line)
+                for line in runtime_log_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(runtime_log[0]["event"], "runtime_node_run_once")
+            self.assertEqual(runtime_log[0]["mode"], "personal_runtime_node")
 
             import_snapshot = subprocess.run(
                 [
