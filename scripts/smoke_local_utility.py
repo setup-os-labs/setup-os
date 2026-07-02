@@ -51,6 +51,7 @@ def main() -> int:
             "health.py",
             "report.py",
             "runtime_node.py",
+            "handoff.py",
             "import_conversation.py",
             "extract_memory.py",
             "data/holdings.csv",
@@ -73,18 +74,24 @@ def main() -> int:
             output,
         )
         run([sys.executable, "extract_memory.py"], output)
+        run([sys.executable, "handoff.py"], output)
 
         for relative_path in [
             "reports/daily_report.md",
             ".setup_os/runtime_node.jsonl",
             "memory/raw/import_manifest.jsonl",
             "memory/structured/extraction_drafts.jsonl",
+            "handoff.md",
         ]:
             require_file(output / relative_path)
 
         report = (output / "reports" / "daily_report.md").read_text(encoding="utf-8")
         if "## Holdings" not in report or "## Market Snapshot" not in report:
             raise AssertionError("generated report is missing expected Portfolio sections")
+
+        handoff = (output / "handoff.md").read_text(encoding="utf-8")
+        if "Local Utility Handoff" not in handoff or "Runtime cycles:" not in handoff:
+            raise AssertionError("local utility handoff is missing expected readiness details")
 
     print("Setup OS local utility smoke test OK")
     return 0

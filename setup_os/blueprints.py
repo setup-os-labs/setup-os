@@ -60,6 +60,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_verifier(output_dir)
     write_runtime_health(output_dir)
     write_runtime_node(output_dir)
+    write_local_handoff(output_dir)
     write_conversation_importer(output_dir)
     write_memory_extractor(output_dir)
 
@@ -87,6 +88,7 @@ REQUIRED_PATHS = [
     "report.py",
     "health.py",
     "runtime_node.py",
+    "handoff.py",
     ".setup_os",
     "memory/raw",
     "memory/structured",
@@ -137,6 +139,7 @@ REQUIRED_PATHS = [
     "report.py",
     "verify.py",
     "runtime_node.py",
+    "handoff.py",
     "memory/raw",
     "memory/structured",
     "memory/policy",
@@ -310,6 +313,106 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = build_parser().parse_args()
     return run_once(include_report=not args.skip_report)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
+
+
+def write_local_handoff(output_dir: Path) -> None:
+    _write(
+        output_dir / "handoff.py",
+        """from __future__ import annotations
+
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).parent
+HANDOFF_PATH = ROOT / "handoff.md"
+
+
+def exists_line(label: str, relative_path: str) -> str:
+    marker = "OK" if (ROOT / relative_path).exists() else "MISSING"
+    return f"- {marker}: {label} (`{relative_path}`)"
+
+
+def count_jsonl(relative_path: str) -> int:
+    path = ROOT / relative_path
+    if not path.exists():
+        return 0
+    return len([line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()])
+
+
+def latest_runtime_status() -> str:
+    path = ROOT / ".setup_os" / "runtime_node.jsonl"
+    if not path.exists():
+        return "Runtime node has not run yet."
+    lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if not lines:
+        return "Runtime node log is empty."
+    try:
+        latest = json.loads(lines[-1])
+    except json.JSONDecodeError:
+        return "Runtime node log has an unreadable latest entry."
+    failed = [
+        step.get("label", "unknown")
+        for step in latest.get("steps", [])
+        if step.get("exit_code") != 0
+    ]
+    if failed:
+        return f"Latest runtime node cycle needs review: {', '.join(failed)} failed."
+    return "Latest runtime node cycle passed health/report steps."
+
+
+def build_handoff() -> str:
+    lines = [
+        "# Local Utility Handoff",
+        "",
+        "This file summarizes the generated system state for a personal laptop, Mac mini, or other always-on runtime node.",
+        "",
+        "## Readiness",
+        "",
+        exists_line("Config", "config.json"),
+        exists_line("Health command", "health.py"),
+        exists_line("Report command", "report.py"),
+        exists_line("Runtime node command", "runtime_node.py"),
+        exists_line("Daily report", "reports/daily_report.md"),
+        exists_line("Notification inbox", ".setup_os/notifications.jsonl"),
+        exists_line("Runtime node log", ".setup_os/runtime_node.jsonl"),
+        exists_line("Raw memory import manifest", "memory/raw/import_manifest.jsonl"),
+        exists_line("Structured memory drafts", "memory/structured/extraction_drafts.jsonl"),
+        "",
+        "## Current Counts",
+        "",
+        f"- Notifications: {count_jsonl('.setup_os/notifications.jsonl')}",
+        f"- Runtime cycles: {count_jsonl('.setup_os/runtime_node.jsonl')}",
+        f"- Raw conversation imports: {count_jsonl('memory/raw/import_manifest.jsonl')}",
+        f"- Structured memory drafts: {count_jsonl('memory/structured/extraction_drafts.jsonl')}",
+        "",
+        "## Runtime Status",
+        "",
+        f"- {latest_runtime_status()}",
+        "",
+        "## Next Local Steps",
+        "",
+        "1. Run `python health.py` and fix any missing required files.",
+        "2. Run `python report.py` and review the daily report.",
+        "3. Import saved conversations with `python import_conversation.py path/to/export.md`.",
+        "4. Run `python extract_memory.py` and review structured drafts before promotion.",
+        "5. Run `python runtime_node.py --skip-report` before scheduling on an always-on machine.",
+        "6. Keep phone notifications approval-gated until alert volume feels useful.",
+        "",
+    ]
+    return "\\n".join(lines)
+
+
+def main() -> int:
+    HANDOFF_PATH.write_text(build_handoff(), encoding="utf-8")
+    print(f"Wrote {HANDOFF_PATH}")
+    return 0
 
 
 if __name__ == "__main__":
@@ -572,12 +675,14 @@ python extract_memory.py
 python report.py
 python health.py
 python runtime_node.py --skip-report
+python handoff.py
 ```
 
 Raw conversation imports are stored in `memory/raw` and do not mutate strategy.
 Structured memory drafts are written to `memory/structured` for review before promotion.
 ntfy push is available but disabled by default in `config.json`.
 Portfolio snapshots, transactions, cash balances, watchlists, and market data are local CSV imports only; no broker credentials are stored.
+`handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
 
 ## Safety
 
@@ -1471,11 +1576,13 @@ python extract_memory.py
 python report.py
 python health.py
 python runtime_node.py --skip-report
+python handoff.py
 ```
 
 Raw conversation imports are stored in `memory/raw` and do not mutate behavior.
 Structured memory drafts are written to `memory/structured` for review before promotion.
 ntfy push is available but disabled by default in `config.json`.
+`handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
 
 ## Safety
 
