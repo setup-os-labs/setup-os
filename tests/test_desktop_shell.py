@@ -149,6 +149,11 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("setup-os:portfolio-data-import-paths", app)
         self.assertIn("getPythonRuntimeStatus", app)
         self.assertIn("Runtime details", app)
+        self.assertIn("Portfolio dashboard", app)
+        self.assertIn("parsePortfolioDashboard", app)
+        self.assertIn("DashboardCard", app)
+        self.assertIn("Update dashboard", app)
+        self.assertIn("Memory drafts", app)
         self.assertIn('aria-label="Portfolio output path"', app)
         self.assertIn('aria-label="Seed conversation path"', app)
         self.assertIn('"generated/desktop-portfolio-os"', app)
@@ -182,6 +187,10 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn('"setup_os_create_portfolio_example", { agentDir, seedConversationPath }', setup_os)
         self.assertIn('"setup_os_reset_portfolio_workspace", { agentDir, seedConversationPath }', setup_os)
         self.assertIn('"setup_os_read_portfolio_notifications", { agentDir }', setup_os)
+
+        styles = (DESKTOP / "src" / "styles.css").read_text(encoding="utf-8")
+        self.assertIn(".dashboard-grid", styles)
+        self.assertIn(".dashboard-card", styles)
 
         result = subprocess.run(
             [sys.executable, "-m", "setup_os.cli", "--help"],

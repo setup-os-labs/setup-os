@@ -65,6 +65,14 @@ type DataImportPaths = {
   marketData: string;
 };
 
+type PortfolioDashboard = {
+  workspace: string;
+  health: string;
+  report: string;
+  notifications: string;
+  drafts: string;
+};
+
 const defaultDataImportPaths: DataImportPaths = {
   holdings: "examples/portfolio_snapshot.csv",
   transactions: "examples/portfolio_transactions.csv",
@@ -90,6 +98,23 @@ function readStoredDataImportPaths(): DataImportPaths {
   }
 }
 
+function parsePortfolioDashboard(output: string): PortfolioDashboard {
+  const valueAfter = (prefix: string, fallback: string) =>
+    output
+      .split("\n")
+      .find((line) => line.startsWith(prefix))
+      ?.slice(prefix.length)
+      .trim() || fallback;
+
+  return {
+    workspace: valueAfter("Workspace:", "Not loaded"),
+    health: valueAfter("- OK: Health command", valueAfter("- MISSING: Health command", "Unknown")),
+    report: valueAfter("- OK: Latest report", valueAfter("- MISSING: Latest report", "Unknown")),
+    notifications: valueAfter("- OK: Notifications", valueAfter("- MISSING: Notifications", "Unknown")),
+    drafts: valueAfter("- OK: Structured memory drafts", valueAfter("- MISSING: Structured memory drafts", "Unknown")),
+  };
+}
+
 export function App() {
   const [cliStatus, setCliStatus] = useState("Not checked");
   const [cliOutput, setCliOutput] = useState("");
@@ -104,6 +129,13 @@ export function App() {
     readStoredValue("setup-os:portfolio-conversation-path", "examples/portfolio_update.md"),
   );
   const [dataImportPaths, setDataImportPaths] = useState<DataImportPaths>(readStoredDataImportPaths);
+  const [portfolioDashboard, setPortfolioDashboard] = useState<PortfolioDashboard>({
+    workspace: "Not loaded",
+    health: "Unknown",
+    report: "Unknown",
+    notifications: "Unknown",
+    drafts: "Unknown",
+  });
 
   useEffect(() => {
     window.localStorage.setItem("setup-os:portfolio-output-path", portfolioOutputPath);
@@ -392,6 +424,7 @@ export function App() {
     try {
       const output = await getPortfolioSummary(portfolioOutputPath);
       setCliOutput(output);
+      setPortfolioDashboard(parsePortfolioDashboard(output));
       setActionStatus("Summary loaded");
     } catch (error) {
       setActionStatus("Needs attention");
@@ -478,6 +511,25 @@ export function App() {
           <StatusTile label="Memory mode" value="Raw first" icon={<FolderInput size={20} />} />
           <StatusTile label="Policy" value="Approval first" icon={<ShieldCheck size={20} />} />
           <StatusTile label="Release mode" value="Candidate diffs" icon={<FileText size={20} />} />
+        </section>
+
+        <section className="dashboard-band" aria-label="Portfolio dashboard">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Portfolio dashboard</p>
+              <h3>Selected workspace</h3>
+            </div>
+            <button className="secondary" type="button" onClick={loadPortfolioSummary}>
+              <RefreshCcw size={17} /> Update dashboard
+            </button>
+          </div>
+          <div className="dashboard-grid">
+            <DashboardCard label="Workspace" value={portfolioDashboard.workspace} />
+            <DashboardCard label="Health" value={portfolioDashboard.health} />
+            <DashboardCard label="Report" value={portfolioDashboard.report} />
+            <DashboardCard label="Notifications" value={portfolioDashboard.notifications} />
+            <DashboardCard label="Memory drafts" value={portfolioDashboard.drafts} />
+          </div>
         </section>
 
         <section id="agents" className="content-band">
@@ -634,6 +686,15 @@ export function App() {
         </section>
       </section>
     </main>
+  );
+}
+
+function DashboardCard({ label, value }: { label: string; value: string }) {
+  return (
+    <article className="dashboard-card">
+      <p>{label}</p>
+      <strong>{value}</strong>
+    </article>
   );
 }
 
