@@ -94,7 +94,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-076 | done | Codex | `codex/desktop-python-runtime-diagnostics` | Add desktop Python runtime diagnostics | Desktop shell can report configured Python executable, version, repo root, CLI import status, and sidecar next-step guidance |
 | SO-077 | done | Codex | `codex/desktop-portfolio-dashboard-cards` | Add desktop Portfolio dashboard cards | Desktop shell summarizes selected workspace, health, latest report, notifications, and memory draft status as dashboard cards |
 | SO-078 | done | Codex | `codex/generated-runtime-node-scaffold` | Add generated runtime node scaffold | Generated agents include a one-shot `runtime_node.py` runner that logs health/report/inbox cycles for personal always-on nodes |
-| SO-079 | review | Codex | `codex/runtime-node-scheduler-notes` | Add runtime node scheduler notes | Docs explain how to schedule generated `runtime_node.py` runs with macOS launchd, Windows Task Scheduler, and Linux cron |
+| SO-079 | done | Codex | `codex/runtime-node-scheduler-notes` | Add runtime node scheduler notes | Docs explain how to schedule generated `runtime_node.py` runs with macOS launchd, Windows Task Scheduler, and Linux cron |
+| SO-080 | review | Codex | `codex/desktop-runtime-node-log` | Add desktop runtime-node log review | Desktop shell can read recent generated `.setup_os/runtime_node.jsonl` cycles from the selected workspace |
 
 ## Backlog Rules
 

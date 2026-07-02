@@ -27,6 +27,7 @@ import {
   importPortfolioTransactions,
   importPortfolioWatchlist,
   readPortfolioNotifications,
+  readRuntimeNodeLog,
   resetPortfolioWorkspace,
   reviewPortfolioMemoryDrafts,
   reviewPortfolioReportSections,
@@ -448,6 +449,22 @@ export function App() {
     }
   }
 
+  async function readRuntimeLog() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Reading runtime log");
+    try {
+      const output = await readRuntimeNodeLog(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Runtime log loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function runFullPortfolioFlow() {
     if (!requirePortfolioOutput()) {
       return;
@@ -556,6 +573,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={readPortfolioInbox}>
                 <Bell size={17} /> Read inbox
+              </button>
+              <button className="secondary" type="button" onClick={readRuntimeLog}>
+                <FileText size={17} /> Read runtime log
               </button>
               <label className="path-field">
                 <span>Output</span>
