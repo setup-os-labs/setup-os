@@ -157,6 +157,13 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
             "Release testing notes",
             repo_dir.join("docs").join("desktop-release-testing.md").exists(),
         ),
+        (
+            "Signing and notarization plan",
+            repo_dir
+                .join("docs")
+                .join("desktop-signing-notarization.md")
+                .exists(),
+        ),
     ];
 
     let ready_count = checks.iter().filter(|(_, exists)| *exists).count();
