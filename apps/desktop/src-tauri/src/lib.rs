@@ -271,6 +271,27 @@ fn setup_os_review_portfolio_report_sections(agent_dir: String) -> Result<String
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_insights(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let report_path = agent_dir.join("reports").join("daily_report.md");
+    if !report_path.exists() {
+        return Ok(format!(
+            "No Portfolio insights yet.\nExpected report: {}\nNext: run the Portfolio report first.",
+            report_path.display()
+        ));
+    }
+
+    let report = fs::read_to_string(&report_path)
+        .map_err(|error| format!("failed to read {}: {error}", report_path.display()))?;
+    let insights = format_portfolio_insights(&report);
+    Ok(format!(
+        "Portfolio dashboard insights\n{}\n\n{}",
+        report_path.display(),
+        insights
+    ))
+}
+
+#[tauri::command]
 fn setup_os_check_portfolio_health(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "health.py")?;
@@ -884,6 +905,59 @@ fn format_markdown_sections(markdown: &str) -> String {
         .join("\n\n")
 }
 
+fn format_portfolio_insights(markdown: &str) -> String {
+    let selected_titles = [
+        "Holdings",
+        "Alerts",
+        "Recent Transactions",
+        "Cash",
+        "Watchlist",
+        "Market Snapshot",
+        "Performance",
+    ];
+    let mut sections: Vec<(String, Vec<String>)> = Vec::new();
+    let mut current_title = "Overview".to_string();
+    let mut current_lines: Vec<String> = Vec::new();
+
+    for line in markdown.lines() {
+        let trimmed = line.trim();
+        if let Some(title) = trimmed.strip_prefix("# ") {
+            if selected_titles.contains(&current_title.as_str()) {
+                sections.push((current_title, current_lines));
+            }
+            current_title = title.to_string();
+            current_lines = Vec::new();
+        } else if let Some(title) = trimmed.strip_prefix("## ") {
+            if selected_titles.contains(&current_title.as_str()) {
+                sections.push((current_title, current_lines));
+            }
+            current_title = title.to_string();
+            current_lines = Vec::new();
+        } else if !trimmed.is_empty() {
+            current_lines.push(trimmed.to_string());
+        }
+    }
+
+    if selected_titles.contains(&current_title.as_str()) {
+        sections.push((current_title, current_lines));
+    }
+
+    let formatted = sections
+        .into_iter()
+        .filter(|(_, lines)| !lines.is_empty())
+        .map(|(title, lines)| {
+            let preview = lines.into_iter().take(6).collect::<Vec<_>>().join("\n");
+            format!("## {title}\n{preview}")
+        })
+        .collect::<Vec<_>>();
+
+    if formatted.is_empty() {
+        "No dashboard insight sections found yet. Run the generated report after importing local Portfolio data.".to_string()
+    } else {
+        formatted.join("\n\n")
+    }
+}
+
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let repo_dir = setup_os_repo_dir()?;
@@ -933,6 +1007,7 @@ pub fn run() {
             setup_os_reset_portfolio_workspace,
             setup_os_run_portfolio_report,
             setup_os_review_portfolio_report_sections,
+            setup_os_review_portfolio_insights,
             setup_os_check_portfolio_health,
             setup_os_import_portfolio_conversation,
             setup_os_import_portfolio_holdings,

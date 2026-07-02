@@ -27,6 +27,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop release testing notes for validating unsigned Linux, Windows, and macOS artifacts.
 - Desktop Python runtime diagnostics for checking the configured Python executable, version, repo root, and CLI import status.
 - Desktop Portfolio dashboard cards for selected workspace, health, report, notifications, and memory draft status.
+- Desktop Portfolio insight review for generated report holdings, alerts, transactions, cash, watchlist, market snapshot, and performance sections.
 - Generated agents now include `runtime_node.py` for one-shot personal runtime node health/report/inbox cycles.
 - Runtime node scheduling notes for macOS launchd, Windows Task Scheduler, and Linux cron.
 - Desktop runtime-node log review for generated `.setup_os/runtime_node.jsonl` cycles.
