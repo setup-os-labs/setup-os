@@ -29,6 +29,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop Portfolio dashboard cards for selected workspace, health, report, notifications, and memory draft status.
 - Generated agents now include `runtime_node.py` for one-shot personal runtime node health/report/inbox cycles.
 - Runtime node scheduling notes for macOS launchd, Windows Task Scheduler, and Linux cron.
+- Desktop runtime-node log review for generated `.setup_os/runtime_node.jsonl` cycles.
 - Cross-platform native desktop CI matrix for Linux, Windows, and macOS Tauri compile checks.
 - Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
 - Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.

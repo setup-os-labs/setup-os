@@ -537,6 +537,44 @@ fn setup_os_read_portfolio_notifications(agent_dir: String) -> Result<String, St
 }
 
 #[tauri::command]
+fn setup_os_read_runtime_node_log(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let log_path = agent_dir.join(".setup_os").join("runtime_node.jsonl");
+    if !log_path.exists() {
+        return Ok(format!(
+            "No runtime node log yet.\nExpected log: {}\nNext: run python runtime_node.py from the generated agent directory.",
+            log_path.display()
+        ));
+    }
+
+    let log = fs::read_to_string(&log_path)
+        .map_err(|error| format!("failed to read {}: {error}", log_path.display()))?;
+    if log.trim().is_empty() {
+        return Ok(format!(
+            "Runtime node log is empty.\nLog: {}\nNext: run python runtime_node.py from the generated agent directory.",
+            log_path.display()
+        ));
+    }
+
+    let recent_entries = log
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .rev()
+        .take(5)
+        .collect::<Vec<_>>()
+        .into_iter()
+        .rev()
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    Ok(format!(
+        "Runtime node log\n{}\n\nRecent cycles\n{}",
+        log_path.display(),
+        recent_entries
+    ))
+}
+
+#[tauri::command]
 fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String> {
     let mut transcript = Vec::new();
 
@@ -907,6 +945,7 @@ pub fn run() {
             setup_os_portfolio_status,
             setup_os_portfolio_summary,
             setup_os_read_portfolio_notifications,
+            setup_os_read_runtime_node_log,
             setup_os_run_portfolio_demo_flow
         ])
         .run(tauri::generate_context!())
