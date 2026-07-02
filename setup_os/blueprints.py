@@ -59,6 +59,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     )
     write_verifier(output_dir)
     write_runtime_health(output_dir)
+    write_runtime_node(output_dir)
     write_conversation_importer(output_dir)
     write_memory_extractor(output_dir)
 
@@ -85,6 +86,7 @@ REQUIRED_PATHS = [
     "extract_memory.py",
     "report.py",
     "health.py",
+    "runtime_node.py",
     ".setup_os",
     "memory/raw",
     "memory/structured",
@@ -134,6 +136,7 @@ REQUIRED_PATHS = [
     "extract_memory.py",
     "report.py",
     "verify.py",
+    "runtime_node.py",
     "memory/raw",
     "memory/structured",
     "memory/policy",
@@ -210,6 +213,103 @@ def main() -> int:
     print("- scheduler folder is present")
     print("- notification inbox is readable")
     return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
+
+
+def write_runtime_node(output_dir: Path) -> None:
+    _write(
+        output_dir / "runtime_node.py",
+        """from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+
+ROOT = Path(__file__).parent
+RUNTIME_LOG_PATH = ROOT / ".setup_os" / "runtime_node.jsonl"
+INBOX_PATH = ROOT / ".setup_os" / "notifications.jsonl"
+
+
+def run_step(label: str, command: list[str]) -> dict[str, object]:
+    started_at = datetime.now(timezone.utc).isoformat()
+    result = subprocess.run(
+        [sys.executable, *command],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return {
+        "label": label,
+        "started_at": started_at,
+        "finished_at": datetime.now(timezone.utc).isoformat(),
+        "command": command,
+        "exit_code": result.returncode,
+        "stdout": result.stdout.strip(),
+        "stderr": result.stderr.strip(),
+    }
+
+
+def append_runtime_log(record: dict[str, object]) -> None:
+    RUNTIME_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with RUNTIME_LOG_PATH.open("a", encoding="utf-8") as file:
+        file.write(json.dumps(record, sort_keys=True) + "\\n")
+
+
+def read_inbox_count() -> int:
+    if not INBOX_PATH.exists():
+        return 0
+    return len([line for line in INBOX_PATH.read_text(encoding="utf-8").splitlines() if line.strip()])
+
+
+def run_once(include_report: bool) -> int:
+    steps = [run_step("health", ["health.py"])]
+    if include_report:
+        steps.append(run_step("report", ["report.py"]))
+
+    record = {
+        "event": "runtime_node_run_once",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "mode": "personal_runtime_node",
+        "steps": steps,
+        "notification_count": read_inbox_count(),
+        "next_step": "Schedule this command on a personal runtime node after reviewing outputs.",
+    }
+    append_runtime_log(record)
+
+    print("Runtime node run complete.")
+    print(f"- log: {RUNTIME_LOG_PATH}")
+    print(f"- notifications: {record['notification_count']}")
+    for step in steps:
+        marker = "OK" if step["exit_code"] == 0 else "FAILED"
+        print(f"- {marker}: {step['label']} ({step['exit_code']})")
+    return 0 if all(step["exit_code"] == 0 for step in steps) else 1
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Run generated-agent runtime checks once for a personal always-on node.",
+    )
+    parser.add_argument(
+        "--skip-report",
+        action="store_true",
+        help="Only run health checks and inbox counting.",
+    )
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    return run_once(include_report=not args.skip_report)
 
 
 if __name__ == "__main__":
@@ -471,6 +571,7 @@ python import_conversation.py path/to/chatgpt-finance-export.md
 python extract_memory.py
 python report.py
 python health.py
+python runtime_node.py --skip-report
 ```
 
 Raw conversation imports are stored in `memory/raw` and do not mutate strategy.
@@ -1369,6 +1470,7 @@ python import_conversation.py path/to/health-notes-export.md
 python extract_memory.py
 python report.py
 python health.py
+python runtime_node.py --skip-report
 ```
 
 Raw conversation imports are stored in `memory/raw` and do not mutate behavior.

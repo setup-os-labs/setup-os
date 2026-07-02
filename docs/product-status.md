@@ -4,7 +4,7 @@ Current checkpoint: Setup OS has crossed the 75% local desktop MVP milestone, bu
 
 ## Completion Estimate
 
-- Setup OS desktop MVP: about 82%.
+- Setup OS desktop MVP: about 83%.
 - Generated Portfolio Management OS local v0: about 65%.
 - End-to-end vision, where Setup OS desktop creates Portfolio Management OS from saved conversations and a personal runtime node runs it day to day: about 60%.
 
@@ -23,6 +23,7 @@ The desktop MVP has reached the 80% target. The next practical target is 85%, fo
 - Architecture now defines the personal always-on runtime node for schedulers, generated agents, and phone notification dispatch.
 - Desktop runtime diagnostics show the configured Python executable, version, repo root, and CLI import status.
 - Desktop Portfolio dashboard cards summarize selected workspace, health, report, notifications, and memory drafts.
+- Generated agents include a first `runtime_node.py` one-shot runner for personal runtime node health/report/inbox cycles.
 - Python CLI for create, evolve, and approval-gated apply.
 - Generated Portfolio Management OS scaffold with local imports, reports, alerts, memory drafts, audit trail, health checks, and notifications.
 
@@ -31,7 +32,7 @@ The desktop MVP has reached the 80% target. The next practical target is 85%, fo
 - Bundle Python as a sidecar for release artifacts.
 - Add deeper Portfolio dashboard sections for holdings, alerts, and report content.
 - Add signed/notarized installer planning.
-- Add the first runtime-node scaffold for scheduled generated-agent jobs and notification dispatch.
+- Add scheduler installation notes for running `runtime_node.py` on macOS and Windows.
 
 ## Still Later
 
