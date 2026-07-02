@@ -89,7 +89,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-071 | done | Codex | `codex/desktop-reset-recreate-flow` | Add desktop Portfolio reset/recreate flow | Desktop shell can archive the selected generated Portfolio workspace and recreate it from the selected seed conversation |
 | SO-072 | done | Codex | `codex/desktop-readable-memory-drafts` | Add readable desktop memory draft review | Desktop shell formats structured Portfolio memory drafts into source, status, confidence, strategy, risk, and watchlist review sections |
 | SO-073 | done | Codex | `codex/desktop-report-sections` | Add desktop Portfolio report section review | Desktop shell can display generated Portfolio daily reports grouped by Markdown section headings |
-| SO-074 | review | Codex | `codex/desktop-release-test-notes` | Add desktop release testing notes | Docs explain how to run the manual release workflow and validate unsigned Linux, Windows, and macOS artifacts |
+| SO-074 | done | Codex | `codex/desktop-release-test-notes` | Add desktop release testing notes | Docs explain how to run the manual release workflow and validate unsigned Linux, Windows, and macOS artifacts |
+| SO-075 | review | Codex | `codex/personal-runtime-node-adr` | Add personal runtime node architecture decision | ADR and docs define the always-on personal node for schedulers, generated agents, and phone notification dispatch |
 
 ## Backlog Rules
 

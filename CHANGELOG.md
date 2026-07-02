@@ -43,6 +43,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Generated Portfolio Manager allocation drift warnings against local target weights.
 - Generated Portfolio Manager read-only holdings snapshot importer with validation and import manifest.
 - ADR 0005 documenting that repository-native Markdown remains canonical through MVP before adding a docs site.
+- ADR 0006 documenting the personal always-on runtime node for schedulers, generated agents, and phone notification dispatch.
 - Optional disabled-by-default ntfy notification adapter for core notifications and generated agents.
 - Generated Portfolio Manager daily report concentration warnings with local warning notifications.
 - Generated-agent `extract_memory.py` command that turns raw conversation imports into review-only structured memory drafts.
@@ -79,6 +80,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Start Portfolio Management OS with official Robinhood Agentic/MCP-style read-only access when available.
 - Store imported conversations as raw memory first, then extract structured facts after review.
 - Prefer squash merges for iterative Codex PRs unless commits are intentionally structured for long-term history.
+- Use a personal runtime node before web-scale microservices for always-on schedulers, generated agents, and notification dispatch.
 
 ## [0.0.0] - 2026-06-30
 
