@@ -2,6 +2,8 @@
 
 Current checkpoint: Setup OS has crossed the 75% local desktop MVP milestone, but it is not a finished product.
 
+For a visual view of local utility, Portfolio Management OS, and public release tracks, see [Development and release timeline](development-release-timeline.md).
+
 ## Completion Estimate
 
 - Setup OS desktop MVP: about 95%.
@@ -34,6 +36,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - CI runs a desktop release contract smoke check for sidecar, signing, release workflow, and readiness docs.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Sidecar release workflow scaffold defines how future release jobs should assemble Python without committing runtime binaries.
+- Development and release timeline visualizes the local-first utility path, Portfolio OS path, and public commercial release path.
 - Python CLI for create, evolve, and approval-gated apply.
 - Generated Portfolio Management OS scaffold with local imports, reports, alerts, memory drafts, audit trail, health checks, and notifications.
 

@@ -16,6 +16,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop release contract CI smoke check for sidecar, signing, release workflow, and packaged-app readiness docs.
 - Packaged app smoke-test notes for Windows and macOS verification.
 - Sidecar release workflow scaffold for future bundled Python artifacts without committing runtime binaries.
+- Development and release timeline visualizing the local utility, Portfolio Management OS, and public commercial release tracks.
 - Desktop ICO asset now has matching ICO directory and embedded PNG dimensions for macOS icon conversion during release packaging.
 - Manual desktop release workflow for unsigned Linux, Windows, and macOS Tauri bundle artifacts.
 - Verified manual desktop release workflow uploads Linux, Windows, and macOS unsigned bundle artifacts from `main`.
