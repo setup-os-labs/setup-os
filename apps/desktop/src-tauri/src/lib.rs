@@ -86,6 +86,80 @@ fn setup_os_python_runtime_status() -> Result<String, String> {
 }
 
 #[tauri::command]
+fn setup_os_desktop_release_readiness() -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let desktop_dir = repo_dir.join("apps").join("desktop");
+    let checks = [
+        (
+            "Desktop package manifest",
+            desktop_dir.join("package.json").exists(),
+        ),
+        (
+            "Desktop package lock",
+            desktop_dir.join("package-lock.json").exists(),
+        ),
+        (
+            "Tauri config",
+            desktop_dir.join("src-tauri").join("tauri.conf.json").exists(),
+        ),
+        (
+            "Tauri Cargo manifest",
+            desktop_dir.join("src-tauri").join("Cargo.toml").exists(),
+        ),
+        (
+            "Desktop icon PNG",
+            desktop_dir
+                .join("src-tauri")
+                .join("icons")
+                .join("icon.png")
+                .exists(),
+        ),
+        (
+            "Desktop icon ICO",
+            desktop_dir
+                .join("src-tauri")
+                .join("icons")
+                .join("icon.ico")
+                .exists(),
+        ),
+        (
+            "CI workflow",
+            repo_dir.join(".github").join("workflows").join("ci.yml").exists(),
+        ),
+        (
+            "Manual desktop release workflow",
+            repo_dir
+                .join(".github")
+                .join("workflows")
+                .join("desktop-release.yml")
+                .exists(),
+        ),
+        (
+            "Python CLI entrypoint",
+            repo_dir.join("setup_os").join("cli.py").exists(),
+        ),
+        (
+            "Release testing notes",
+            repo_dir.join("docs").join("desktop-release-testing.md").exists(),
+        ),
+    ];
+
+    let ready_count = checks.iter().filter(|(_, exists)| *exists).count();
+    let mut lines = vec![
+        "Setup OS desktop release readiness".to_string(),
+        format!("Repo root: {}", repo_dir.display()),
+        format!("Ready checks: {ready_count}/{}", checks.len()),
+    ];
+    for (label, exists) in checks {
+        lines.push(format!("- {}", existence_line(label, exists)));
+    }
+    lines.push(
+        "\nStill required before public release: bundled Python sidecar, code signing, notarization, and updater policy.".to_string(),
+    );
+    Ok(lines.join("\n"))
+}
+
+#[tauri::command]
 fn setup_os_check_desktop_readiness(
     agent_dir: String,
     seed_conversation_path: String,
@@ -1002,6 +1076,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             setup_os_help,
             setup_os_python_runtime_status,
+            setup_os_desktop_release_readiness,
             setup_os_check_desktop_readiness,
             setup_os_create_portfolio_example,
             setup_os_reset_portfolio_workspace,

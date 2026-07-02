@@ -96,7 +96,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-078 | done | Codex | `codex/generated-runtime-node-scaffold` | Add generated runtime node scaffold | Generated agents include a one-shot `runtime_node.py` runner that logs health/report/inbox cycles for personal always-on nodes |
 | SO-079 | done | Codex | `codex/runtime-node-scheduler-notes` | Add runtime node scheduler notes | Docs explain how to schedule generated `runtime_node.py` runs with macOS launchd, Windows Task Scheduler, and Linux cron |
 | SO-080 | done | Codex | `codex/desktop-runtime-node-log` | Add desktop runtime-node log review | Desktop shell can read recent generated `.setup_os/runtime_node.jsonl` cycles from the selected workspace |
-| SO-081 | review | Codex | `codex/desktop-portfolio-insights` | Add desktop Portfolio insight review | Desktop shell can extract generated report holdings, alerts, transactions, cash, watchlist, market snapshot, and performance sections |
+| SO-081 | done | Codex | `codex/desktop-portfolio-insights` | Add desktop Portfolio insight review | Desktop shell can extract generated report holdings, alerts, transactions, cash, watchlist, market snapshot, and performance sections |
+| SO-082 | review | Codex | `codex/desktop-release-readiness` | Add desktop release readiness check | Desktop shell can report packaging workflow, Tauri config, icons, CI, CLI, and release-note readiness before public release |
 
 ## Backlog Rules
 
