@@ -60,10 +60,11 @@ Start raw-first.
 
 1. Export or save your ChatGPT financial discussion as Markdown or TXT.
 2. In the desktop app, set the **Conversation** path to that file.
-3. Run **Import**.
-4. Run **Extract drafts**.
-5. Run **Review drafts**.
-6. Do not treat extracted drafts as live strategy until reviewed.
+3. Run **Preview conversation** to verify the file is readable and looks relevant.
+4. Run **Import**.
+5. Run **Extract drafts**.
+6. Run **Review drafts**.
+7. Do not treat extracted drafts as live strategy until reviewed.
 
 The current extraction is intentionally review-only. It should help you organize strategy, risk rules, watchlist items, and constraints before any automation exists.
 
@@ -95,7 +96,7 @@ Run it from the generated Portfolio Management OS directory. It writes:
 .setup_os/runtime_node.jsonl
 ```
 
-Use the desktop app’s **Read runtime log** action to inspect cycles.
+Use the desktop app's **Read runtime log** action to inspect cycles.
 
 ## Phone Notifications
 

@@ -27,6 +27,7 @@ import {
   importPortfolioMarketData,
   importPortfolioTransactions,
   importPortfolioWatchlist,
+  previewPortfolioConversation,
   readPortfolioNotifications,
   readRuntimeNodeLog,
   resetPortfolioWorkspace,
@@ -356,6 +357,22 @@ export function App() {
     }
   }
 
+  async function previewPortfolioConversationFromPath() {
+    if (!requirePath("Conversation path", conversationPath)) {
+      return;
+    }
+
+    setActionStatus("Previewing conversation");
+    try {
+      const output = await previewPortfolioConversation(conversationPath);
+      setCliOutput(output);
+      setActionStatus("Conversation previewed");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function importPortfolioConversationFromPath() {
     if (!requirePortfolioOutput() || !requirePath("Conversation path", conversationPath)) {
       return;
@@ -655,6 +672,9 @@ export function App() {
               </label>
               <button className="secondary" type="button" onClick={importPortfolioConversationFromPath}>
                 <FolderInput size={17} /> Import
+              </button>
+              <button className="secondary" type="button" onClick={previewPortfolioConversationFromPath}>
+                <FileText size={17} /> Preview conversation
               </button>
               <button className="secondary" type="button" onClick={extractPortfolioMemoryDrafts}>
                 <FileText size={17} /> Extract drafts

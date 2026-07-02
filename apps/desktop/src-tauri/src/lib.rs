@@ -372,6 +372,64 @@ fn setup_os_reset_portfolio_workspace(
 }
 
 #[tauri::command]
+fn setup_os_preview_portfolio_conversation(conversation_path: String) -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let conversation_path = resolve_user_path(&repo_dir, &conversation_path)?;
+    if !conversation_path.exists() {
+        return Ok(format!(
+            "Portfolio conversation preview\n{}\n\n- MISSING: conversation file\nNext: choose an existing Markdown or TXT export before importing.",
+            conversation_path.display()
+        ));
+    }
+    if !conversation_path.is_file() {
+        return Ok(format!(
+            "Portfolio conversation preview\n{}\n\n- MISSING: regular file\nNext: choose a Markdown or TXT file, not a directory.",
+            conversation_path.display()
+        ));
+    }
+
+    let content = fs::read_to_string(&conversation_path)
+        .map_err(|error| format!("failed to read {}: {error}", conversation_path.display()))?;
+    let lowercase = content.to_lowercase();
+    let line_count = content.lines().count();
+    let word_count = content.split_whitespace().count();
+    let portfolio_mentions = count_keyword(&lowercase, "portfolio");
+    let risk_mentions = count_keyword(&lowercase, "risk");
+    let watchlist_mentions = count_keyword(&lowercase, "watchlist");
+    let strategy_mentions = count_keyword(&lowercase, "strategy");
+    let ticker_like_mentions = content
+        .split(|character: char| !character.is_ascii_alphanumeric())
+        .filter(|token| token.len() >= 2 && token.len() <= 5 && token.chars().all(|character| character.is_ascii_uppercase()))
+        .count();
+
+    let mut lines = vec![
+        "Portfolio conversation preview".to_string(),
+        conversation_path.display().to_string(),
+        "".to_string(),
+        "- OK: readable file".to_string(),
+        format!("- Size: {} bytes", content.len()),
+        format!("- Lines: {line_count}"),
+        format!("- Words: {word_count}"),
+        format!("- Portfolio mentions: {portfolio_mentions}"),
+        format!("- Risk mentions: {risk_mentions}"),
+        format!("- Strategy mentions: {strategy_mentions}"),
+        format!("- Watchlist mentions: {watchlist_mentions}"),
+        format!("- Ticker-like tokens: {ticker_like_mentions}"),
+        "- No files were imported or mutated.".to_string(),
+    ];
+
+    if word_count < 50 {
+        lines.push("Next: this looks short; use a fuller saved conversation for better memory drafts.".to_string());
+    } else if portfolio_mentions == 0 && risk_mentions == 0 && strategy_mentions == 0 {
+        lines.push("Next: this is readable, but it may not be a Portfolio Management conversation.".to_string());
+    } else {
+        lines.push("Next: run Import, then Extract drafts, then Review drafts.".to_string());
+    }
+
+    Ok(lines.join("\n"))
+}
+
+#[tauri::command]
 fn setup_os_run_portfolio_report(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "report.py")?;
@@ -1022,6 +1080,10 @@ fn list_or_none(values: &[String]) -> String {
     }
 }
 
+fn count_keyword(text: &str, keyword: &str) -> usize {
+    text.matches(keyword).count()
+}
+
 fn format_markdown_sections(markdown: &str) -> String {
     let mut sections: Vec<(String, Vec<String>)> = Vec::new();
     let mut current_title = "Overview".to_string();
@@ -1190,6 +1252,7 @@ pub fn run() {
             setup_os_check_desktop_readiness,
             setup_os_create_portfolio_example,
             setup_os_reset_portfolio_workspace,
+            setup_os_preview_portfolio_conversation,
             setup_os_run_portfolio_report,
             setup_os_review_portfolio_report_sections,
             setup_os_review_portfolio_insights,

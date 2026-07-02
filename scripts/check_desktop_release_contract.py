@@ -38,6 +38,7 @@ def main() -> int:
     require_text("docs/desktop-signing-notarization.md", "Do not add real secrets to the repo")
     require_text("docs/packaged-app-smoke-tests.md", "Run **Release readiness**")
     require_text("docs/personal-local-setup.md", "Local smoke test")
+    require_text("docs/personal-local-setup.md", "Preview conversation")
     require_text("docs/personal-local-setup.md", "Always-On Runtime Node")
     require_text("docs/sidecar-release-workflow-scaffold.md", "Do not commit large Python runtime binaries")
     require_text(".github/workflows/desktop-release.yml", "Build unsigned desktop bundle")

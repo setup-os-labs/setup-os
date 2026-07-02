@@ -28,6 +28,10 @@ export async function resetPortfolioWorkspace(agentDir: string, seedConversation
   return invoke<string>("setup_os_reset_portfolio_workspace", { agentDir, seedConversationPath });
 }
 
+export async function previewPortfolioConversation(conversationPath: string): Promise<string> {
+  return invoke<string>("setup_os_preview_portfolio_conversation", { conversationPath });
+}
+
 export async function runPortfolioReport(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_run_portfolio_report", { agentDir });
 }
