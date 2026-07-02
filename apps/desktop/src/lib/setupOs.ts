@@ -12,6 +12,10 @@ export async function getDesktopReleaseReadiness(): Promise<string> {
   return invoke<string>("setup_os_desktop_release_readiness");
 }
 
+export async function runLocalUtilitySmokeTest(): Promise<string> {
+  return invoke<string>("setup_os_run_local_utility_smoke_test");
+}
+
 export async function checkDesktopReadiness(agentDir: string, seedConversationPath: string): Promise<string> {
   return invoke<string>("setup_os_check_desktop_readiness", { agentDir, seedConversationPath });
 }

@@ -200,6 +200,40 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
 }
 
 #[tauri::command]
+fn setup_os_run_local_utility_smoke_test() -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let script_path = repo_dir.join("scripts").join("smoke_local_utility.py");
+    if !script_path.exists() {
+        return Ok(format!(
+            "Local utility smoke test is not available.\nExpected script: {}",
+            script_path.display()
+        ));
+    }
+
+    let python = resolve_python_command(&repo_dir);
+    let output = Command::new(python)
+        .arg(&script_path)
+        .current_dir(&repo_dir)
+        .output()
+        .map_err(|error| format!("failed to start local utility smoke test: {error}"))?;
+
+    if output.status.success() {
+        Ok(format!(
+            "Setup OS local utility smoke test\n{}\n\n{}",
+            script_path.display(),
+            String::from_utf8_lossy(&output.stdout)
+        ))
+    } else {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        Err(format!(
+            "local utility smoke test exited with {}\nSTDOUT:\n{}\nSTDERR:\n{}",
+            output.status, stdout, stderr
+        ))
+    }
+}
+
+#[tauri::command]
 fn setup_os_check_desktop_readiness(
     agent_dir: String,
     seed_conversation_path: String,
@@ -1152,6 +1186,7 @@ pub fn run() {
             setup_os_help,
             setup_os_python_runtime_status,
             setup_os_desktop_release_readiness,
+            setup_os_run_local_utility_smoke_test,
             setup_os_check_desktop_readiness,
             setup_os_create_portfolio_example,
             setup_os_reset_portfolio_workspace,

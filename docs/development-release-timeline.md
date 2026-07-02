@@ -150,3 +150,5 @@ CI now runs `python scripts/smoke_local_utility.py`, which verifies the local re
 - verify the generated report and runtime files exist.
 
 This is not the same as an installed desktop-app smoke test, but it protects the core local utility loop while packaging work continues.
+
+The desktop launcher also exposes this as **Local smoke test**, so you can run the same validation interactively from the app while iterating locally.
