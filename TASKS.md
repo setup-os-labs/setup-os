@@ -102,7 +102,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-084 | done | Codex | `codex/python-sidecar-resolver` | Add desktop Python sidecar resolver | Desktop commands resolve `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through one command path |
 | SO-085 | done | Codex | `codex/desktop-signing-plan` | Add desktop signing and notarization plan | Docs and desktop release readiness checks define Windows signing, macOS notarization, required secrets, and public release gates |
 | SO-086 | done | Codex | `codex/release-hardening-95` | Add release hardening smoke checks | CI and docs cover sidecar release contract checks, packaged-app smoke tests, and future sidecar release workflow scaffolding |
-| SO-087 | review | Codex | `codex/visual-roadmap-timelines` | Add development and release timeline visuals | Docs visualize the local utility, Portfolio Management OS, and public commercial release tracks with clear next milestones |
+| SO-087 | done | Codex | `codex/visual-roadmap-timelines` | Add development and release timeline visuals | Docs visualize the local utility, Portfolio Management OS, and public commercial release tracks with clear next milestones |
+| SO-088 | review | Codex | `codex/local-utility-smoke-test` | Add local utility smoke test | CI verifies the repo can generate Portfolio OS, run health/report/runtime node, import a conversation, and extract memory drafts |
 
 ## Backlog Rules
 

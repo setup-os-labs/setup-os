@@ -137,3 +137,16 @@ The public release is a separate path from your local utility. It needs more pol
 3. Import and extract from your real saved Portfolio Management conversations.
 4. Personal runtime-node setup guide for your chosen always-on machine.
 5. Phone notification adapter decision and first approved channel.
+
+## Current Automated Smoke Test
+
+CI now runs `python scripts/smoke_local_utility.py`, which verifies the local repo path can:
+
+- generate Portfolio Management OS from the bundled planning conversation;
+- run generated health and report commands;
+- run `runtime_node.py`;
+- import a saved conversation example;
+- extract structured memory drafts;
+- verify the generated report and runtime files exist.
+
+This is not the same as an installed desktop-app smoke test, but it protects the core local utility loop while packaging work continues.
