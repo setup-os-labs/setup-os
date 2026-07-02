@@ -4,6 +4,10 @@ export async function getSetupOsHelp(): Promise<string> {
   return invoke<string>("setup_os_help");
 }
 
+export async function getPythonRuntimeStatus(): Promise<string> {
+  return invoke<string>("setup_os_python_runtime_status");
+}
+
 export async function checkDesktopReadiness(agentDir: string, seedConversationPath: string): Promise<string> {
   return invoke<string>("setup_os_check_desktop_readiness", { agentDir, seedConversationPath });
 }

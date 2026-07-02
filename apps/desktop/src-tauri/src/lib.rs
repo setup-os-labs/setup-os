@@ -9,6 +9,83 @@ fn setup_os_help() -> Result<String, String> {
 }
 
 #[tauri::command]
+fn setup_os_python_runtime_status() -> Result<String, String> {
+    let repo_dir = setup_os_repo_dir()?;
+    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let runtime_probe = Command::new(&python)
+        .args([
+            "-c",
+            "import sys; print(sys.executable); print(sys.version.split()[0])",
+        ])
+        .current_dir(&repo_dir)
+        .output();
+    let cli_probe = Command::new(&python)
+        .args(["-m", "setup_os.cli", "--help"])
+        .current_dir(&repo_dir)
+        .output();
+
+    let mut lines = vec![
+        "Setup OS Python runtime".to_string(),
+        format!("- Repo root: {}", repo_dir.display()),
+        format!("- SETUP_OS_PYTHON: {python}"),
+    ];
+
+    match runtime_probe {
+        Ok(output) if output.status.success() => {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let mut details = stdout.lines();
+            lines.push(format!(
+                "- {}: Python executable ({})",
+                marker(true),
+                details.next().unwrap_or("unknown")
+            ));
+            lines.push(format!(
+                "- {}: Python version ({})",
+                marker(true),
+                details.next().unwrap_or("unknown")
+            ));
+        }
+        Ok(output) => {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            lines.push(format!(
+                "- {}: Python runtime probe failed ({})",
+                marker(false),
+                output.status
+            ));
+            lines.push(format!("  Next: set SETUP_OS_PYTHON or install Python 3.12+. {stderr}"));
+        }
+        Err(error) => {
+            lines.push(format!("- {}: Python executable could not start", marker(false)));
+            lines.push(format!("  Next: set SETUP_OS_PYTHON or install Python 3.12+. {error}"));
+        }
+    }
+
+    match cli_probe {
+        Ok(output) if output.status.success() => {
+            lines.push(format!("- {}: Setup OS CLI import", marker(true)));
+        }
+        Ok(output) => {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            lines.push(format!(
+                "- {}: Setup OS CLI import failed ({})",
+                marker(false),
+                output.status
+            ));
+            lines.push(format!(
+                "  Next: run from the Setup OS repo or set SETUP_OS_REPO_DIR. {stderr}"
+            ));
+        }
+        Err(error) => {
+            lines.push(format!("- {}: Setup OS CLI import could not start", marker(false)));
+            lines.push(format!("  Next: check Python and repo configuration. {error}"));
+        }
+    }
+
+    lines.push("Future release target: bundled Python sidecar so users do not install Python manually.".to_string());
+    Ok(lines.join("\n"))
+}
+
+#[tauri::command]
 fn setup_os_check_desktop_readiness(
     agent_dir: String,
     seed_conversation_path: String,
@@ -812,6 +889,7 @@ pub fn run() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             setup_os_help,
+            setup_os_python_runtime_status,
             setup_os_check_desktop_readiness,
             setup_os_create_portfolio_example,
             setup_os_reset_portfolio_workspace,

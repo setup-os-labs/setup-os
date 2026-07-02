@@ -25,6 +25,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop Portfolio memory draft review now formats draft source, status, confidence, strategy notes, risk rules, and watchlist items for easier review.
 - Desktop Portfolio report review can group the generated daily report into readable Markdown sections.
 - Desktop release testing notes for validating unsigned Linux, Windows, and macOS artifacts.
+- Desktop Python runtime diagnostics for checking the configured Python executable, version, repo root, and CLI import status.
 - Cross-platform native desktop CI matrix for Linux, Windows, and macOS Tauri compile checks.
 - Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
 - Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.
