@@ -29,7 +29,7 @@ From the desktop app:
 4. Run **Local smoke test**.
 5. Generate Portfolio Management OS.
 6. Run the full Portfolio demo flow.
-7. Run `python handoff.py` in the generated workspace.
+7. Run **Write handoff** or `python handoff.py` in the generated workspace.
 8. Review report, insights, inbox, runtime log, and `handoff.md`.
 
 ## Windows Laptop Path

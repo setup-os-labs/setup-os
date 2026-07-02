@@ -37,6 +37,7 @@ import {
   runLocalUtilitySmokeTest,
   runPortfolioDemoFlow,
   runPortfolioReport,
+  writePortfolioHandoff,
 } from "./lib/setupOs";
 import "./styles.css";
 
@@ -528,6 +529,22 @@ export function App() {
     }
   }
 
+  async function writeLocalHandoff() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Writing handoff");
+    try {
+      const output = await writePortfolioHandoff(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Handoff ready");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function runFullPortfolioFlow() {
     if (!requirePortfolioOutput()) {
       return;
@@ -645,6 +662,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={readRuntimeLog}>
                 <FileText size={17} /> Read runtime log
+              </button>
+              <button className="secondary" type="button" onClick={writeLocalHandoff}>
+                <FileText size={17} /> Write handoff
               </button>
               <label className="path-field">
                 <span>Output</span>
