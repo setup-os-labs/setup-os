@@ -130,6 +130,7 @@ Setup OS is CLI-first for the engine, but the product should become desktop-firs
 - First generated vertical: [Portfolio Management OS](docs/portfolio-management-os.md).
 - Current checkpoint: [Product status](docs/product-status.md).
 - Unsigned release artifact testing: [Desktop release testing](docs/desktop-release-testing.md).
+- Runtime node scheduling: [Runtime node scheduling](docs/runtime-node-scheduling.md).
 
 See [ADR 0004](docs/adr/0004-desktop-app-stack.md) for the desktop stack decision and [ADR 0006](docs/adr/0006-personal-runtime-node.md) for the personal runtime node decision.
 
