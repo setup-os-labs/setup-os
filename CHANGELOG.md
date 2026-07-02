@@ -17,6 +17,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Local utility smoke test for generating Portfolio OS, running health/report/runtime node, importing a conversation, and extracting memory drafts.
 - Desktop launcher action for running the local utility smoke test interactively.
 - Desktop Portfolio conversation preview action that checks a saved conversation before importing it into raw memory.
+- Generated-agent `handoff.py` command that writes `handoff.md` as a local utility readiness checklist.
 - Personal local setup guide for the Windows-first local utility path, saved conversation import, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes for Windows and macOS verification.
 - Sidecar release workflow scaffold for future bundled Python artifacts without committing runtime binaries.

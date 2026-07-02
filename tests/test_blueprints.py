@@ -48,6 +48,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
             self.assertTrue((output / "runtime_node.py").exists())
+            self.assertTrue((output / "handoff.py").exists())
             self.assertTrue((output / "memory" / "raw").is_dir())
             self.assertTrue((output / "evolution").is_dir())
             config = json.loads((output / "config.json").read_text(encoding="utf-8"))
@@ -102,6 +103,19 @@ class BlueprintTests(unittest.TestCase):
             ]
             self.assertEqual(runtime_log[0]["event"], "runtime_node_run_once")
             self.assertEqual(runtime_log[0]["mode"], "personal_runtime_node")
+
+            handoff = subprocess.run(
+                [sys.executable, "handoff.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(handoff.returncode, 0)
+            handoff_text = (output / "handoff.md").read_text(encoding="utf-8")
+            self.assertIn("# Local Utility Handoff", handoff_text)
+            self.assertIn("Latest runtime node cycle passed", handoff_text)
+            self.assertIn("Notifications:", handoff_text)
 
             import_snapshot = subprocess.run(
                 [

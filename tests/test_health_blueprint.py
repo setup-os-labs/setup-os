@@ -34,6 +34,7 @@ class HealthBlueprintTests(unittest.TestCase):
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "health.py").exists())
+            self.assertTrue((output / "handoff.py").exists())
 
             spec = json.loads((output / "agent_spec.json").read_text(encoding="utf-8"))
             self.assertEqual(spec["slug"], "health-os-agent")
@@ -73,6 +74,20 @@ class HealthBlueprintTests(unittest.TestCase):
             )
             self.assertEqual(health.returncode, 0)
             self.assertIn("Runtime health check passed.", health.stdout)
+
+            handoff = subprocess.run(
+                [sys.executable, "handoff.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(handoff.returncode, 0)
+            self.assertIn("Wrote", handoff.stdout)
+            self.assertIn(
+                "Local Utility Handoff",
+                (output / "handoff.md").read_text(encoding="utf-8"),
+            )
 
 
 if __name__ == "__main__":

@@ -29,7 +29,8 @@ From the desktop app:
 4. Run **Local smoke test**.
 5. Generate Portfolio Management OS.
 6. Run the full Portfolio demo flow.
-7. Review report, insights, inbox, and runtime log.
+7. Run `python handoff.py` in the generated workspace.
+8. Review report, insights, inbox, runtime log, and `handoff.md`.
 
 ## Windows Laptop Path
 
@@ -98,6 +99,20 @@ Run it from the generated Portfolio Management OS directory. It writes:
 
 Use the desktop app's **Read runtime log** action to inspect cycles.
 
+Then write a one-file local utility checkpoint:
+
+```text
+python handoff.py
+```
+
+It writes:
+
+```text
+handoff.md
+```
+
+Use it as the quick answer to "what is ready, what ran, and what should I do next on this machine?"
+
 ## Phone Notifications
 
 Do not enable broad automation first.
@@ -118,6 +133,7 @@ Setup OS is personally usable when:
 - Portfolio Management OS is generated from your saved conversations;
 - reports and insights are useful enough for daily review;
 - `runtime_node.py` runs on an always-on machine;
+- `handoff.md` summarizes readiness, runtime cycles, imports, drafts, and next steps;
 - phone notifications only carry approved alert summaries.
 
 ## Still Not Public-Release Ready

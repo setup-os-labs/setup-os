@@ -29,6 +29,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Desktop Portfolio dashboard cards summarize selected workspace, health, report, notifications, and memory drafts.
 - Desktop Portfolio insight review extracts holdings, alerts, transactions, cash, watchlist, market snapshot, and performance sections from generated reports.
 - Generated agents include a first `runtime_node.py` one-shot runner for personal runtime node health/report/inbox cycles.
+- Generated agents include `handoff.py`, which writes `handoff.md` as a one-file local utility readiness checklist.
 - Runtime node scheduling notes explain how to run generated agents with macOS launchd, Windows Task Scheduler, or Linux cron.
 - Desktop runtime-node log review can inspect generated `.setup_os/runtime_node.jsonl` cycles from the selected workspace.
 - Desktop release readiness check reports local packaging workflow, Tauri config, icons, CI, CLI, and release-note readiness.
@@ -44,7 +45,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Sidecar release workflow scaffold defines how future release jobs should assemble Python without committing runtime binaries.
 - Development and release timeline visualizes the local-first utility path, Portfolio OS path, and public commercial release path.
 - Python CLI for create, evolve, and approval-gated apply.
-- Generated Portfolio Management OS scaffold with local imports, reports, alerts, memory drafts, audit trail, health checks, and notifications.
+- Generated Portfolio Management OS scaffold with local imports, reports, alerts, memory drafts, audit trail, health checks, handoff summaries, and notifications.
 
 ## Remaining After 95%
 
