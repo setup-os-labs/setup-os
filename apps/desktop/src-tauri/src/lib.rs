@@ -523,6 +523,37 @@ fn setup_os_check_portfolio_health(agent_dir: String) -> Result<String, String> 
 }
 
 #[tauri::command]
+fn setup_os_write_portfolio_handoff(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    ensure_generated_portfolio_file(&agent_dir, "handoff.py")?;
+
+    let repo_dir = setup_os_repo_dir()?;
+    let python = resolve_python_command(&repo_dir);
+    let output = Command::new(python)
+        .arg("handoff.py")
+        .current_dir(&agent_dir)
+        .output()
+        .map_err(|error| format!("failed to write Portfolio local utility handoff: {error}"))?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+        return Err(format!(
+            "Portfolio handoff command exited with {}: {stderr}",
+            output.status
+        ));
+    }
+
+    let handoff_path = agent_dir.join("handoff.md");
+    let handoff = fs::read_to_string(&handoff_path)
+        .map_err(|error| format!("failed to read {}: {error}", handoff_path.display()))?;
+    Ok(format!(
+        "Portfolio local utility handoff\n{}\n\n{}",
+        handoff_path.display(),
+        handoff
+    ))
+}
+
+#[tauri::command]
 fn setup_os_import_portfolio_conversation(
     agent_dir: String,
     conversation_path: String,
@@ -1257,6 +1288,7 @@ pub fn run() {
             setup_os_review_portfolio_report_sections,
             setup_os_review_portfolio_insights,
             setup_os_check_portfolio_health,
+            setup_os_write_portfolio_handoff,
             setup_os_import_portfolio_conversation,
             setup_os_import_portfolio_holdings,
             setup_os_import_portfolio_transactions,

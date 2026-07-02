@@ -107,7 +107,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-089 | done | Codex | `codex/desktop-local-utility-smoke` | Add desktop local smoke test action | Desktop shell can run the local utility smoke test interactively from the launcher |
 | SO-090 | done | Codex | `codex/personal-local-setup-guide` | Add personal local setup guide | Docs explain the Windows-first path to local utility use, saved conversation imports, runtime-node handoff, and notification guardrails |
 | SO-091 | done | Codex | `codex/desktop-conversation-preview` | Add desktop conversation preview | Desktop shell can preview a saved Portfolio conversation before import and report readability, relevance signals, and next steps without mutating memory |
-| SO-092 | review | Codex | `codex/local-utility-handoff` | Add generated local utility handoff | Generated agents can write `handoff.md` with readiness, runtime, import, memory draft, and next-step status for a laptop or always-on node |
+| SO-092 | done | Codex | `codex/local-utility-handoff` | Add generated local utility handoff | Generated agents can write `handoff.md` with readiness, runtime, import, memory draft, and next-step status for a laptop or always-on node |
+| SO-093 | review | Codex | `codex/desktop-handoff-action` | Add desktop handoff action | Desktop shell can run generated `handoff.py` and display `handoff.md` from the selected Portfolio workspace |
 
 ## Backlog Rules
 

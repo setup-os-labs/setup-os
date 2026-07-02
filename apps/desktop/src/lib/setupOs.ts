@@ -48,6 +48,10 @@ export async function checkPortfolioHealth(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_check_portfolio_health", { agentDir });
 }
 
+export async function writePortfolioHandoff(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_write_portfolio_handoff", { agentDir });
+}
+
 export async function importPortfolioConversation(agentDir: string, conversationPath: string): Promise<string> {
   return invoke<string>("setup_os_import_portfolio_conversation", { agentDir, conversationPath });
 }

@@ -40,6 +40,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - CI runs a local utility smoke test that generates Portfolio OS, runs health/report/runtime node, imports a conversation, and extracts memory drafts.
 - Desktop can run the local utility smoke test from the launcher to validate the same local loop interactively.
 - Desktop can preview a saved Portfolio conversation before import, reporting readability and Portfolio/risk/watchlist signals without mutating memory.
+- Desktop can write and display the generated Portfolio `handoff.md` local utility readiness checklist.
 - Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Sidecar release workflow scaffold defines how future release jobs should assemble Python without committing runtime binaries.
