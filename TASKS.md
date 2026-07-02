@@ -105,7 +105,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-087 | done | Codex | `codex/visual-roadmap-timelines` | Add development and release timeline visuals | Docs visualize the local utility, Portfolio Management OS, and public commercial release tracks with clear next milestones |
 | SO-088 | done | Codex | `codex/local-utility-smoke-test` | Add local utility smoke test | CI verifies the repo can generate Portfolio OS, run health/report/runtime node, import a conversation, and extract memory drafts |
 | SO-089 | done | Codex | `codex/desktop-local-utility-smoke` | Add desktop local smoke test action | Desktop shell can run the local utility smoke test interactively from the launcher |
-| SO-090 | review | Codex | `codex/personal-local-setup-guide` | Add personal local setup guide | Docs explain the Windows-first path to local utility use, saved conversation imports, runtime-node handoff, and notification guardrails |
+| SO-090 | done | Codex | `codex/personal-local-setup-guide` | Add personal local setup guide | Docs explain the Windows-first path to local utility use, saved conversation imports, runtime-node handoff, and notification guardrails |
+| SO-091 | review | Codex | `codex/desktop-conversation-preview` | Add desktop conversation preview | Desktop shell can preview a saved Portfolio conversation before import and report readability, relevance signals, and next steps without mutating memory |
 
 ## Backlog Rules
 
