@@ -173,6 +173,27 @@ fn setup_os_run_portfolio_report(agent_dir: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_report_sections(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let report_path = agent_dir.join("reports").join("daily_report.md");
+    if !report_path.exists() {
+        return Ok(format!(
+            "No Portfolio report yet.\nExpected report: {}\nNext: run the Portfolio report first.",
+            report_path.display()
+        ));
+    }
+
+    let report = fs::read_to_string(&report_path)
+        .map_err(|error| format!("failed to read {}: {error}", report_path.display()))?;
+    let sections = format_markdown_sections(&report);
+    Ok(format!(
+        "Portfolio report sections\n{}\n\n{}",
+        report_path.display(),
+        sections
+    ))
+}
+
+#[tauri::command]
 fn setup_os_check_portfolio_health(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "health.py")?;
@@ -714,6 +735,40 @@ fn list_or_none(values: &[String]) -> String {
     }
 }
 
+fn format_markdown_sections(markdown: &str) -> String {
+    let mut sections: Vec<(String, Vec<String>)> = Vec::new();
+    let mut current_title = "Overview".to_string();
+    let mut current_lines: Vec<String> = Vec::new();
+
+    for line in markdown.lines() {
+        let trimmed = line.trim();
+        if let Some(title) = trimmed.strip_prefix("# ") {
+            if !current_lines.is_empty() || !sections.is_empty() {
+                sections.push((current_title, current_lines));
+                current_lines = Vec::new();
+            }
+            current_title = title.to_string();
+        } else if let Some(title) = trimmed.strip_prefix("## ") {
+            sections.push((current_title, current_lines));
+            current_title = title.to_string();
+            current_lines = Vec::new();
+        } else if !trimmed.is_empty() {
+            current_lines.push(trimmed.to_string());
+        }
+    }
+
+    sections.push((current_title, current_lines));
+    sections
+        .into_iter()
+        .filter(|(_, lines)| !lines.is_empty())
+        .map(|(title, lines)| {
+            let preview = lines.into_iter().take(8).collect::<Vec<_>>().join("\n");
+            format!("## {title}\n{preview}")
+        })
+        .collect::<Vec<_>>()
+        .join("\n\n")
+}
+
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
     let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let repo_dir = setup_os_repo_dir()?;
@@ -761,6 +816,7 @@ pub fn run() {
             setup_os_create_portfolio_example,
             setup_os_reset_portfolio_workspace,
             setup_os_run_portfolio_report,
+            setup_os_review_portfolio_report_sections,
             setup_os_check_portfolio_health,
             setup_os_import_portfolio_conversation,
             setup_os_import_portfolio_holdings,
