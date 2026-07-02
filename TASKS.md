@@ -99,7 +99,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-081 | done | Codex | `codex/desktop-portfolio-insights` | Add desktop Portfolio insight review | Desktop shell can extract generated report holdings, alerts, transactions, cash, watchlist, market snapshot, and performance sections |
 | SO-082 | done | Codex | `codex/desktop-release-readiness` | Add desktop release readiness check | Desktop shell can report packaging workflow, Tauri config, icons, CI, CLI, and release-note readiness before public release |
 | SO-083 | done | Codex | `codex/python-sidecar-contract` | Add Python sidecar packaging contract | Docs and desktop release readiness checks define the future bundled Python sidecar layout, resolver order, and release gates |
-| SO-084 | review | Codex | `codex/python-sidecar-resolver` | Add desktop Python sidecar resolver | Desktop commands resolve `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through one command path |
+| SO-084 | done | Codex | `codex/python-sidecar-resolver` | Add desktop Python sidecar resolver | Desktop commands resolve `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through one command path |
+| SO-085 | review | Codex | `codex/desktop-signing-plan` | Add desktop signing and notarization plan | Docs and desktop release readiness checks define Windows signing, macOS notarization, required secrets, and public release gates |
 
 ## Backlog Rules
 

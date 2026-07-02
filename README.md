@@ -130,6 +130,7 @@ Setup OS is CLI-first for the engine, but the product should become desktop-firs
 - First generated vertical: [Portfolio Management OS](docs/portfolio-management-os.md).
 - Current checkpoint: [Product status](docs/product-status.md).
 - Unsigned release artifact testing: [Desktop release testing](docs/desktop-release-testing.md).
+- Signing and notarization: [Desktop signing and notarization](docs/desktop-signing-notarization.md).
 - Python sidecar packaging: [Python sidecar packaging](docs/python-sidecar-packaging.md).
 - Runtime node scheduling: [Runtime node scheduling](docs/runtime-node-scheduling.md).
 

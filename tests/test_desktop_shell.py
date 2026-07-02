@@ -114,6 +114,7 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Manual desktop release workflow", lib_rs)
         self.assertIn("Python sidecar placeholder", lib_rs)
         self.assertIn("Python sidecar packaging notes", lib_rs)
+        self.assertIn("Signing and notarization plan", lib_rs)
         self.assertIn("Still required before public release", lib_rs)
         self.assertIn('"setup_os.cli"', lib_rs)
         self.assertIn('"--help"', lib_rs)
@@ -228,6 +229,11 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Resolver Order", sidecar_notes)
         self.assertIn("SETUP_OS_PYTHON", sidecar_notes)
         self.assertIn("Bundled sidecar Python", sidecar_notes)
+
+        signing_notes = (ROOT / "docs" / "desktop-signing-notarization.md").read_text(encoding="utf-8")
+        self.assertIn("Windows Release Requirements", signing_notes)
+        self.assertIn("macOS Release Requirements", signing_notes)
+        self.assertIn("Do not add real secrets to the repo", signing_notes)
 
         result = subprocess.run(
             [sys.executable, "-m", "setup_os.cli", "--help"],
