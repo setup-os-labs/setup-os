@@ -138,6 +138,8 @@ The public release is a separate path from your local utility. It needs more pol
 4. Personal runtime-node setup guide for your chosen always-on machine.
 5. Phone notification adapter decision and first approved channel.
 
+For the current practical path, use [Personal local setup guide](personal-local-setup.md).
+
 ## Current Automated Smoke Test
 
 CI now runs `python scripts/smoke_local_utility.py`, which verifies the local repo path can:

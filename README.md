@@ -130,6 +130,7 @@ Setup OS is CLI-first for the engine, but the product should become desktop-firs
 - First generated vertical: [Portfolio Management OS](docs/portfolio-management-os.md).
 - Current checkpoint: [Product status](docs/product-status.md).
 - Visual roadmap: [Development and release timeline](docs/development-release-timeline.md).
+- Personal local setup: [Personal local setup guide](docs/personal-local-setup.md).
 - Unsigned release artifact testing: [Desktop release testing](docs/desktop-release-testing.md).
 - Packaged app smoke tests: [Packaged app smoke tests](docs/packaged-app-smoke-tests.md).
 - Signing and notarization: [Desktop signing and notarization](docs/desktop-signing-notarization.md).

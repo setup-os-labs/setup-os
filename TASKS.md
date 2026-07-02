@@ -104,7 +104,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-086 | done | Codex | `codex/release-hardening-95` | Add release hardening smoke checks | CI and docs cover sidecar release contract checks, packaged-app smoke tests, and future sidecar release workflow scaffolding |
 | SO-087 | done | Codex | `codex/visual-roadmap-timelines` | Add development and release timeline visuals | Docs visualize the local utility, Portfolio Management OS, and public commercial release tracks with clear next milestones |
 | SO-088 | done | Codex | `codex/local-utility-smoke-test` | Add local utility smoke test | CI verifies the repo can generate Portfolio OS, run health/report/runtime node, import a conversation, and extract memory drafts |
-| SO-089 | review | Codex | `codex/desktop-local-utility-smoke` | Add desktop local smoke test action | Desktop shell can run the local utility smoke test interactively from the launcher |
+| SO-089 | done | Codex | `codex/desktop-local-utility-smoke` | Add desktop local smoke test action | Desktop shell can run the local utility smoke test interactively from the launcher |
+| SO-090 | review | Codex | `codex/personal-local-setup-guide` | Add personal local setup guide | Docs explain the Windows-first path to local utility use, saved conversation imports, runtime-node handoff, and notification guardrails |
 
 ## Backlog Rules
 
