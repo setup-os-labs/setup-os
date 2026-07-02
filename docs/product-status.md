@@ -4,7 +4,7 @@ Current checkpoint: Setup OS has crossed the 75% local desktop MVP milestone, bu
 
 ## Completion Estimate
 
-- Setup OS desktop MVP: about 88%.
+- Setup OS desktop MVP: about 89%.
 - Generated Portfolio Management OS local v0: about 65%.
 - End-to-end vision, where Setup OS desktop creates Portfolio Management OS from saved conversations and a personal runtime node runs it day to day: about 60%.
 
@@ -29,13 +29,14 @@ The desktop MVP has reached the 85% target. The next practical target is 90%, fo
 - Desktop runtime-node log review can inspect generated `.setup_os/runtime_node.jsonl` cycles from the selected workspace.
 - Desktop release readiness check reports local packaging workflow, Tauri config, icons, CI, CLI, and release-note readiness.
 - Python sidecar packaging contract defines resolver order, expected release layout, and release gates for shipping without local Python.
+- Desktop Python runner now resolves `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through one command path.
 - Python CLI for create, evolve, and approval-gated apply.
 - Generated Portfolio Management OS scaffold with local imports, reports, alerts, memory drafts, audit trail, health checks, and notifications.
 
 ## Remaining To Reach 90%
 
 - Add signed/notarized installer planning.
-- Implement the sidecar resolver in the desktop command runner.
+- Add CI smoke checks for the sidecar resolver contract.
 
 ## Still Later
 

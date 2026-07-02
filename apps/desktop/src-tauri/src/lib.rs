@@ -11,7 +11,7 @@ fn setup_os_help() -> Result<String, String> {
 #[tauri::command]
 fn setup_os_python_runtime_status() -> Result<String, String> {
     let repo_dir = setup_os_repo_dir()?;
-    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let python = resolve_python_command(&repo_dir);
     let runtime_probe = Command::new(&python)
         .args([
             "-c",
@@ -27,7 +27,10 @@ fn setup_os_python_runtime_status() -> Result<String, String> {
     let mut lines = vec![
         "Setup OS Python runtime".to_string(),
         format!("- Repo root: {}", repo_dir.display()),
-        format!("- SETUP_OS_PYTHON: {python}"),
+        format!("- Python command: {python}"),
+        format!(
+            "- Resolver order: SETUP_OS_PYTHON -> bundled sidecar -> system python"
+        ),
     ];
 
     match runtime_probe {
@@ -179,7 +182,7 @@ fn setup_os_check_desktop_readiness(
     let repo_dir = setup_os_repo_dir()?;
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     let seed_path = resolve_user_path(&repo_dir, &seed_conversation_path)?;
-    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let python = resolve_python_command(&repo_dir);
     let python_check = Command::new(&python)
         .args(["-m", "setup_os.cli", "--help"])
         .current_dir(&repo_dir)
@@ -314,7 +317,8 @@ fn setup_os_run_portfolio_report(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "report.py")?;
 
-    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let repo_dir = setup_os_repo_dir()?;
+    let python = resolve_python_command(&repo_dir);
     let output = Command::new(python)
         .arg("report.py")
         .current_dir(&agent_dir)
@@ -382,7 +386,8 @@ fn setup_os_check_portfolio_health(agent_dir: String) -> Result<String, String> 
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "health.py")?;
 
-    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let repo_dir = setup_os_repo_dir()?;
+    let python = resolve_python_command(&repo_dir);
     let output = Command::new(python)
         .arg("health.py")
         .current_dir(&agent_dir)
@@ -486,7 +491,8 @@ fn setup_os_extract_portfolio_memory(agent_dir: String) -> Result<String, String
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     ensure_generated_portfolio_file(&agent_dir, "extract_memory.py")?;
 
-    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let repo_dir = setup_os_repo_dir()?;
+    let python = resolve_python_command(&repo_dir);
     let output = Command::new(python)
         .arg("extract_memory.py")
         .current_dir(&agent_dir)
@@ -807,7 +813,7 @@ fn run_generated_portfolio_script(
         }
     }
 
-    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
+    let python = resolve_python_command(&repo_dir);
     let output = Command::new(python)
         .arg(script_name)
         .args(resolved_args)
@@ -1045,8 +1051,8 @@ fn format_portfolio_insights(markdown: &str) -> String {
 }
 
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
-    let python = std::env::var("SETUP_OS_PYTHON").unwrap_or_else(|_| "python".to_string());
     let repo_dir = setup_os_repo_dir()?;
+    let python = resolve_python_command(&repo_dir);
     let output = Command::new(python)
         .args(args)
         .current_dir(repo_dir)
@@ -1059,6 +1065,38 @@ fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
         Err(format!("Setup OS Python engine exited with {}: {stderr}", output.status))
     }
+}
+
+fn resolve_python_command(repo_dir: &PathBuf) -> String {
+    if let Ok(python) = std::env::var("SETUP_OS_PYTHON") {
+        if !python.trim().is_empty() {
+            return python;
+        }
+    }
+
+    for candidate in sidecar_python_candidates(repo_dir) {
+        if candidate.exists() {
+            return candidate.display().to_string();
+        }
+    }
+
+    "python".to_string()
+}
+
+fn sidecar_python_candidates(repo_dir: &PathBuf) -> Vec<PathBuf> {
+    let sidecar_dir = repo_dir
+        .join("apps")
+        .join("desktop")
+        .join("src-tauri")
+        .join("sidecar")
+        .join("python");
+
+    vec![
+        sidecar_dir.join("python.exe"),
+        sidecar_dir.join("python"),
+        sidecar_dir.join("bin").join("python"),
+        sidecar_dir.join("bin").join("python3"),
+    ]
 }
 
 fn setup_os_repo_dir() -> Result<PathBuf, String> {
