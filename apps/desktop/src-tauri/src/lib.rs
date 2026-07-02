@@ -164,6 +164,24 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
                 .join("desktop-signing-notarization.md")
                 .exists(),
         ),
+        (
+            "Packaged app smoke tests",
+            repo_dir.join("docs").join("packaged-app-smoke-tests.md").exists(),
+        ),
+        (
+            "Sidecar release workflow scaffold",
+            repo_dir
+                .join("docs")
+                .join("sidecar-release-workflow-scaffold.md")
+                .exists(),
+        ),
+        (
+            "Release contract CI check",
+            repo_dir
+                .join("scripts")
+                .join("check_desktop_release_contract.py")
+                .exists(),
+        ),
     ];
 
     let ready_count = checks.iter().filter(|(_, exists)| *exists).count();

@@ -38,6 +38,9 @@ jobs:
             echo "No tests yet."
           fi
 
+      - name: Check desktop release contract
+        run: python scripts/check_desktop_release_contract.py
+
   desktop-frontend:
     runs-on: ubuntu-latest
     steps:

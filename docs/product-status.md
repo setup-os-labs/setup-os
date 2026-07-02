@@ -4,11 +4,11 @@ Current checkpoint: Setup OS has crossed the 75% local desktop MVP milestone, bu
 
 ## Completion Estimate
 
-- Setup OS desktop MVP: about 90%.
+- Setup OS desktop MVP: about 95%.
 - Generated Portfolio Management OS local v0: about 65%.
 - End-to-end vision, where Setup OS desktop creates Portfolio Management OS from saved conversations and a personal runtime node runs it day to day: about 60%.
 
-The desktop MVP has reached the 90% target. The next practical target is 95%, focused on sidecar smoke checks, release automation hardening, and a more polished packaged-app path.
+The desktop MVP has reached the 95% target for a local-first scaffold. The remaining work is release-grade polish: real bundled Python artifacts, signing/notarization execution, and installer/updater hardening.
 
 ## Usable Today
 
@@ -31,14 +31,17 @@ The desktop MVP has reached the 90% target. The next practical target is 95%, fo
 - Python sidecar packaging contract defines resolver order, expected release layout, and release gates for shipping without local Python.
 - Desktop Python runner now resolves `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through one command path.
 - Signing and notarization plan defines Windows and macOS public-release gates without committing secrets.
+- CI runs a desktop release contract smoke check for sidecar, signing, release workflow, and readiness docs.
+- Packaged app smoke-test notes define Windows and macOS manual verification.
+- Sidecar release workflow scaffold defines how future release jobs should assemble Python without committing runtime binaries.
 - Python CLI for create, evolve, and approval-gated apply.
 - Generated Portfolio Management OS scaffold with local imports, reports, alerts, memory drafts, audit trail, health checks, and notifications.
 
-## Remaining To Reach 95%
+## Remaining After 95%
 
-- Add CI smoke checks for the sidecar resolver contract.
-- Add sidecar release workflow scaffolding without committing runtime binaries.
-- Add packaged-app smoke test instructions for Windows and macOS.
+- Build real sidecar artifacts during release workflows.
+- Execute signing/notarization with real project credentials.
+- Add installer/updater policy and rollback procedure.
 
 ## Still Later
 
