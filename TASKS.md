@@ -111,7 +111,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-093 | done | Codex | `codex/desktop-handoff-action` | Add desktop handoff action | Desktop shell can run generated `handoff.py` and display `handoff.md` from the selected Portfolio workspace |
 | SO-094 | done | Codex | `codex/demo-flow-handoff` | Add handoff to desktop demo flow | Desktop one-click Portfolio demo flow writes and displays the generated local utility handoff before refreshing status |
 | SO-095 | done | Codex | `codex/status-shows-handoff` | Show handoff in desktop status | Desktop Portfolio status and dashboard show whether `handoff.md` exists in the selected generated workspace |
-| SO-096 | review | Codex | `codex/timeline-handoff-refresh` | Refresh product timeline after handoff loop | Timeline and product status reflect current local utility completion estimates and the generated/desktop handoff loop |
+| SO-096 | done | Codex | `codex/timeline-handoff-refresh` | Refresh product timeline after handoff loop | Timeline and product status reflect current local utility completion estimates and the generated/desktop handoff loop |
+| SO-097 | review | Codex | `codex/desktop-handoff-guidance` | Add desktop handoff guidance | Desktop can summarize `handoff.md` into missing readiness items, runtime status, counts, and next local steps |
 
 ## Backlog Rules
 

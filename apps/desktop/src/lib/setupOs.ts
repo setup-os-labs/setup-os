@@ -52,6 +52,10 @@ export async function writePortfolioHandoff(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_write_portfolio_handoff", { agentDir });
 }
 
+export async function reviewPortfolioHandoffGuidance(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_review_portfolio_handoff_guidance", { agentDir });
+}
+
 export async function importPortfolioConversation(agentDir: string, conversationPath: string): Promise<string> {
   return invoke<string>("setup_os_import_portfolio_conversation", { agentDir, conversationPath });
 }
