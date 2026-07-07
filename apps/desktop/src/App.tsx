@@ -75,6 +75,7 @@ type PortfolioDashboard = {
   workspace: string;
   health: string;
   report: string;
+  handoff: string;
   notifications: string;
   drafts: string;
 };
@@ -116,6 +117,10 @@ function parsePortfolioDashboard(output: string): PortfolioDashboard {
     workspace: valueAfter("Workspace:", "Not loaded"),
     health: valueAfter("- OK: Health command", valueAfter("- MISSING: Health command", "Unknown")),
     report: valueAfter("- OK: Latest report", valueAfter("- MISSING: Latest report", "Unknown")),
+    handoff: valueAfter(
+      "- OK: Local utility handoff",
+      valueAfter("- MISSING: Local utility handoff", "Unknown"),
+    ),
     notifications: valueAfter("- OK: Notifications", valueAfter("- MISSING: Notifications", "Unknown")),
     drafts: valueAfter("- OK: Structured memory drafts", valueAfter("- MISSING: Structured memory drafts", "Unknown")),
   };
@@ -139,6 +144,7 @@ export function App() {
     workspace: "Not loaded",
     health: "Unknown",
     report: "Unknown",
+    handoff: "Unknown",
     notifications: "Unknown",
     drafts: "Unknown",
   });
@@ -630,6 +636,7 @@ export function App() {
             <DashboardCard label="Workspace" value={portfolioDashboard.workspace} />
             <DashboardCard label="Health" value={portfolioDashboard.health} />
             <DashboardCard label="Report" value={portfolioDashboard.report} />
+            <DashboardCard label="Handoff" value={portfolioDashboard.handoff} />
             <DashboardCard label="Notifications" value={portfolioDashboard.notifications} />
             <DashboardCard label="Memory drafts" value={portfolioDashboard.drafts} />
           </div>
