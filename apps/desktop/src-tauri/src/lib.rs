@@ -723,6 +723,10 @@ fn setup_os_portfolio_status(agent_dir: String) -> Result<String, String> {
             "Latest daily report",
             agent_dir.join("reports").join("daily_report.md").exists(),
         ),
+        (
+            "Local utility handoff",
+            agent_dir.join("handoff.md").exists(),
+        ),
     ];
 
     let mut lines = vec!["Portfolio Management OS status".to_string()];
@@ -737,6 +741,7 @@ fn setup_os_portfolio_status(agent_dir: String) -> Result<String, String> {
 fn setup_os_portfolio_summary(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     let report_path = agent_dir.join("reports").join("daily_report.md");
+    let handoff_path = agent_dir.join("handoff.md");
     let notifications_path = agent_dir.join(".setup_os").join("notifications.jsonl");
     let drafts_path = agent_dir
         .join("memory")
@@ -748,6 +753,7 @@ fn setup_os_portfolio_summary(agent_dir: String) -> Result<String, String> {
         format!("Workspace: {}", agent_dir.display()),
         format!("- {}", existence_line("Health command", agent_dir.join("health.py").exists())),
         format!("- {}", existence_line("Latest report", report_path.exists())),
+        format!("- {}", existence_line("Local utility handoff", handoff_path.exists())),
         format!("- {}", count_line("Notifications", &notifications_path)?),
         format!("- {}", count_line("Structured memory drafts", &drafts_path)?),
     ];
