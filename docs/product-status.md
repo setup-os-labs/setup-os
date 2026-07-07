@@ -8,8 +8,8 @@ For the practical Windows-first path to using Setup OS as your own local utility
 
 ## Completion Estimate
 
-- Setup OS desktop MVP scaffold: about 96-97%.
-- Setup OS as your personal local utility: about 85-90%.
+- Setup OS desktop MVP scaffold: about 97%.
+- Setup OS as your personal local utility: about 88-90%.
 - Generated Portfolio Management OS local v0: about 70%.
 - End-to-end vision, where Setup OS desktop creates Portfolio Management OS from saved conversations and a personal runtime node runs it day to day: about 65%.
 
@@ -19,6 +19,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 
 - Cross-platform Tauri desktop shell for macOS, Windows, and Linux.
 - Manual unsigned desktop bundle workflow with verified Linux, Windows, and macOS artifacts.
+- Desktop release workflow smoke-checks packaged bundle outputs and uploads `packaged-smoke-manifest.json`.
 - Desktop Portfolio launcher with editable/persisted output, seed conversation, update conversation, and CSV import paths.
 - Desktop actions for create, import, extract memory, health, report, status, notification inbox, and one-click demo flow.
 - Desktop action for archiving and recreating a selected generated Portfolio workspace.
@@ -46,6 +47,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Desktop can extract concise guidance from `handoff.md`, including missing readiness items, runtime status, counts, and next local steps.
 - Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
+- Packaged app smoke-test notes now start with checking the generated artifact smoke manifest.
 - Sidecar release workflow scaffold defines how future release jobs should assemble Python without committing runtime binaries.
 - Development and release timeline visualizes the local-first utility path, Portfolio OS path, and public commercial release path.
 - Python CLI for create, evolve, and approval-gated apply.

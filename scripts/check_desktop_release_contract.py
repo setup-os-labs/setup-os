@@ -27,6 +27,7 @@ def main() -> int:
     require_file("docs/packaged-app-smoke-tests.md")
     require_file("docs/personal-local-setup.md")
     require_file("docs/sidecar-release-workflow-scaffold.md")
+    require_file("scripts/smoke_packaged_artifact.py")
     require_file(".github/workflows/desktop-release.yml")
 
     require_text(
@@ -37,11 +38,14 @@ def main() -> int:
     require_text("docs/python-sidecar-packaging.md", "Release Gate")
     require_text("docs/desktop-signing-notarization.md", "Do not add real secrets to the repo")
     require_text("docs/packaged-app-smoke-tests.md", "Run **Release readiness**")
+    require_text("docs/packaged-app-smoke-tests.md", "packaged-smoke-manifest.json")
     require_text("docs/personal-local-setup.md", "Local smoke test")
     require_text("docs/personal-local-setup.md", "Preview conversation")
     require_text("docs/personal-local-setup.md", "Always-On Runtime Node")
     require_text("docs/sidecar-release-workflow-scaffold.md", "Do not commit large Python runtime binaries")
     require_text(".github/workflows/desktop-release.yml", "Build unsigned desktop bundle")
+    require_text(".github/workflows/desktop-release.yml", "Smoke-check packaged artifacts")
+    require_text(".github/workflows/desktop-release.yml", "packaged-smoke-manifest.json")
 
     print("Desktop release contract OK")
     return 0

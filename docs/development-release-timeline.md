@@ -36,7 +36,8 @@ timeline
         Done : Portfolio OS create/import/report loop
         Done : Runtime node scaffold and scheduler notes
         Done : Generated handoff and desktop handoff review
-        Next : Local install smoke test from packaged app
+        Done : Packaged artifact smoke manifest
+        Next : Local install smoke test from downloaded app
         Next : Personal always-on runtime node on laptop or Mac mini
     Portfolio Management OS
         Done : Local holdings, transactions, cash, watchlist, market snapshots
@@ -55,8 +56,8 @@ timeline
 
 | Track | Current % | Meaning | Next Blocker |
 | --- | ---: | --- | --- |
-| Setup OS local desktop MVP scaffold | 96-97% | The local-first desktop product shape is in place and verified by CI. | Packaged-app smoke test from an installed artifact. |
-| Setup OS as your daily local utility | 85-90% | You can generate, inspect, run, and hand off a Portfolio OS locally. | Installable local app plus runtime-node schedule on your machine or Mac mini. |
+| Setup OS local desktop MVP scaffold | 97% | The local-first desktop product shape is in place and verified by CI, including packaged artifact smoke manifests. | Manual installed-app smoke test from downloaded artifact. |
+| Setup OS as your daily local utility | 88-90% | You can generate, inspect, run, and hand off a Portfolio OS locally. | Installable local app plus runtime-node schedule on your machine or Mac mini. |
 | Generated Portfolio Management OS local v0 | 70% | Local data imports, reports, alerts, memory drafts, runtime node, and handoff exist. | Use your saved financial conversations and improve extraction quality. |
 | Public commercial release | 35-45% | Architecture, CI, release docs, unsigned builds, and native checks exist. | Signing, notarization, onboarding, updater, and support surface. |
 
@@ -137,11 +138,11 @@ The public release is a separate path from your local utility. It needs more pol
 
 ## What To Build Next
 
-1. Handoff-driven dashboard guidance for the next missing local utility step.
-2. Packaged local install smoke test on your Windows machine.
-3. Import and extract from your real saved Portfolio Management conversations.
-4. Personal runtime-node setup guide for your chosen always-on machine.
-5. Phone notification adapter decision and first approved channel.
+1. Packaged local install smoke test on your Windows machine.
+2. Import and extract from your real saved Portfolio Management conversations.
+3. Personal runtime-node setup guide for your chosen always-on machine.
+4. Phone notification adapter decision and first approved channel.
+5. Real sidecar artifact assembly in the desktop release workflow.
 
 For the current practical path, use [Personal local setup guide](personal-local-setup.md).
 
