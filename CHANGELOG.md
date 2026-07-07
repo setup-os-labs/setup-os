@@ -24,6 +24,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Development timeline and product status now reflect the handoff loop and updated local utility completion estimates.
 - Desktop Portfolio handoff guidance action summarizes missing readiness items, runtime status, counts, and next local steps from `handoff.md`.
 - PR hygiene guidance now explicitly requires task queue, changelog, timeline/product status, docs, and ADR updates when relevant.
+- Desktop release workflow now smoke-checks packaged bundle artifacts and uploads `packaged-smoke-manifest.json`.
 - Personal local setup guide for the Windows-first local utility path, saved conversation import, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes for Windows and macOS verification.
 - Sidecar release workflow scaffold for future bundled Python artifacts without committing runtime binaries.

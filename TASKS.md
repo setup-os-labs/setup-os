@@ -113,7 +113,8 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-095 | done | Codex | `codex/status-shows-handoff` | Show handoff in desktop status | Desktop Portfolio status and dashboard show whether `handoff.md` exists in the selected generated workspace |
 | SO-096 | done | Codex | `codex/timeline-handoff-refresh` | Refresh product timeline after handoff loop | Timeline and product status reflect current local utility completion estimates and the generated/desktop handoff loop |
 | SO-097 | done | Codex | `codex/desktop-handoff-guidance` | Add desktop handoff guidance | Desktop can summarize `handoff.md` into missing readiness items, runtime status, counts, and next local steps |
-| SO-098 | review | Codex | `codex/pr-doc-hygiene-rule` | Document PR documentation hygiene rule | Codex workflow, PR template, and branching docs require task queue, changelog, timeline/product status, docs, and ADR updates when relevant |
+| SO-098 | done | Codex | `codex/pr-doc-hygiene-rule` | Document PR documentation hygiene rule | Codex workflow, PR template, and branching docs require task queue, changelog, timeline/product status, docs, and ADR updates when relevant |
+| SO-099 | review | Codex | `codex/packaged-artifact-smoke` | Add packaged artifact smoke manifest | Desktop release workflow smoke-checks generated bundle artifacts and uploads a manifest before manual install testing |
 
 ## Backlog Rules
 

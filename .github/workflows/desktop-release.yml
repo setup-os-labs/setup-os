@@ -58,10 +58,15 @@ jobs:
         working-directory: apps/desktop
         run: npm run tauri -- build --ci
 
+      - name: Smoke-check packaged artifacts
+        working-directory: apps/desktop
+        run: python ../../scripts/smoke_packaged_artifact.py src-tauri/target/release/bundle --platform ${{ runner.os }} --output packaged-smoke-manifest.json
+
       - name: Upload desktop bundles
         uses: actions/upload-artifact@v4
         with:
           name: setup-os-desktop-${{ matrix.os }}
           path: |
             apps/desktop/src-tauri/target/release/bundle/**
+            apps/desktop/packaged-smoke-manifest.json
           if-no-files-found: error
