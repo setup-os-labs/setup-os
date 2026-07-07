@@ -31,6 +31,18 @@ Update `CHANGELOG.md` for:
 - architecture or policy changes
 - release notes
 
+## Documentation Hygiene
+
+Every PR should update the repo sources of truth that changed:
+
+- `TASKS.md` for task status and follow-up work
+- `CHANGELOG.md` for every PR before merge
+- `docs/development-release-timeline.md` and `docs/product-status.md` when product status, roadmap, release posture, or completion estimates change
+- product docs and guides when user-facing workflows change
+- `docs/adr/` when a durable architecture, stack, safety, release, or repository decision changes
+
+If a category is not applicable, the PR should make that clear in the checklist or notes.
+
 ## Versioning
 
 Use `0.x.y` while the CLI and schemas are unstable.
@@ -47,6 +59,7 @@ After v1:
 - changelog updated
 - docs updated
 - task queue reflects completed work
+- timeline and product status are current when release posture changes
 - ADRs added for architecture changes
 - tag created
 - GitHub release notes published

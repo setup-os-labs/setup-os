@@ -12,6 +12,9 @@ Closes:
 - [ ] Manual check performed
 - [ ] Docs updated
 - [ ] Changelog updated for this PR
+- [ ] `TASKS.md` updated
+- [ ] Timeline/product status updated, or not applicable
+- [ ] ADR added/updated for durable architecture, stack, safety, release, or repo decisions, or not applicable
 
 ## Safety Review
 

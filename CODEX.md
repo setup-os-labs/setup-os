@@ -14,6 +14,7 @@ Codex should:
 - treat restored old branches as archival unless comparison shows unique work not already represented on `main`
 - update docs and task status in the same PR as the code
 - update `CHANGELOG.md` in every PR before merge, even for documentation-only changes
+- update the development timeline, product status, roadmap, guides, and ADRs whenever a PR changes product scope, architecture, release posture, workflow, or completion estimates
 - add tests for extraction, generation, evolution, or safety behavior changes
 - avoid broker execution, cloud dependencies, and rich dashboards in v0
 - preserve local-first and human-approval-by-default behavior
@@ -26,10 +27,14 @@ Codex should:
 4. Run the relevant tests or checks.
 5. Update `TASKS.md`.
 6. Update `CHANGELOG.md` with a short entry for the PR.
-7. Open a PR with the template in `.github/PULL_REQUEST_TEMPLATE.md`.
-8. Squash merge iterative PRs to keep `main` readable; use normal merge only when each commit is intentionally reviewed and meaningful on its own.
-9. Do not delete the remote branch after merge unless explicitly requested.
-10. Before opening a PR from an old or restored branch, compare it against `main`; do not merge it only because it was recently pushed.
+7. Update relevant docs:
+   - `docs/development-release-timeline.md` and `docs/product-status.md` for status, roadmap, or completion estimate changes
+   - product guides such as `docs/personal-local-setup.md` or `docs/portfolio-management-os.md` for user-facing workflow changes
+   - `docs/adr/` for durable architecture, stack, safety, release, or repository decisions
+8. Open a PR with the template in `.github/PULL_REQUEST_TEMPLATE.md`.
+9. Squash merge iterative PRs to keep `main` readable; use normal merge only when each commit is intentionally reviewed and meaningful on its own.
+10. Do not delete the remote branch after merge unless explicitly requested.
+11. Before opening a PR from an old or restored branch, compare it against `main`; do not merge it only because it was recently pushed.
 
 ## Branch History
 
@@ -53,6 +58,7 @@ A task is done when:
 - the behavior is implemented or the document is landed
 - tests or manual verification are recorded
 - docs reflect the new behavior
+- timeline, product status, roadmap, guides, and ADRs are updated or explicitly not applicable
 - safety boundaries are unchanged or explicitly documented
 - follow-up work is captured in `TASKS.md`
 
