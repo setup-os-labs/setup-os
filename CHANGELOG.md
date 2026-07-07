@@ -21,6 +21,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop Portfolio handoff action that writes and displays the generated `handoff.md` readiness checklist.
 - Desktop Portfolio demo flow now writes the local utility handoff as part of the one-click path.
 - Desktop Portfolio status and dashboard now show whether the local utility handoff exists.
+- Development timeline and product status now reflect the handoff loop and updated local utility completion estimates.
 - Personal local setup guide for the Windows-first local utility path, saved conversation import, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes for Windows and macOS verification.
 - Sidecar release workflow scaffold for future bundled Python artifacts without committing runtime binaries.
