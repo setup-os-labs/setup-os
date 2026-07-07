@@ -900,6 +900,11 @@ fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String>
         "Read notification inbox",
         setup_os_read_portfolio_notifications(agent_dir.clone()),
     )?;
+    append_demo_step(
+        &mut transcript,
+        "Write local utility handoff",
+        setup_os_write_portfolio_handoff(agent_dir.clone()),
+    )?;
     append_demo_step(&mut transcript, "Refresh status", setup_os_portfolio_status(agent_dir))?;
 
     Ok(transcript.join("\n\n"))
