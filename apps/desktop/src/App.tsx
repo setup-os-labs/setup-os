@@ -31,6 +31,7 @@ import {
   readPortfolioNotifications,
   readRuntimeNodeLog,
   resetPortfolioWorkspace,
+  reviewPortfolioHandoffGuidance,
   reviewPortfolioMemoryDrafts,
   reviewPortfolioInsights,
   reviewPortfolioReportSections,
@@ -551,6 +552,22 @@ export function App() {
     }
   }
 
+  async function reviewLocalHandoffGuidance() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Reviewing handoff");
+    try {
+      const output = await reviewPortfolioHandoffGuidance(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Handoff guidance loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function runFullPortfolioFlow() {
     if (!requirePortfolioOutput()) {
       return;
@@ -672,6 +689,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={writeLocalHandoff}>
                 <FileText size={17} /> Write handoff
+              </button>
+              <button className="secondary" type="button" onClick={reviewLocalHandoffGuidance}>
+                <FileText size={17} /> Review handoff guidance
               </button>
               <label className="path-field">
                 <span>Output</span>

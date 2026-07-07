@@ -554,6 +554,26 @@ fn setup_os_write_portfolio_handoff(agent_dir: String) -> Result<String, String>
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_handoff_guidance(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let handoff_path = agent_dir.join("handoff.md");
+    if !handoff_path.exists() {
+        return Ok(format!(
+            "No local utility handoff yet.\nExpected handoff: {}\nNext: run Write handoff or Run demo flow.",
+            handoff_path.display()
+        ));
+    }
+
+    let handoff = fs::read_to_string(&handoff_path)
+        .map_err(|error| format!("failed to read {}: {error}", handoff_path.display()))?;
+    Ok(format!(
+        "Portfolio handoff guidance\n{}\n\n{}",
+        handoff_path.display(),
+        format_handoff_guidance(&handoff)
+    ))
+}
+
+#[tauri::command]
 fn setup_os_import_portfolio_conversation(
     agent_dir: String,
     conversation_path: String,
@@ -934,6 +954,61 @@ fn append_demo_step(
     }
 }
 
+fn format_handoff_guidance(handoff: &str) -> String {
+    let readiness = extract_markdown_section(handoff, "Readiness");
+    let counts = extract_markdown_section(handoff, "Current Counts");
+    let runtime = extract_markdown_section(handoff, "Runtime Status");
+    let next_steps = extract_markdown_section(handoff, "Next Local Steps");
+    let missing = readiness
+        .lines()
+        .filter(|line| line.contains("MISSING"))
+        .collect::<Vec<_>>();
+
+    let mut lines = vec!["## Immediate Guidance".to_string()];
+    if missing.is_empty() {
+        lines.push("- Core handoff readiness items are present.".to_string());
+    } else {
+        lines.push("- Fix missing readiness items first:".to_string());
+        lines.extend(missing.iter().map(|line| format!("  {line}")));
+    }
+
+    if !runtime.trim().is_empty() {
+        lines.push("\n## Runtime Status".to_string());
+        lines.push(runtime.trim().to_string());
+    }
+
+    if !counts.trim().is_empty() {
+        lines.push("\n## Counts".to_string());
+        lines.push(counts.trim().to_string());
+    }
+
+    if !next_steps.trim().is_empty() {
+        lines.push("\n## Next Local Steps".to_string());
+        lines.push(next_steps.trim().to_string());
+    }
+
+    lines.join("\n")
+}
+
+fn extract_markdown_section(markdown: &str, heading: &str) -> String {
+    let heading_line = format!("## {heading}");
+    let mut lines = Vec::new();
+    let mut inside = false;
+    for line in markdown.lines() {
+        if line.trim() == heading_line {
+            inside = true;
+            continue;
+        }
+        if inside && line.starts_with("## ") {
+            break;
+        }
+        if inside {
+            lines.push(line);
+        }
+    }
+    lines.join("\n").trim().to_string()
+}
+
 fn ensure_generated_portfolio_file(agent_dir: &PathBuf, file_name: &str) -> Result<(), String> {
     if agent_dir.join(file_name).exists() {
         return Ok(());
@@ -1300,6 +1375,7 @@ pub fn run() {
             setup_os_review_portfolio_insights,
             setup_os_check_portfolio_health,
             setup_os_write_portfolio_handoff,
+            setup_os_review_portfolio_handoff_guidance,
             setup_os_import_portfolio_conversation,
             setup_os_import_portfolio_holdings,
             setup_os_import_portfolio_transactions,
