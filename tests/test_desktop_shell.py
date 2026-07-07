@@ -169,6 +169,7 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Portfolio Management OS status", lib_rs)
         self.assertIn("Create Portfolio Management OS", lib_rs)
         self.assertIn("Run daily report", lib_rs)
+        self.assertIn("Write local utility handoff", lib_rs)
 
     def test_desktop_ui_accepts_portfolio_output_path(self) -> None:
         app = (DESKTOP / "src" / "App.tsx").read_text(encoding="utf-8")
