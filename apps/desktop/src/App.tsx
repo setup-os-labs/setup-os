@@ -1,11 +1,18 @@
 import {
+  ArrowRight,
   Bell,
+  BookOpen,
   Bot,
   CheckCircle2,
+  ClipboardCheck,
+  Database,
   FileText,
   FolderInput,
+  LayoutDashboard,
   Play,
   RefreshCcw,
+  Route,
+  Settings2,
   Stethoscope,
   ShieldCheck,
 } from "lucide-react";
@@ -61,13 +68,6 @@ const agents = [
   },
 ];
 
-const activity = [
-  "Portfolio stack research merged",
-  "Desktop packaging decision accepted",
-  "Notification inbox schema available",
-  "Evolution proposals require approval",
-];
-
 type DataImportPaths = {
   holdings: string;
   transactions: string;
@@ -84,6 +84,56 @@ type PortfolioDashboard = {
   notifications: string;
   drafts: string;
 };
+
+type SurfaceId = "work" | "review" | "operator";
+type GuideId = "start" | "how" | "use";
+
+const surfaces: Array<{
+  id: SurfaceId;
+  label: string;
+  description: string;
+  icon: ReactNode;
+}> = [
+  {
+    id: "work",
+    label: "Work",
+    description: "Create or open the local Portfolio OS loop.",
+    icon: <LayoutDashboard size={17} />,
+  },
+  {
+    id: "review",
+    label: "Review",
+    description: "Inspect reports, memory drafts, handoff, and inbox state.",
+    icon: <ClipboardCheck size={17} />,
+  },
+  {
+    id: "operator",
+    label: "Operator",
+    description: "Run diagnostics, release checks, smoke tests, and logs.",
+    icon: <Settings2 size={17} />,
+  },
+];
+
+const guides: Array<{ id: GuideId; label: string; icon: ReactNode }> = [
+  { id: "start", label: "Start", icon: <Play size={16} /> },
+  { id: "how", label: "How it works", icon: <Route size={16} /> },
+  { id: "use", label: "How to use", icon: <BookOpen size={16} /> },
+];
+
+const onboardingSteps = [
+  { label: "Choose", detail: "Pick a saved conversation." },
+  { label: "Generate", detail: "Create the local OS." },
+  { label: "Review", detail: "Check outputs before trust." },
+];
+
+const systemFlow = ["Conversation", "Spec", "Local OS", "Reports", "Evolution"];
+
+const useSteps = [
+  "Run demo flow",
+  "Import your conversation",
+  "Review report",
+  "Write handoff",
+];
 
 const defaultDataImportPaths: DataImportPaths = {
   holdings: "examples/portfolio_snapshot.csv",
@@ -153,6 +203,8 @@ export function App() {
     notifications: "Unknown",
     drafts: "Unknown",
   });
+  const [activeSurface, setActiveSurface] = useState<SurfaceId>("work");
+  const [activeGuide, setActiveGuide] = useState<GuideId>("start");
 
   useEffect(() => {
     window.localStorage.setItem("setup-os:portfolio-output-path", portfolioOutputPath);
@@ -683,228 +735,365 @@ export function App() {
       <section className="workspace">
         <header className="topbar">
           <div>
-            <p className="eyebrow">Desktop foundation</p>
-            <h2>Vertical Agent Launcher</h2>
+            <p className="eyebrow">Setup OS</p>
+            <h2>Portfolio OS</h2>
           </div>
-          <button className="primary" type="button" onClick={checkCli}>
-            <RefreshCcw size={17} /> Check engine
-          </button>
-          <button className="secondary" type="button" onClick={checkPythonRuntime}>
-            <Stethoscope size={17} /> Runtime details
-          </button>
-          <button className="secondary" type="button" onClick={checkReleaseReadiness}>
-            <ShieldCheck size={17} /> Release readiness
-          </button>
-          <button className="secondary" type="button" onClick={runLocalSmokeTest}>
-            <CheckCircle2 size={17} /> Local smoke test
-          </button>
-        </header>
-
-        <section className="status-grid" aria-label="System status">
-          <StatusTile label="Python engine" value={cliStatus} icon={<CheckCircle2 size={20} />} />
-          <StatusTile label="Memory mode" value="Raw first" icon={<FolderInput size={20} />} />
-          <StatusTile label="Policy" value="Approval first" icon={<ShieldCheck size={20} />} />
-          <StatusTile label="Release mode" value="Candidate diffs" icon={<FileText size={20} />} />
-        </section>
-
-        <section className="dashboard-band" aria-label="Portfolio dashboard">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Portfolio dashboard</p>
-              <h3>Selected workspace</h3>
-            </div>
+          <div className="topbar-actions">
+            <button className="primary" type="button" onClick={runFullPortfolioFlow}>
+              <Play size={17} /> Run demo flow
+            </button>
             <button className="secondary" type="button" onClick={loadPortfolioSummary}>
               <RefreshCcw size={17} /> Update dashboard
             </button>
           </div>
-          <div className="dashboard-grid">
-            <DashboardCard label="Workspace" value={portfolioDashboard.workspace} />
-            <DashboardCard label="Health" value={portfolioDashboard.health} />
-            <DashboardCard label="Report" value={portfolioDashboard.report} />
-            <DashboardCard label="Handoff" value={portfolioDashboard.handoff} />
-            <DashboardCard label="Notifications" value={portfolioDashboard.notifications} />
-            <DashboardCard label="Memory drafts" value={portfolioDashboard.drafts} />
+        </header>
+
+        <section className="onboarding-shell" aria-label="Setup OS onboarding">
+          <div className="onboarding-main">
+            <div className="guide-tabs" aria-label="Onboarding views">
+              {guides.map((guide) => (
+                <button
+                  className={activeGuide === guide.id ? "guide-tab active" : "guide-tab"}
+                  key={guide.id}
+                  type="button"
+                  onClick={() => setActiveGuide(guide.id)}
+                >
+                  {guide.icon}
+                  {guide.label}
+                </button>
+              ))}
+            </div>
+
+            {activeGuide === "start" && (
+              <div className="guide-panel">
+                <div>
+                  <p className="eyebrow">Start here</p>
+                  <h3>{actionStatus === "Ready" ? "Create a local Portfolio OS" : actionStatus}</h3>
+                </div>
+                <div className="step-grid">
+                  {onboardingSteps.map((step, index) => (
+                    <article className="step-card" key={step.label}>
+                      <span>{index + 1}</span>
+                      <strong>{step.label}</strong>
+                      <small>{step.detail}</small>
+                    </article>
+                  ))}
+                </div>
+                <div className="guide-actions">
+                  <button className="primary" type="button" onClick={runFullPortfolioFlow}>
+                    <ArrowRight size={18} /> Continue
+                  </button>
+                  <button className="secondary" type="button" onClick={previewPortfolioConversationFromPath}>
+                    <FileText size={17} /> Preview input
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeGuide === "how" && (
+              <div className="guide-panel">
+                <div>
+                  <p className="eyebrow">How it works</p>
+                  <h3>Conversation becomes a local system</h3>
+                </div>
+                <div className="flow-map" aria-label="Setup OS system flow">
+                  {systemFlow.map((item, index) => (
+                    <div className="flow-node" key={item}>
+                      <span>{item}</span>
+                      {index < systemFlow.length - 1 && <ArrowRight size={16} />}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeGuide === "use" && (
+              <div className="guide-panel">
+                <div>
+                  <p className="eyebrow">How to use</p>
+                  <h3>One low-risk loop</h3>
+                </div>
+                <div className="use-list">
+                  {useSteps.map((step, index) => (
+                    <button
+                      className={index === 0 ? "use-step active" : "use-step"}
+                      key={step}
+                      type="button"
+                      onClick={index === 0 ? runFullPortfolioFlow : undefined}
+                    >
+                      <span>{index + 1}</span>
+                      {step}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+
+          <aside className="state-panel" aria-label="Current workspace state">
+            <p className="eyebrow">Current state</p>
+            <StatusTile label="Engine" value={cliStatus} icon={<CheckCircle2 size={18} />} />
+            <StatusTile label="Workspace" value={portfolioDashboard.workspace} icon={<LayoutDashboard size={18} />} />
+            <StatusTile label="Report" value={portfolioDashboard.report} icon={<FileText size={18} />} />
+            <button className="secondary state-button" type="button" onClick={loadPortfolioSummary}>
+              <RefreshCcw size={16} /> Refresh
+            </button>
+          </aside>
+        </section>
+
+        <section className="details-drawer" aria-label="Workspace details">
+          <details>
+            <summary>Workspace details</summary>
+            <div className="dashboard-grid">
+              <DashboardCard label="Health" value={portfolioDashboard.health} />
+              <DashboardCard label="Handoff" value={portfolioDashboard.handoff} />
+              <DashboardCard label="Notifications" value={portfolioDashboard.notifications} />
+              <DashboardCard label="Memory drafts" value={portfolioDashboard.drafts} />
+            </div>
+          </details>
+        </section>
+
+        <section className="surface-tabs" aria-label="Workspace modes">
+          {surfaces.map((surface) => (
+            <button
+              className={activeSurface === surface.id ? "surface-tab active" : "surface-tab"}
+              key={surface.id}
+              type="button"
+              title={surface.description}
+              onClick={() => setActiveSurface(surface.id)}
+            >
+              {surface.icon}
+              <span>{surface.label}</span>
+            </button>
+          ))}
         </section>
 
         <section id="agents" className="content-band">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Agents</p>
-              <h3>Generated systems</h3>
-            </div>
-            <div className="button-row">
-              <button className="primary" type="button" onClick={runFullPortfolioFlow}>
-                <Play size={17} /> Run demo flow
-              </button>
-              <button className="secondary" type="button" onClick={resetPortfolioAgent}>
-                <RefreshCcw size={17} /> Reset workspace
-              </button>
-              <button className="secondary" type="button" onClick={checkReadiness}>
-                <ShieldCheck size={17} /> Check readiness
-              </button>
-              <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
-                <RefreshCcw size={17} /> Refresh status
-              </button>
-              <button className="secondary" type="button" onClick={loadPortfolioSummary}>
-                <FileText size={17} /> Load summary
-              </button>
-              <button className="secondary" type="button" onClick={readPortfolioInbox}>
-                <Bell size={17} /> Read inbox
-              </button>
-              <button className="secondary" type="button" onClick={readRuntimeLog}>
-                <FileText size={17} /> Read runtime log
-              </button>
-              <button className="secondary" type="button" onClick={writeLocalHandoff}>
-                <FileText size={17} /> Write handoff
-              </button>
-              <button className="secondary" type="button" onClick={reviewLocalHandoffGuidance}>
-                <FileText size={17} /> Review handoff guidance
-              </button>
-              <label className="path-field">
-                <span>Output</span>
-                <input
-                  value={portfolioOutputPath}
-                  onChange={(event) => setPortfolioOutputPath(event.target.value)}
-                  aria-label="Portfolio output path"
-                />
-              </label>
-              <label className="path-field">
-                <span>Seed</span>
-                <input
-                  value={seedConversationPath}
-                  onChange={(event) => setSeedConversationPath(event.target.value)}
-                  aria-label="Seed conversation path"
-                />
-              </label>
-              <label className="path-field">
-                <span>Conversation</span>
-                <input
-                  value={conversationPath}
-                  onChange={(event) => setConversationPath(event.target.value)}
-                  aria-label="Conversation path"
-                />
-              </label>
-              <button className="secondary" type="button" onClick={importPortfolioConversationFromPath}>
-                <FolderInput size={17} /> Import
-              </button>
-              <button className="secondary" type="button" onClick={previewPortfolioConversationFromPath}>
-                <FileText size={17} /> Preview conversation
-              </button>
-              <button className="secondary" type="button" onClick={extractPortfolioMemoryDrafts}>
-                <FileText size={17} /> Extract drafts
-              </button>
-              <button className="secondary" type="button" onClick={reviewPortfolioDrafts}>
-                <FileText size={17} /> Review drafts
-              </button>
-              <button className="secondary" type="button" onClick={reviewPortfolioMemoryReport}>
-                <FileText size={17} /> Review memory report
-              </button>
-              <button className="secondary" type="button" onClick={reviewPortfolioFunctionalEvolution}>
-                <FileText size={17} /> Review functional evolution
-              </button>
-              <button className="secondary" type="button" onClick={reviewPortfolioEvolutionPacket}>
-                <FileText size={17} /> Review evolution packet
-              </button>
-              <button className="secondary" type="button" onClick={reviewPortfolioRollbackReadiness}>
-                <ShieldCheck size={17} /> Review rollback
-              </button>
-              <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
-                <Stethoscope size={17} /> Check health
-              </button>
-              <button className="secondary" type="button" onClick={runPortfolioAgentReport}>
-                <FileText size={17} /> Run report
-              </button>
-              <button className="secondary" type="button" onClick={reviewPortfolioReport}>
-                <FileText size={17} /> Review report
-              </button>
-              <button className="secondary" type="button" onClick={reviewPortfolioDashboardInsights}>
-                <FileText size={17} /> Review insights
-              </button>
-            </div>
-          </div>
-
-          <div className="agent-list">
-            {agents.map((agent) => (
-              <article className="agent-card" key={agent.name}>
-                <div>
-                  <span>{agent.badge}</span>
-                  <h4>{agent.name}</h4>
-                  <p>{agent.detail}</p>
-                </div>
-                <div className="agent-actions">
-                  <small>{agent.status}</small>
-                  <button
-                    aria-label={`Run ${agent.name}`}
-                    disabled={agent.name !== "Portfolio Management OS" || actionStatus === "Generating"}
-                    title={
-                      agent.name === "Portfolio Management OS"
-                        ? "Generate the local Portfolio Management OS example"
-                        : "This blueprint is available from the CLI"
-                    }
-                    type="button"
-                    onClick={agent.name === "Portfolio Management OS" ? createPortfolioAgent : undefined}
-                  >
-                    <Play size={17} />
+          {activeSurface === "work" && (
+            <div className="surface-grid">
+              <section className="panel action-panel">
+                <p className="eyebrow">Work</p>
+                <h3>Local Portfolio loop</h3>
+                <div className="action-row">
+                  <button className="primary" type="button" onClick={createPortfolioAgent}>
+                    <Play size={17} /> Create Portfolio OS
+                  </button>
+                  <button className="secondary" type="button" onClick={previewPortfolioConversationFromPath}>
+                    <FileText size={17} /> Preview conversation
+                  </button>
+                  <button className="secondary" type="button" onClick={importPortfolioConversationFromPath}>
+                    <FolderInput size={17} /> Import conversation
                   </button>
                 </div>
-              </article>
-            ))}
-          </div>
+                <details className="inline-details">
+                  <summary>Paths</summary>
+                  <div className="path-grid">
+                    <label className="path-field">
+                      <span>Output</span>
+                      <input
+                        value={portfolioOutputPath}
+                        onChange={(event) => setPortfolioOutputPath(event.target.value)}
+                        aria-label="Portfolio output path"
+                      />
+                    </label>
+                    <label className="path-field">
+                      <span>Seed</span>
+                      <input
+                        value={seedConversationPath}
+                        onChange={(event) => setSeedConversationPath(event.target.value)}
+                        aria-label="Seed conversation path"
+                      />
+                    </label>
+                    <label className="path-field">
+                      <span>Conversation</span>
+                      <input
+                        value={conversationPath}
+                        onChange={(event) => setConversationPath(event.target.value)}
+                        aria-label="Conversation path"
+                      />
+                    </label>
+                  </div>
+                </details>
+              </section>
+
+              <section className="panel action-panel">
+                <p className="eyebrow">Systems</p>
+                <h3>Verticals</h3>
+                <div className="agent-list compact-list">
+                  {agents.map((agent) => (
+                    <article className="agent-card" key={agent.name}>
+                      <div>
+                        <span>{agent.badge}</span>
+                        <h4>{agent.name}</h4>
+                      </div>
+                      <div className="agent-actions">
+                        <small>{agent.status}</small>
+                        <button
+                          aria-label={`Run ${agent.name}`}
+                          disabled={agent.name !== "Portfolio Management OS" || actionStatus === "Generating"}
+                          title={
+                            agent.name === "Portfolio Management OS"
+                              ? "Generate the local Portfolio Management OS example"
+                              : "This blueprint is available from the CLI"
+                          }
+                          type="button"
+                          onClick={agent.name === "Portfolio Management OS" ? createPortfolioAgent : undefined}
+                        >
+                          <Play size={17} />
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section className="panel data-imports full-span" aria-label="Portfolio data imports">
+                <details>
+                  <summary>Local CSV imports</summary>
+                  <DataImportRow
+                    label="Holdings"
+                    value={dataImportPaths.holdings}
+                    onChange={(value) => updateDataImportPath("holdings", value)}
+                    onImport={() => importPortfolioData("holdings")}
+                  />
+                  <DataImportRow
+                    label="Transactions"
+                    value={dataImportPaths.transactions}
+                    onChange={(value) => updateDataImportPath("transactions", value)}
+                    onImport={() => importPortfolioData("transactions")}
+                  />
+                  <DataImportRow
+                    label="Cash"
+                    value={dataImportPaths.cash}
+                    onChange={(value) => updateDataImportPath("cash", value)}
+                    onImport={() => importPortfolioData("cash")}
+                  />
+                  <DataImportRow
+                    label="Watchlist"
+                    value={dataImportPaths.watchlist}
+                    onChange={(value) => updateDataImportPath("watchlist", value)}
+                    onImport={() => importPortfolioData("watchlist")}
+                  />
+                  <DataImportRow
+                    label="Market data"
+                    value={dataImportPaths.marketData}
+                    onChange={(value) => updateDataImportPath("marketData", value)}
+                    onImport={() => importPortfolioData("marketData")}
+                  />
+                </details>
+              </section>
+            </div>
+          )}
+
+          {activeSurface === "review" && (
+            <div className="surface-grid">
+              <section className="panel action-panel">
+                <p className="eyebrow">Review</p>
+                <h3>Evidence and outputs</h3>
+                <div className="action-row">
+                  <button className="primary" type="button" onClick={runPortfolioAgentReport}>
+                    <FileText size={17} /> Run report
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewPortfolioReport}>
+                    <FileText size={17} /> Review report
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewPortfolioDashboardInsights}>
+                    <Database size={17} /> Review insights
+                  </button>
+                  <button className="secondary" type="button" onClick={extractPortfolioMemoryDrafts}>
+                    <FileText size={17} /> Extract drafts
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewPortfolioDrafts}>
+                    <ClipboardCheck size={17} /> Review drafts
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewPortfolioMemoryReport}>
+                    <FileText size={17} /> Review memory report
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewPortfolioFunctionalEvolution}>
+                    <FileText size={17} /> Review functional evolution
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewPortfolioEvolutionPacket}>
+                    <FileText size={17} /> Review evolution packet
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewPortfolioRollbackReadiness}>
+                    <ShieldCheck size={17} /> Review rollback
+                  </button>
+                  <button className="secondary" type="button" onClick={readPortfolioInbox}>
+                    <Bell size={17} /> Read inbox
+                  </button>
+                </div>
+              </section>
+
+              <section className="panel action-panel">
+                <p className="eyebrow">Handoff</p>
+                <h3>Local readiness</h3>
+                <div className="action-row">
+                  <button className="primary" type="button" onClick={writeLocalHandoff}>
+                    <FileText size={17} /> Write handoff
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewLocalHandoffGuidance}>
+                    <ClipboardCheck size={17} /> Review guidance
+                  </button>
+                  <button className="secondary" type="button" onClick={refreshPortfolioStatus}>
+                    <RefreshCcw size={17} /> Refresh status
+                  </button>
+                  <button className="secondary" type="button" onClick={loadPortfolioSummary}>
+                    <LayoutDashboard size={17} /> Load summary
+                  </button>
+                </div>
+              </section>
+            </div>
+          )}
+
+          {activeSurface === "operator" && (
+            <div className="surface-grid">
+              <section className="panel action-panel">
+                <p className="eyebrow">Diagnostics</p>
+                <h3>Runtime and health</h3>
+                <div className="action-row">
+                  <button className="primary" type="button" onClick={checkCli}>
+                    <RefreshCcw size={17} /> Check engine
+                  </button>
+                  <button className="secondary" type="button" onClick={checkPythonRuntime}>
+                    <Stethoscope size={17} /> Runtime details
+                  </button>
+                  <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
+                    <Stethoscope size={17} /> Check health
+                  </button>
+                  <button className="secondary" type="button" onClick={checkReadiness}>
+                    <ShieldCheck size={17} /> Check readiness
+                  </button>
+                  <button className="secondary" type="button" onClick={readRuntimeLog}>
+                    <FileText size={17} /> Runtime log
+                  </button>
+                </div>
+              </section>
+
+              <section className="panel action-panel">
+                <p className="eyebrow">Release and reset</p>
+                <h3>Operator actions</h3>
+                <div className="action-row">
+                  <button className="primary" type="button" onClick={runLocalSmokeTest}>
+                    <CheckCircle2 size={17} /> Local smoke test
+                  </button>
+                  <button className="secondary" type="button" onClick={checkReleaseReadiness}>
+                    <ShieldCheck size={17} /> Release readiness
+                  </button>
+                  <button className="secondary danger" type="button" onClick={resetPortfolioAgent}>
+                    <RefreshCcw size={17} /> Reset workspace
+                  </button>
+                </div>
+              </section>
+            </div>
+          )}
         </section>
 
-        <section className="split">
-          <div id="proposals" className="panel">
-            <p className="eyebrow">Timeline</p>
-            <h3>Recent work</h3>
-            <ul>
-              {activity.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div id="import" className="panel">
-            <p className="eyebrow">Engine output</p>
-            <h3>CLI contract</h3>
+        <section className="details-drawer output-drawer" id="import" aria-label="Engine output">
+          <details>
+            <summary>Engine output</summary>
             <p className="panel-status">Portfolio action: {actionStatus}</p>
-            <pre>{cliOutput || "Run Check engine to call python -m setup_os.cli --help."}</pre>
-          </div>
-        </section>
-
-        <section className="panel data-imports" aria-label="Portfolio data imports">
-          <p className="eyebrow">Portfolio data</p>
-          <h3>Local CSV imports</h3>
-          <DataImportRow
-            label="Holdings"
-            value={dataImportPaths.holdings}
-            onChange={(value) => updateDataImportPath("holdings", value)}
-            onImport={() => importPortfolioData("holdings")}
-          />
-          <DataImportRow
-            label="Transactions"
-            value={dataImportPaths.transactions}
-            onChange={(value) => updateDataImportPath("transactions", value)}
-            onImport={() => importPortfolioData("transactions")}
-          />
-          <DataImportRow
-            label="Cash"
-            value={dataImportPaths.cash}
-            onChange={(value) => updateDataImportPath("cash", value)}
-            onImport={() => importPortfolioData("cash")}
-          />
-          <DataImportRow
-            label="Watchlist"
-            value={dataImportPaths.watchlist}
-            onChange={(value) => updateDataImportPath("watchlist", value)}
-            onImport={() => importPortfolioData("watchlist")}
-          />
-          <DataImportRow
-            label="Market data"
-            value={dataImportPaths.marketData}
-            onChange={(value) => updateDataImportPath("marketData", value)}
-            onImport={() => importPortfolioData("marketData")}
-          />
+            <pre>{cliOutput || "Output appears here after an action."}</pre>
+          </details>
         </section>
       </section>
     </main>

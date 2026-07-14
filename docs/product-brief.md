@@ -61,12 +61,13 @@ v0 should not:
 
 - Compose before build.
 - Architecture is the product.
-- UI is the last resort.
+- UI is decision-first when it is needed.
 - Humans approve architecture.
 - Every dependency needs a reason.
 - Generated agents own their runtime UX.
 - Local-first is the default.
 - Future evolution must be reviewable.
+- Work, review, and operator surfaces should stay separate so daily use does not feel like diagnostics.
 
 ## Open-Core Boundary
 

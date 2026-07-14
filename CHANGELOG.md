@@ -9,6 +9,8 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 ### Added
 
 - ADR 0007 documenting self-evolving extraction as a future architecture pillar with separate approval-gated memory updates and functional extractor upgrades.
+- Desktop UX philosophy documenting Setup OS as a calm cockpit with distinct Work, Review, and Operator surfaces.
+- Desktop shell now opens with compact onboarding, visual "How it works" and "How to use" tabs, and collapsed details instead of a dense action wall.
 - Evolution model rules for self-evaluation, observability, traceability, governance, versioning, rollback, data quality, and objective alignment in recurring personal-data ingestion.
 - Portfolio Management OS future direction for Memory Update Reports, Functional Evolution Reports, extraction observability, evidence maps, and approval-gated extractor improvements.
 - Generated agents now include `memory_update_report.py`, which turns raw imported conversations into a review-only, evidence-linked Memory Update Report without mutating policy or strategy.

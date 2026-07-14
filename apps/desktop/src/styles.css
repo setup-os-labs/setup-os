@@ -57,6 +57,7 @@ input {
 .brand p,
 .topbar h2,
 .topbar p,
+.guide-panel h3,
 .section-heading h3,
 .section-heading p,
 .panel h3,
@@ -108,6 +109,7 @@ nav a:hover {
 .section-heading,
 .agent-card,
 .agent-actions,
+.topbar-actions,
 .button-row,
 .status-tile {
   display: flex;
@@ -130,7 +132,186 @@ nav a:hover {
 }
 
 .topbar h2 {
-  font-size: 28px;
+  font-size: 26px;
+}
+
+.topbar-actions {
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.onboarding-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.onboarding-main,
+.state-panel,
+.details-drawer details {
+  border: 1px solid #d8ded6;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.onboarding-main {
+  min-height: 286px;
+  padding: 18px;
+}
+
+.guide-tabs {
+  display: inline-grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 4px;
+  margin-bottom: 18px;
+  border: 1px solid #d8ded6;
+  border-radius: 8px;
+  background: #f8faf7;
+  padding: 4px;
+}
+
+.guide-tab {
+  min-height: 34px;
+  border-radius: 6px;
+  padding: 0 12px;
+  color: #31443a;
+}
+
+.guide-tab.active {
+  background: #173b2f;
+  color: #ffffff;
+}
+
+.guide-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.guide-panel h3 {
+  max-width: 620px;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.step-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.step-card {
+  display: grid;
+  gap: 8px;
+  min-height: 112px;
+  border: 1px solid #d8ded6;
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 14px;
+}
+
+.step-card span,
+.use-step span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #e4eee7;
+  color: #173b2f;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.step-card strong {
+  font-size: 18px;
+}
+
+.step-card small {
+  color: #66756d;
+  line-height: 1.4;
+}
+
+.guide-actions,
+.flow-map,
+.use-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.flow-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  border: 1px solid #d8ded6;
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 0 12px;
+  color: #31443a;
+  font-weight: 750;
+}
+
+.use-step {
+  justify-content: flex-start;
+  min-width: 190px;
+  min-height: 46px;
+  border-color: #d8ded6;
+  background: #ffffff;
+  color: #31443a;
+}
+
+.use-step.active {
+  border-color: #86a394;
+  background: #eef4ef;
+}
+
+.state-panel {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 16px;
+}
+
+.state-panel .status-tile {
+  min-height: 62px;
+  padding: 12px;
+}
+
+.state-button {
+  width: 100%;
+}
+
+.details-drawer {
+  margin-bottom: 18px;
+}
+
+.details-drawer details {
+  padding: 0;
+}
+
+.details-drawer summary,
+.inline-details summary,
+.data-imports summary {
+  min-height: 42px;
+  padding: 11px 14px;
+  cursor: pointer;
+  color: #31443a;
+  font-weight: 800;
+}
+
+.details-drawer .dashboard-grid {
+  padding: 0 14px 14px;
+}
+
+.inline-details {
+  margin-top: 14px;
+  border-top: 1px solid #edf1ee;
+}
+
+.inline-details summary {
+  padding-left: 0;
 }
 
 button {
@@ -162,6 +343,11 @@ button:disabled {
   color: #173b2f;
 }
 
+.danger {
+  border-color: #e0b6b6;
+  color: #7a2525;
+}
+
 .status-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -172,7 +358,8 @@ button:disabled {
 .status-tile,
 .dashboard-card,
 .agent-card,
-.panel {
+.panel,
+.surface-tab {
   border: 1px solid #d8ded6;
   border-radius: 8px;
   background: #ffffff;
@@ -195,6 +382,10 @@ button:disabled {
 
 .dashboard-band {
   margin-bottom: 28px;
+}
+
+.compact-heading {
+  margin-bottom: 12px;
 }
 
 .dashboard-grid {
@@ -262,6 +453,66 @@ button:disabled {
   justify-content: flex-end;
 }
 
+.surface-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.surface-tab {
+  justify-content: flex-start;
+  min-height: 42px;
+  border-color: #d8ded6;
+  padding: 0 12px;
+}
+
+.surface-tab span {
+  color: #17211c;
+  font-weight: 800;
+}
+
+.surface-tab small {
+  grid-area: desc;
+  margin-top: 3px;
+  color: #66756d;
+  line-height: 1.35;
+}
+
+.surface-tab.active {
+  border-color: #86a394;
+  background: #eef4ef;
+}
+
+.surface-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.action-panel {
+  min-height: auto;
+}
+
+.action-row,
+.path-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.action-row {
+  margin-top: 16px;
+}
+
+.path-grid {
+  margin-top: 14px;
+}
+
+.full-span {
+  grid-column: 1 / -1;
+}
+
 .path-field {
   display: grid;
   gap: 4px;
@@ -284,16 +535,13 @@ button:disabled {
   padding: 0;
 }
 
-.split {
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: 16px;
-  margin-bottom: 16px;
+.compact-list .agent-card {
+  padding: 14px;
 }
 
 .panel {
-  min-height: 210px;
-  padding: 18px;
+  min-height: 0;
+  padding: 16px;
 }
 
 .panel h3 {
@@ -301,8 +549,8 @@ button:disabled {
 }
 
 .data-imports {
-  display: grid;
-  gap: 12px;
+  display: block;
+  padding: 0;
 }
 
 .data-import-row {
@@ -310,6 +558,7 @@ button:disabled {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
   align-items: end;
+  padding: 0 14px 12px;
 }
 
 .data-import-row label {
@@ -340,6 +589,12 @@ ul {
   color: #31443a;
 }
 
+.flow-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #31443a;
+}
+
 li + li {
   margin-top: 10px;
 }
@@ -357,7 +612,8 @@ pre {
 
 @media (max-width: 900px) {
   .shell,
-  .split {
+  .surface-grid,
+  .onboarding-shell {
     grid-template-columns: 1fr;
   }
 
@@ -381,6 +637,10 @@ pre {
   .dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .topbar-actions {
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 620px) {
@@ -391,7 +651,8 @@ pre {
 
   .topbar,
   .section-heading,
-  .agent-card {
+  .agent-card,
+  .topbar-actions {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -402,8 +663,13 @@ pre {
 
   nav,
   .status-grid,
+  .surface-tabs,
   .dashboard-grid,
   .data-import-row {
     grid-template-columns: 1fr;
+  }
+
+  .topbar-actions button {
+    width: 100%;
   }
 }
