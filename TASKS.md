@@ -117,9 +117,10 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-099 | review | Codex | `codex/packaged-artifact-smoke` | Add packaged artifact smoke manifest | Desktop release workflow smoke-checks generated bundle artifacts and uploads a manifest before manual install testing |
 | SO-100 | done | Codex | `codex/self-evolving-extraction-adr` | Capture self-evolving extraction architecture direction | ADR, evolution docs, Portfolio OS docs, product status, task queue, and changelog define memory updates separately from functional extractor evolution |
 | SO-101 | done | Codex | `codex/weekly-memory-update-report` | Add weekly Portfolio Memory Update Report artifact | Saved finance conversations produce evidence-linked facts, preferences, open loops, decisions, risk rules, tax notes, and watchlist drafts without mutating policy |
-| SO-102 | todo | Codex | `codex/functional-evolution-report` | Add Functional Evolution Report artifact | Extraction runs can recommend new extractors, schema fields, comparison dimensions, contradiction checks, scoring rubrics, and filters behind approval |
+| SO-102 | done | Codex | `codex/functional-evolution-report` | Add Functional Evolution Report artifact | Extraction runs can recommend new extractors, schema fields, comparison dimensions, contradiction checks, scoring rubrics, and filters behind approval |
 | SO-103 | todo | Codex | `codex/extraction-observability-traceability` | Add extraction observability and traceability review | Desktop and generated files show processed inputs, draft counts, rejected noise, low-confidence items, conflicts, source checksums, and evidence locations |
 | SO-104 | todo | Codex | `codex/extractor-versioning-rollback` | Add extractor versioning and rollback plan | Approved memory, schema, prompt, scoring, and extractor changes are versioned with a documented rollback path before limited automation |
+| SO-105 | done | Codex | `codex/desktop-decision-first-ux` | Apply decision-first desktop UX layering | Desktop shell separates Work, Review, and Operator surfaces and docs capture the reusable Setup OS UX philosophy |
 
 ## Backlog Rules
 

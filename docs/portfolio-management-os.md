@@ -29,7 +29,7 @@ It is a local, advisory, alert-first investing assistant.
 - store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
 - produce a review-only memory update report from recurring saved finance conversations
-- eventually let the extraction layer recommend its own new extractors, schema fields, scoring rubrics, and checks behind approval
+- let the extraction layer recommend its own new extractors, schema fields, scoring rubrics, and checks behind approval
 - produce daily Markdown portfolio reports
 - summarize offline unrealized performance from local cost basis and market snapshot files
 - warn on concentration above the local review threshold
@@ -135,7 +135,7 @@ Default policy:
 
 Portfolio Management OS should become the first proof vertical for the self-evolving extraction engine.
 
-The saved-chat ingestion loop now produces the first report type and should eventually produce the full set:
+The saved-chat ingestion loop now produces the first two report types and should eventually expose richer desktop review:
 
 - Memory Update Report: new facts, preferences, decisions, open loops, risk rules, tax notes, and watchlist changes.
 - Functional Evolution Report: recommended extractors, schema fields, comparison dimensions, contradiction checks, scoring rubrics, and noise filters.

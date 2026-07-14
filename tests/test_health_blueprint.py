@@ -34,6 +34,7 @@ class HealthBlueprintTests(unittest.TestCase):
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "memory_update_report.py").exists())
+            self.assertTrue((output / "functional_evolution_report.py").exists())
             self.assertTrue((output / "health.py").exists())
             self.assertTrue((output / "handoff.py").exists())
 
