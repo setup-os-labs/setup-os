@@ -12,6 +12,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Evolution model rules for self-evaluation, observability, traceability, governance, versioning, rollback, data quality, and objective alignment in recurring personal-data ingestion.
 - Portfolio Management OS future direction for Memory Update Reports, Functional Evolution Reports, extraction observability, evidence maps, and approval-gated extractor improvements.
 - Generated agents now include `memory_update_report.py`, which turns raw imported conversations into a review-only, evidence-linked Memory Update Report without mutating policy or strategy.
+- Desktop shell can review generated Portfolio Memory Update Reports with candidate counts, evidence counts, category summaries, and no-promotion guidance.
 - Generated agents now include `functional_evolution_report.py`, which recommends extractor, schema, classifier, scoring, and quality-check upgrades behind approval without activating them.
 - Generated agents now include `extraction_observability.py`, which writes a review-only traceability report with processed inputs, noisy lines, low-confidence drafts, conflict signals, checksums, and evidence anchors.
 - Desktop backend can read generated Portfolio extraction observability reports and show next-step guidance when they are missing.

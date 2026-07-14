@@ -33,6 +33,7 @@ import {
   resetPortfolioWorkspace,
   reviewPortfolioHandoffGuidance,
   reviewPortfolioMemoryDrafts,
+  reviewPortfolioMemoryUpdateReport,
   reviewPortfolioInsights,
   reviewPortfolioReportSections,
   runLocalUtilitySmokeTest,
@@ -471,6 +472,22 @@ export function App() {
     }
   }
 
+  async function reviewPortfolioMemoryReport() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Reviewing memory report");
+    try {
+      const output = await reviewPortfolioMemoryUpdateReport(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Memory report loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function refreshPortfolioStatus() {
     if (!requirePortfolioOutput()) {
       return;
@@ -728,6 +745,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={reviewPortfolioDrafts}>
                 <FileText size={17} /> Review drafts
+              </button>
+              <button className="secondary" type="button" onClick={reviewPortfolioMemoryReport}>
+                <FileText size={17} /> Review memory report
               </button>
               <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
                 <Stethoscope size={17} /> Check health

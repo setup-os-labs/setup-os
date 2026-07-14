@@ -717,6 +717,30 @@ fn setup_os_review_portfolio_memory_drafts(agent_dir: String) -> Result<String, 
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_memory_update_report(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let report_path = agent_dir
+        .join("memory")
+        .join("structured")
+        .join("memory_update_report.md");
+    if !report_path.exists() {
+        return Ok(format!(
+            "No Memory Update Report yet.\nExpected report: {}\nNext: run memory_update_report.py --all after importing a conversation and extracting memory drafts.",
+            report_path.display()
+        ));
+    }
+
+    let report = fs::read_to_string(&report_path)
+        .map_err(|error| format!("failed to read {}: {error}", report_path.display()))?;
+    Ok(format!(
+        "Portfolio Memory Update Report review\n{}\n\n{}\n\n{}",
+        report_path.display(),
+        format_memory_update_report_review(&report),
+        report
+    ))
+}
+
+#[tauri::command]
 fn setup_os_review_portfolio_extraction_observability(
     agent_dir: String,
 ) -> Result<String, String> {
@@ -1234,6 +1258,39 @@ fn list_or_none(values: &[String]) -> String {
     }
 }
 
+fn format_memory_update_report_review(report: &str) -> String {
+    let proposed = extract_markdown_section(report, "Proposed Memory Updates");
+    let categories = proposed
+        .lines()
+        .filter(|line| line.starts_with("### "))
+        .map(|line| line.trim_start_matches("### ").trim().to_string())
+        .collect::<Vec<_>>();
+    let candidate_count = proposed
+        .lines()
+        .filter(|line| line.trim_start().starts_with("- ") && !line.contains("None detected."))
+        .count();
+    let evidence_count = report.matches("evidence:").count();
+    let no_promotion = report.contains("does not mutate policy")
+        || report.contains("does not mutate policy, strategy, alerts");
+
+    [
+        "## Operator Summary".to_string(),
+        format!("- Candidate updates: {candidate_count}"),
+        format!("- Evidence-linked items: {evidence_count}"),
+        format!("- Categories: {}", list_or_none(&categories)),
+        format!(
+            "- Promotion status: {}",
+            if no_promotion {
+                "review-only; nothing is promoted automatically"
+            } else {
+                "needs manual confirmation before treating as review-only"
+            }
+        ),
+        "- Next: approve or reject useful facts, preferences, open loops, decisions, risk rules, tax notes, and watchlist items before any policy or strategy change.".to_string(),
+    ]
+    .join("\n")
+}
+
 fn count_keyword(text: &str, keyword: &str) -> usize {
     text.matches(keyword).count()
 }
@@ -1421,6 +1478,7 @@ pub fn run() {
             setup_os_import_portfolio_market_data,
             setup_os_extract_portfolio_memory,
             setup_os_review_portfolio_memory_drafts,
+            setup_os_review_portfolio_memory_update_report,
             setup_os_review_portfolio_extraction_observability,
             setup_os_portfolio_status,
             setup_os_portfolio_summary,
