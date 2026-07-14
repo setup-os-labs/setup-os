@@ -34,6 +34,7 @@ import {
   reviewPortfolioHandoffGuidance,
   reviewPortfolioFunctionalEvolutionReport,
   reviewPortfolioEvolutionReviewPacket,
+  reviewPortfolioExtractorRollback,
   reviewPortfolioMemoryDrafts,
   reviewPortfolioMemoryUpdateReport,
   reviewPortfolioInsights,
@@ -522,6 +523,22 @@ export function App() {
     }
   }
 
+  async function reviewPortfolioRollbackReadiness() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Reviewing rollback");
+    try {
+      const output = await reviewPortfolioExtractorRollback(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Rollback review loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function refreshPortfolioStatus() {
     if (!requirePortfolioOutput()) {
       return;
@@ -788,6 +805,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={reviewPortfolioEvolutionPacket}>
                 <FileText size={17} /> Review evolution packet
+              </button>
+              <button className="secondary" type="button" onClick={reviewPortfolioRollbackReadiness}>
+                <ShieldCheck size={17} /> Review rollback
               </button>
               <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
                 <Stethoscope size={17} /> Check health

@@ -812,6 +812,47 @@ fn setup_os_review_portfolio_evolution_review_packet(agent_dir: String) -> Resul
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_extractor_rollback(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let version_log_path = agent_dir.join("evolution").join("extractor_versions.jsonl");
+    let rollback_plan_path = agent_dir.join("evolution").join("extractor_rollback_plan.md");
+
+    if !version_log_path.exists() && !rollback_plan_path.exists() {
+        return Ok(format!(
+            "No extractor rollback review artifacts yet.\nExpected version log: {}\nExpected rollback plan: {}\nNext: run extractor_versioning.py snapshot before approving extractor changes.",
+            version_log_path.display(),
+            rollback_plan_path.display()
+        ));
+    }
+
+    let version_log = if version_log_path.exists() {
+        fs::read_to_string(&version_log_path)
+            .map_err(|error| format!("failed to read {}: {error}", version_log_path.display()))?
+    } else {
+        String::new()
+    };
+    let rollback_plan = if rollback_plan_path.exists() {
+        fs::read_to_string(&rollback_plan_path)
+            .map_err(|error| format!("failed to read {}: {error}", rollback_plan_path.display()))?
+    } else {
+        String::new()
+    };
+
+    Ok(format!(
+        "Portfolio extractor rollback review\nVersion log: {}\nRollback plan: {}\n\n{}\n\n## Latest Version Log Entry\n```json\n{}\n```\n\n## Rollback Plan\n{}",
+        version_log_path.display(),
+        rollback_plan_path.display(),
+        format_extractor_rollback_review(&version_log, &rollback_plan),
+        latest_jsonl_entry(&version_log),
+        if rollback_plan.trim().is_empty() {
+            "Missing rollback plan."
+        } else {
+            rollback_plan.as_str()
+        }
+    ))
+}
+
+#[tauri::command]
 fn setup_os_review_portfolio_extraction_observability(
     agent_dir: String,
 ) -> Result<String, String> {
@@ -1420,6 +1461,48 @@ fn format_evolution_review_packet(packet: &str) -> String {
     .join("\n")
 }
 
+fn format_extractor_rollback_review(version_log: &str, rollback_plan: &str) -> String {
+    let snapshot_count = version_log
+        .lines()
+        .filter(|line| line.contains("extractor_version_snapshot"))
+        .count();
+    let latest = latest_jsonl_entry(version_log);
+    let tracked_files = latest.matches("\"path\":").count();
+    let hash_count = latest.matches("\"sha256\":").count();
+    let rollback_steps = rollback_plan
+        .lines()
+        .filter(|line| line.trim_start().chars().next().is_some_and(|character| character.is_ascii_digit()))
+        .count();
+    let approval_rule_present = rollback_plan.contains("No extractor change is active");
+
+    [
+        "## Operator Summary".to_string(),
+        format!("- Version snapshots: {snapshot_count}"),
+        format!("- Tracked extractor files in latest snapshot: {tracked_files}"),
+        format!("- Hashes in latest snapshot: {hash_count}"),
+        format!("- Rollback steps: {rollback_steps}"),
+        format!(
+            "- Approval rule: {}",
+            if approval_rule_present {
+                "present; extractor changes stay inactive until approved"
+            } else {
+                "missing or needs review before approving extractor changes"
+            }
+        ),
+        "- Next: confirm the latest hashes and rollback steps before approving any extractor, schema, prompt, scoring, or quality-check change.".to_string(),
+    ]
+    .join("\n")
+}
+
+fn latest_jsonl_entry(jsonl: &str) -> String {
+    jsonl
+        .lines()
+        .rev()
+        .find(|line| !line.trim().is_empty())
+        .unwrap_or("Missing.")
+        .to_string()
+}
+
 fn count_keyword(text: &str, keyword: &str) -> usize {
     text.matches(keyword).count()
 }
@@ -1610,6 +1693,7 @@ pub fn run() {
             setup_os_review_portfolio_memory_update_report,
             setup_os_review_portfolio_functional_evolution_report,
             setup_os_review_portfolio_evolution_review_packet,
+            setup_os_review_portfolio_extractor_rollback,
             setup_os_review_portfolio_extraction_observability,
             setup_os_portfolio_status,
             setup_os_portfolio_summary,
