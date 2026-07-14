@@ -58,6 +58,7 @@ def main() -> int:
             "functional_evolution_report.py",
             "extraction_observability.py",
             "extractor_versioning.py",
+            "extractor_change_proposal.py",
             "weekly_review.py",
             "review_packet.py",
             "data/holdings.csv",
@@ -84,6 +85,7 @@ def main() -> int:
         run([sys.executable, "functional_evolution_report.py", "--all"], output)
         run([sys.executable, "extraction_observability.py"], output)
         run([sys.executable, "extractor_versioning.py", "snapshot"], output)
+        run([sys.executable, "extractor_change_proposal.py"], output)
         run([sys.executable, "weekly_review.py", "--skip-report"], output)
         run([sys.executable, "review_packet.py"], output)
         run([sys.executable, "handoff.py"], output)
@@ -98,6 +100,7 @@ def main() -> int:
             "memory/structured/extraction_observability.md",
             "evolution/extractor_versions.jsonl",
             "evolution/extractor_rollback_plan.md",
+            "evolution/extractor_change_proposal.md",
             ".setup_os/weekly_review.jsonl",
             "evolution/review_packet.md",
             "handoff.md",

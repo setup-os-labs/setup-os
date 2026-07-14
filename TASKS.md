@@ -127,6 +127,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-109 | done | Codex | `codex/desktop-functional-evolution-review` | Add desktop Functional Evolution Report review | Desktop can read `evolution/functional_evolution_report.md` and group proposed extractor, schema, scoring, classifier, and quality-check upgrades |
 | SO-110 | done | Codex | `codex/desktop-evolution-review-packet` | Add desktop Evolution Review Packet action | Desktop can generate or read `evolution/review_packet.md` as the single operator view for approval review |
 | SO-111 | done | Codex | `codex/desktop-extractor-rollback-review` | Add desktop extractor snapshot and rollback review | Desktop can read `evolution/extractor_versions.jsonl` and `evolution/extractor_rollback_plan.md`, showing latest hashes and rollback readiness |
+| SO-112 | done | Codex | `codex/extractor-change-proposal-skeleton` | Add approval-gated extractor change proposal skeleton | Generated agents can draft a deterministic extractor/schema/scoring change proposal without mutating behavior |
 
 ## Backlog Rules
 

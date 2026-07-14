@@ -67,6 +67,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_functional_evolution_reporter(output_dir)
     write_extraction_observability_reporter(output_dir)
     write_extractor_versioning(output_dir)
+    write_extractor_change_proposal(output_dir)
     write_weekly_review_runner(output_dir)
     write_review_packet(output_dir)
 
@@ -95,6 +96,7 @@ REQUIRED_PATHS = [
     "functional_evolution_report.py",
     "extraction_observability.py",
     "extractor_versioning.py",
+    "extractor_change_proposal.py",
     "weekly_review.py",
     "review_packet.py",
     "report.py",
@@ -152,6 +154,7 @@ REQUIRED_PATHS = [
     "functional_evolution_report.py",
     "extraction_observability.py",
     "extractor_versioning.py",
+    "extractor_change_proposal.py",
     "weekly_review.py",
     "review_packet.py",
     "report.py",
@@ -1425,6 +1428,128 @@ if __name__ == "__main__":
     )
 
 
+def write_extractor_change_proposal(output_dir: Path) -> None:
+    _write(
+        output_dir / "extractor_change_proposal.py",
+        """from __future__ import annotations
+
+from pathlib import Path
+
+
+ROOT = Path(__file__).parent
+FUNCTIONAL_REPORT_PATH = ROOT / "evolution" / "functional_evolution_report.md"
+VERSION_LOG_PATH = ROOT / "evolution" / "extractor_versions.jsonl"
+ROLLBACK_PLAN_PATH = ROOT / "evolution" / "extractor_rollback_plan.md"
+PROPOSAL_PATH = ROOT / "evolution" / "extractor_change_proposal.md"
+
+
+def read_text(path: Path) -> str:
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8")
+
+
+def latest_jsonl(path: Path) -> str:
+    if not path.exists():
+        return "Missing."
+    lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    return lines[-1] if lines else "Present but empty."
+
+
+def proposed_upgrade_titles(report: str) -> list[str]:
+    return [
+        line.strip().removeprefix("### ").strip()
+        for line in report.splitlines()
+        if line.startswith("### ")
+    ]
+
+
+def proposed_upgrade_kinds(report: str) -> list[str]:
+    return [
+        line.strip().removeprefix("- kind: ").strip()
+        for line in report.splitlines()
+        if line.strip().startswith("- kind: ")
+    ]
+
+
+def build_proposal() -> str:
+    functional_report = read_text(FUNCTIONAL_REPORT_PATH)
+    rollback_plan = read_text(ROLLBACK_PLAN_PATH)
+    titles = proposed_upgrade_titles(functional_report)
+    kinds = proposed_upgrade_kinds(functional_report)
+    latest_snapshot = latest_jsonl(VERSION_LOG_PATH)
+    rollback_ready = "No extractor change is active" in rollback_plan
+    report_ready = bool(functional_report.strip())
+
+    lines = [
+        "# Extractor Change Proposal",
+        "",
+        "Status: draft_requires_approval",
+        "Activation: not_active",
+        "Mutation: none",
+        "",
+        "This proposal is a deterministic skeleton for reviewing extractor, schema, classifier, scoring, or quality-check changes. It does not rewrite prompts, code, memory, policy, strategy, release state, or execution settings.",
+        "",
+        "## Source Artifacts",
+        "",
+        f"- Functional Evolution Report: {'present' if report_ready else 'missing'} (`{FUNCTIONAL_REPORT_PATH.relative_to(ROOT)}`)",
+        f"- Extractor Version Log: {'present' if VERSION_LOG_PATH.exists() else 'missing'} (`{VERSION_LOG_PATH.relative_to(ROOT)}`)",
+        f"- Extractor Rollback Plan: {'present' if ROLLBACK_PLAN_PATH.exists() else 'missing'} (`{ROLLBACK_PLAN_PATH.relative_to(ROOT)}`)",
+        "",
+        "## Proposed Upgrade Scope",
+        "",
+    ]
+    if titles:
+        for index, title in enumerate(titles):
+            kind = kinds[index] if index < len(kinds) else "unspecified"
+            lines.append(f"- {title} ({kind})")
+    else:
+        lines.append("- None detected. Generate `functional_evolution_report.py --all` first.")
+
+    lines.extend(
+        [
+            "",
+            "## Latest Extractor Snapshot",
+            "",
+            "```json",
+            latest_snapshot,
+            "```",
+            "",
+            "## Approval Gate",
+            "",
+            "- Human approval required: yes",
+            "- Rollback plan required: yes",
+            f"- Rollback plan ready: {'yes' if rollback_ready else 'no'}",
+            "- Candidate release required before activation: yes",
+            "- Runtime jobs must be stopped before activation: yes",
+            "",
+            "## Rejection Path",
+            "",
+            "Reject this proposal by leaving generated extractor files unchanged and preserving the current version snapshot.",
+            "",
+            "## Next Step",
+            "",
+            "Review proposed upgrade scope, evidence, latest snapshot, and rollback readiness before creating any candidate release.",
+            "",
+        ]
+    )
+    return "\\n".join(lines)
+
+
+def main() -> int:
+    PROPOSAL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    PROPOSAL_PATH.write_text(build_proposal(), encoding="utf-8")
+    print(f"Wrote extractor change proposal to {PROPOSAL_PATH}")
+    print("No extractor, schema, prompt, scoring, memory, policy, strategy, release, or execution settings were mutated.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
+
+
 def write_weekly_review_runner(output_dir: Path) -> None:
     _write(
         output_dir / "weekly_review.py",
@@ -1476,6 +1601,7 @@ def build_steps(conversation_path: str | None, skip_report: bool) -> list[tuple[
             ("functional_evolution_report", ["functional_evolution_report.py", "--all"]),
             ("extraction_observability", ["extraction_observability.py"]),
             ("extractor_version_snapshot", ["extractor_versioning.py", "snapshot"]),
+            ("extractor_change_proposal", ["extractor_change_proposal.py"]),
             ("health", ["health.py"]),
             ("handoff", ["handoff.py"]),
             ("review_packet", ["review_packet.py"]),
@@ -1549,6 +1675,7 @@ SOURCES = [
     ("Functional Evolution Report", ROOT / "evolution" / "functional_evolution_report.md"),
     ("Extraction Observability Report", ROOT / "memory" / "structured" / "extraction_observability.md"),
     ("Extractor Rollback Plan", ROOT / "evolution" / "extractor_rollback_plan.md"),
+    ("Extractor Change Proposal", ROOT / "evolution" / "extractor_change_proposal.md"),
     ("Weekly Review Log", ROOT / ".setup_os" / "weekly_review.jsonl"),
     ("Local Utility Handoff", ROOT / "handoff.md"),
 ]
@@ -1652,6 +1779,7 @@ python memory_update_report.py --all
 python functional_evolution_report.py --all
 python extraction_observability.py
 python extractor_versioning.py snapshot
+python extractor_change_proposal.py
 python weekly_review.py path/to/chatgpt-finance-export.md
 python review_packet.py
 python report.py
@@ -1666,6 +1794,7 @@ Memory update reports are written to `memory/structured/memory_update_report.md`
 Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
 Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
 Extractor version snapshots and rollback plans are written to `evolution/` before extractor changes are approved.
+Extractor change proposals are written to `evolution/extractor_change_proposal.md` as approval-gated drafts without behavior mutation.
 Weekly reviews are logged to `.setup_os/weekly_review.jsonl` after running import, extraction, review reports, observability, version snapshot, health, report, and handoff steps.
 Evolution review packets are written to `evolution/review_packet.md` for approval-oriented review across memory, functional evolution, observability, versioning, weekly logs, and handoff.
 ntfy push is available but disabled by default in `config.json`.
@@ -2565,6 +2694,7 @@ python memory_update_report.py --all
 python functional_evolution_report.py --all
 python extraction_observability.py
 python extractor_versioning.py snapshot
+python extractor_change_proposal.py
 python weekly_review.py path/to/health-notes-export.md
 python review_packet.py
 python report.py
@@ -2579,6 +2709,7 @@ Memory update reports are written to `memory/structured/memory_update_report.md`
 Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
 Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
 Extractor version snapshots and rollback plans are written to `evolution/` before extractor changes are approved.
+Extractor change proposals are written to `evolution/extractor_change_proposal.md` as approval-gated drafts without behavior mutation.
 Weekly reviews are logged to `.setup_os/weekly_review.jsonl` after running import, extraction, review reports, observability, version snapshot, health, report, and handoff steps.
 Evolution review packets are written to `evolution/review_packet.md` for approval-oriented review across memory, functional evolution, observability, versioning, weekly logs, and handoff.
 ntfy push is available but disabled by default in `config.json`.

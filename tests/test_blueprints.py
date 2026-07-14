@@ -48,6 +48,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "functional_evolution_report.py").exists())
             self.assertTrue((output / "extraction_observability.py").exists())
             self.assertTrue((output / "extractor_versioning.py").exists())
+            self.assertTrue((output / "extractor_change_proposal.py").exists())
             self.assertTrue((output / "weekly_review.py").exists())
             self.assertTrue((output / "review_packet.py").exists())
             self.assertTrue((output / "report.py").exists())
@@ -496,6 +497,24 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("# Extractor Rollback Plan", rollback_plan)
             self.assertIn("No extractor change is active", rollback_plan)
 
+            proposal_result = subprocess.run(
+                [sys.executable, "extractor_change_proposal.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(proposal_result.returncode, 0)
+            self.assertIn("extractor change proposal", proposal_result.stdout)
+            self.assertIn("No extractor", proposal_result.stdout)
+            proposal_path = output / "evolution" / "extractor_change_proposal.md"
+            self.assertTrue(proposal_path.exists())
+            proposal = proposal_path.read_text(encoding="utf-8")
+            self.assertIn("# Extractor Change Proposal", proposal)
+            self.assertIn("Status: draft_requires_approval", proposal)
+            self.assertIn("Activation: not_active", proposal)
+            self.assertIn("Rollback plan ready: yes", proposal)
+
             weekly_result = subprocess.run(
                 [sys.executable, "weekly_review.py", "--skip-report"],
                 cwd=output,
@@ -523,6 +542,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("Memory Update Report", packet)
             self.assertIn("Functional Evolution Report", packet)
             self.assertIn("Extractor Rollback Plan", packet)
+            self.assertIn("Extractor Change Proposal", packet)
             self.assertIn("Weekly Review Log", packet)
 
             verify = subprocess.run(
