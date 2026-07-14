@@ -143,6 +143,7 @@ Setup OS is personally usable when:
 - `memory/structured/memory_update_report.md` gives evidence-linked memory candidates for review;
 - `evolution/functional_evolution_report.md` gives approval-gated extractor improvement candidates;
 - `memory/structured/extraction_observability.md` gives extraction quality and traceability signals;
+- `evolution/extractor_rollback_plan.md` defines how to undo extractor changes before activation;
 - phone notifications only carry approved alert summaries.
 
 ## Still Not Public-Release Ready
@@ -154,3 +155,4 @@ The personal local utility can work before these are done:
 - signed/notarized macOS app;
 - updater and rollback policy;
 - onboarding for users who are not you.
+

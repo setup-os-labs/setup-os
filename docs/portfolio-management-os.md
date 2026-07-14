@@ -142,6 +142,7 @@ The saved-chat ingestion loop now produces the first two report types and should
 - Pipeline Observability Summary: chats processed, drafts created, low-confidence items, conflicts, rejected noise, and proposed upgrades.
 - Evidence Map: links from each proposed memory or functional change back to imported conversation records.
 - Extraction Observability Report: processed inputs, noisy lines, low-confidence drafts, conflict signals, source checksums, and evidence locations.
+- Extractor Version Snapshot: hashes of extractor files and a rollback plan before approving functional changes.
 
 The functional layer should learn how to learn better only through approved changes. Examples include a cash yield optimization extractor, speculative trading risk gate, AI bottleneck thesis tracker, intent-state classifier, and contradiction checker.
 
@@ -160,7 +161,7 @@ Finance-specific extraction should distinguish curiosity, serious consideration,
 9. Local price/event snapshot enrichment and offline performance summary before live data APIs.
 10. Optional ntfy or Apprise notifications.
 11. Human-approved execution through a supported broker interface.
-12. Limited automation only for pre-approved rules after rollback is designed.
+12. Limited automation only for pre-approved rules after extractor versioning and rollback are proven.
 
 ## Robinhood Direction
 
@@ -189,3 +190,4 @@ Recommended center of gravity:
 - Robinhood official Agentic/MCP-style connector as read-only first, with execution out of scope until explicit approval workflows are mature.
 
 See [research/portfolio-management-os-building-blocks.md](../research/portfolio-management-os-building-blocks.md) for the ranked stack options and rejected alternatives.
+

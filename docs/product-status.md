@@ -50,6 +50,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Generated agents can write a review-only `evolution/functional_evolution_report.md` with proposed extractor, schema, classifier, scoring, and quality-check upgrades.
 - Generated agents can write a review-only `memory/structured/extraction_observability.md` with processed input counts, noisy lines, low-confidence drafts, conflict signals, source checksums, and evidence locations.
 - Desktop backend can read generated Portfolio extraction observability reports.
+- Generated agents can write `evolution/extractor_versions.jsonl` and `evolution/extractor_rollback_plan.md` before approving extractor changes.
 - Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Packaged app smoke-test notes now start with checking the generated artifact smoke manifest.
@@ -64,7 +65,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Build real sidecar artifacts during release workflows.
 - Execute signing/notarization with real project credentials.
 - Add installer/updater policy and rollback procedure.
-- Add rollback policy for approved memory, schema, prompt, and extractor changes before limited automation.
+- Add desktop review for extractor rollback snapshots before limited automation.
 
 ## Still Later
 
@@ -80,3 +81,4 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Full Notification OS.
 - Rich Portfolio dashboard.
 - Richer first-run onboarding and clickable system explainer built around the Work, Review, and Operator model.
+

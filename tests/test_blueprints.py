@@ -47,6 +47,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "memory_update_report.py").exists())
             self.assertTrue((output / "functional_evolution_report.py").exists())
             self.assertTrue((output / "extraction_observability.py").exists())
+            self.assertTrue((output / "extractor_versioning.py").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
@@ -465,6 +466,34 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("## Evidence Locations", observability)
             self.assertIn("S1:L", observability)
 
+            versioning_result = subprocess.run(
+                [sys.executable, "extractor_versioning.py", "snapshot"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(versioning_result.returncode, 0)
+            self.assertIn("extractor version snapshot", versioning_result.stdout)
+            self.assertIn("extractor rollback plan", versioning_result.stdout)
+            self.assertIn("No extractor", versioning_result.stdout)
+
+            version_log_path = output / "evolution" / "extractor_versions.jsonl"
+            rollback_plan_path = output / "evolution" / "extractor_rollback_plan.md"
+            self.assertTrue(version_log_path.exists())
+            self.assertTrue(rollback_plan_path.exists())
+            version_log = [
+                json.loads(line)
+                for line in version_log_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(version_log[0]["event"], "extractor_version_snapshot")
+            self.assertEqual(version_log[0]["activation"], "not_active")
+            self.assertIn("extract_memory.py", {item["path"] for item in version_log[0]["files"]})
+            rollback_plan = rollback_plan_path.read_text(encoding="utf-8")
+            self.assertIn("# Extractor Rollback Plan", rollback_plan)
+            self.assertIn("No extractor change is active", rollback_plan)
+
             verify = subprocess.run(
                 [sys.executable, "verify.py"],
                 cwd=output,
@@ -488,3 +517,4 @@ class BlueprintTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -66,6 +66,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_memory_update_reporter(output_dir)
     write_functional_evolution_reporter(output_dir)
     write_extraction_observability_reporter(output_dir)
+    write_extractor_versioning(output_dir)
 
 
 def write_verifier(output_dir: Path) -> None:
@@ -91,6 +92,7 @@ REQUIRED_PATHS = [
     "memory_update_report.py",
     "functional_evolution_report.py",
     "extraction_observability.py",
+    "extractor_versioning.py",
     "report.py",
     "health.py",
     "runtime_node.py",
@@ -145,6 +147,7 @@ REQUIRED_PATHS = [
     "memory_update_report.py",
     "functional_evolution_report.py",
     "extraction_observability.py",
+    "extractor_versioning.py",
     "report.py",
     "verify.py",
     "runtime_node.py",
@@ -396,6 +399,7 @@ def build_handoff() -> str:
         exists_line("Memory update report", "memory/structured/memory_update_report.md"),
         exists_line("Functional evolution report", "evolution/functional_evolution_report.md"),
         exists_line("Extraction observability report", "memory/structured/extraction_observability.md"),
+        exists_line("Extractor rollback plan", "evolution/extractor_rollback_plan.md"),
         "",
         "## Current Counts",
         "",
@@ -1291,6 +1295,128 @@ if __name__ == "__main__":
     )
 
 
+
+def write_extractor_versioning(output_dir: Path) -> None:
+    _write(
+        output_dir / "extractor_versioning.py",
+        """from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).parent
+EVOLUTION_DIR = ROOT / "evolution"
+VERSION_LOG_PATH = EVOLUTION_DIR / "extractor_versions.jsonl"
+ROLLBACK_PLAN_PATH = EVOLUTION_DIR / "extractor_rollback_plan.md"
+SNAPSHOT_FILES = [
+    "extract_memory.py",
+    "memory_update_report.py",
+    "functional_evolution_report.py",
+    "extraction_observability.py",
+]
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as file:
+        for chunk in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def build_snapshot() -> dict[str, object]:
+    files = []
+    for relative_path in SNAPSHOT_FILES:
+        path = ROOT / relative_path
+        files.append(
+            {
+                "path": relative_path,
+                "exists": path.exists(),
+                "sha256": file_sha256(path) if path.exists() else "missing",
+            }
+        )
+    return {
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "event": "extractor_version_snapshot",
+        "status": "snapshot_requires_review_before_activation",
+        "activation": "not_active",
+        "files": files,
+        "rollback_plan": str(ROLLBACK_PLAN_PATH.relative_to(ROOT)),
+    }
+
+
+def append_snapshot(snapshot: dict[str, object]) -> None:
+    EVOLUTION_DIR.mkdir(parents=True, exist_ok=True)
+    with VERSION_LOG_PATH.open("a", encoding="utf-8") as file:
+        file.write(json.dumps(snapshot, sort_keys=True) + "\\n")
+
+
+def write_rollback_plan(snapshot: dict[str, object]) -> None:
+    lines = [
+        "# Extractor Rollback Plan",
+        "",
+        f"Generated: {snapshot['created_at']}",
+        "",
+        "This plan must exist before approving extractor, schema, prompt, scoring, or quality-check changes.",
+        "",
+        "## Current Snapshot",
+        "",
+    ]
+    for file_record in snapshot["files"]:
+        lines.append(
+            f"- `{file_record['path']}`: exists={file_record['exists']}, sha256 `{file_record['sha256']}`"
+        )
+    lines.extend(
+        [
+            "",
+            "## Rollback Steps",
+            "",
+            "1. Stop scheduled runtime jobs before changing extractor behavior.",
+            "2. Preserve the rejected proposal and current `extractor_versions.jsonl` entry.",
+            "3. Restore extractor files to the last approved hashes listed above.",
+            "4. Rerun `python extract_memory.py`, `python memory_update_report.py --all`, `python functional_evolution_report.py --all`, and `python extraction_observability.py`.",
+            "5. Review evidence and confidence before approving any new snapshot.",
+            "",
+            "## Approval Rule",
+            "",
+            "No extractor change is active until a human-approved proposal references a version snapshot and rollback plan.",
+            "",
+        ]
+    )
+    ROLLBACK_PLAN_PATH.write_text("\\n".join(lines), encoding="utf-8")
+
+
+def snapshot() -> int:
+    current = build_snapshot()
+    append_snapshot(current)
+    write_rollback_plan(current)
+    print(f"Wrote extractor version snapshot to {VERSION_LOG_PATH}")
+    print(f"Wrote extractor rollback plan to {ROLLBACK_PLAN_PATH}")
+    print("No extractor, schema, policy, strategy, release, or execution settings were mutated.")
+    return 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Version extractor files and write a rollback plan.")
+    parser.add_argument("command", choices=["snapshot"], help="Create a review-only extractor version snapshot.")
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    if args.command == "snapshot":
+        return snapshot()
+    return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:
     create_agent_directories(output_dir)
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
@@ -1329,6 +1455,7 @@ python extract_memory.py
 python memory_update_report.py --all
 python functional_evolution_report.py --all
 python extraction_observability.py
+python extractor_versioning.py snapshot
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -1340,6 +1467,7 @@ Structured memory drafts are written to `memory/structured` for review before pr
 Memory update reports are written to `memory/structured/memory_update_report.md` with source evidence and no policy mutation.
 Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
 Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
+Extractor version snapshots and rollback plans are written to `evolution/` before extractor changes are approved.
 ntfy push is available but disabled by default in `config.json`.
 Portfolio snapshots, transactions, cash balances, watchlists, and market data are local CSV imports only; no broker credentials are stored.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
@@ -2236,6 +2364,7 @@ python extract_memory.py
 python memory_update_report.py --all
 python functional_evolution_report.py --all
 python extraction_observability.py
+python extractor_versioning.py snapshot
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -2247,6 +2376,7 @@ Structured memory drafts are written to `memory/structured` for review before pr
 Memory update reports are written to `memory/structured/memory_update_report.md` with source evidence and no behavior mutation.
 Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
 Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
+Extractor version snapshots and rollback plans are written to `evolution/` before extractor changes are approved.
 ntfy push is available but disabled by default in `config.json`.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
 
@@ -2390,3 +2520,10 @@ def _write(path: Path, content: str) -> None:
 
 def _bullet_list(items: list[str]) -> str:
     return "\n".join(f"- {item}" for item in items)
+
+
+
+
+
+
+
