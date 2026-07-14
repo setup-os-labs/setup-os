@@ -58,7 +58,7 @@ timeline
 | --- | ---: | --- | --- |
 | Setup OS local desktop MVP scaffold | 97% | The local-first desktop product shape is in place and verified by CI, including packaged artifact smoke manifests. | Manual installed-app smoke test from downloaded artifact. |
 | Setup OS as your daily local utility | 88-90% | You can generate, inspect, run, and hand off a Portfolio OS locally. | Installable local app plus runtime-node schedule on your machine or Mac mini. |
-| Generated Portfolio Management OS local v0 | 70% | Local data imports, reports, alerts, memory drafts, runtime node, and handoff exist. | Use your saved financial conversations and improve extraction quality. |
+| Generated Portfolio Management OS local v0 | 72% | Local data imports, reports, alerts, memory drafts, memory update reports, runtime node, and handoff exist. | Use your saved financial conversations and improve extraction quality. |
 | Public commercial release | 35-45% | Architecture, CI, release docs, unsigned builds, and native checks exist. | Signing, notarization, onboarding, updater, and support surface. |
 
 ## Local Utility Path
@@ -155,6 +155,7 @@ CI now runs `python scripts/smoke_local_utility.py`, which verifies the local re
 - run `runtime_node.py`;
 - import a saved conversation example;
 - extract structured memory drafts;
+- generate a review-only Memory Update Report;
 - write `handoff.md`;
 - verify the generated report and runtime files exist.
 

@@ -44,6 +44,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "import_portfolio_market_data.py").exists())
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
+            self.assertTrue((output / "memory_update_report.py").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
@@ -380,6 +381,33 @@ class BlueprintTests(unittest.TestCase):
             self.assertEqual(drafts[0]["status"], "draft_requires_review")
             self.assertIn("concentration", " ".join(drafts[0]["risk_rules"]).lower())
             self.assertIn("review", drafts[0]["next_step"].lower())
+
+            memory_report_result = subprocess.run(
+                [sys.executable, "memory_update_report.py", "--all"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(memory_report_result.returncode, 0)
+            self.assertIn("review-only memory update report", memory_report_result.stdout)
+            self.assertIn("No policy", memory_report_result.stdout)
+
+            memory_report_path = (
+                output / "memory" / "structured" / "memory_update_report.md"
+            )
+            self.assertTrue(memory_report_path.exists())
+            memory_report = memory_report_path.read_text(encoding="utf-8")
+            self.assertIn("# Memory Update Report", memory_report)
+            self.assertIn("## Pipeline Observability", memory_report)
+            self.assertIn("## Proposed Memory Updates", memory_report)
+            self.assertIn("### Risk Rules", memory_report)
+            self.assertIn("### Watchlist Changes", memory_report)
+            self.assertIn("evidence: S1:L", memory_report)
+            self.assertIn("sha256:", memory_report)
+            self.assertIn("Policy mutations: 0", memory_report)
+            self.assertIn("Strategy mutations: 0", memory_report)
+            self.assertIn("Review these proposed memory updates", memory_report)
 
             verify = subprocess.run(
                 [sys.executable, "verify.py"],

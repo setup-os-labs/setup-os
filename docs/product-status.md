@@ -45,6 +45,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Desktop can write and display the generated Portfolio `handoff.md` local utility readiness checklist.
 - Desktop demo flow writes the generated Portfolio `handoff.md`, and status/dashboard show whether it exists.
 - Desktop can extract concise guidance from `handoff.md`, including missing readiness items, runtime status, counts, and next local steps.
+- Generated agents can write a review-only `memory/structured/memory_update_report.md` with evidence-linked facts, preferences, open loops, decisions, risk rules, tax notes, and watchlist drafts.
 - Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Packaged app smoke-test notes now start with checking the generated artifact smoke manifest.
@@ -65,7 +66,8 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 
 - Signed installers and updater flow.
 - Bundled Python sidecar.
-- Weekly saved-chat ingestion into Memory Update Reports and Functional Evolution Reports.
+- Desktop review flow for generated Memory Update Reports.
+- Weekly saved-chat ingestion into Functional Evolution Reports.
 - Desktop observability and traceability review for recurring extraction runs.
 - Approval-gated extractor upgrades for new schemas, classifiers, comparison dimensions, contradiction checks, and scoring rubrics.
 - Robinhood read-only connector.

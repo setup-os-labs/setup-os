@@ -63,6 +63,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_local_handoff(output_dir)
     write_conversation_importer(output_dir)
     write_memory_extractor(output_dir)
+    write_memory_update_reporter(output_dir)
 
 
 def write_verifier(output_dir: Path) -> None:
@@ -85,6 +86,7 @@ REQUIRED_PATHS = [
     "config.json",
     "import_conversation.py",
     "extract_memory.py",
+    "memory_update_report.py",
     "report.py",
     "health.py",
     "runtime_node.py",
@@ -136,6 +138,7 @@ REQUIRED_PATHS = [
     "config.json",
     "import_conversation.py",
     "extract_memory.py",
+    "memory_update_report.py",
     "report.py",
     "verify.py",
     "runtime_node.py",
@@ -384,6 +387,7 @@ def build_handoff() -> str:
         exists_line("Runtime node log", ".setup_os/runtime_node.jsonl"),
         exists_line("Raw memory import manifest", "memory/raw/import_manifest.jsonl"),
         exists_line("Structured memory drafts", "memory/structured/extraction_drafts.jsonl"),
+        exists_line("Memory update report", "memory/structured/memory_update_report.md"),
         "",
         "## Current Counts",
         "",
@@ -402,8 +406,9 @@ def build_handoff() -> str:
         "2. Run `python report.py` and review the daily report.",
         "3. Import saved conversations with `python import_conversation.py path/to/export.md`.",
         "4. Run `python extract_memory.py` and review structured drafts before promotion.",
-        "5. Run `python runtime_node.py --skip-report` before scheduling on an always-on machine.",
-        "6. Keep phone notifications approval-gated until alert volume feels useful.",
+        "5. Run `python memory_update_report.py --all` and review evidence before promoting memory.",
+        "6. Run `python runtime_node.py --skip-report` before scheduling on an always-on machine.",
+        "7. Keep phone notifications approval-gated until alert volume feels useful.",
         "",
     ]
     return "\\n".join(lines)
@@ -637,6 +642,262 @@ if __name__ == "__main__":
     )
 
 
+def write_memory_update_reporter(output_dir: Path) -> None:
+    _write(
+        output_dir / "memory_update_report.py",
+        """from __future__ import annotations
+
+import argparse
+from collections import Counter
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import re
+
+
+ROOT = Path(__file__).parent
+RAW_MEMORY_DIR = ROOT / "memory" / "raw"
+MANIFEST_PATH = RAW_MEMORY_DIR / "import_manifest.jsonl"
+STRUCTURED_MEMORY_DIR = ROOT / "memory" / "structured"
+REPORT_PATH = STRUCTURED_MEMORY_DIR / "memory_update_report.md"
+
+
+CATEGORY_TERMS = {
+    "New Facts": [
+        "current",
+        "cash",
+        "holding",
+        "portfolio",
+        "tax",
+        "income",
+        "debt",
+        "account",
+    ],
+    "Preferences": [
+        "prefer",
+        "preference",
+        "style",
+        "concise",
+        "brutal",
+        "tactical",
+        "avoid",
+        "like",
+    ],
+    "Open Loops": [
+        "?",
+        "should",
+        "pending",
+        "todo",
+        "open loop",
+        "decide",
+        "decision",
+        "compare",
+    ],
+    "Decisions Made": [
+        "decided",
+        "approved",
+        "rejected",
+        "will",
+        "won't",
+        "do not",
+        "don't",
+        "no ",
+    ],
+    "Risk Rules": [
+        "risk",
+        "loss",
+        "drawdown",
+        "speculative",
+        "options",
+        "trading",
+        "threshold",
+        "guardrail",
+    ],
+    "Tax Notes": [
+        "tax",
+        "after-tax",
+        "state tax",
+        "federal",
+        "sgov",
+        "t-bill",
+        "hysa",
+        "interest",
+    ],
+    "Watchlist Changes": [
+        "watchlist",
+        "track",
+        "monitor",
+        "stock",
+        "etf",
+        "btc",
+        "nvda",
+        "msft",
+        "goog",
+    ],
+}
+
+
+def load_manifest() -> list[dict[str, object]]:
+    if not MANIFEST_PATH.exists():
+        return []
+    records = []
+    for line in MANIFEST_PATH.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            records.append(json.loads(line))
+    return records
+
+
+def clean_line(line: str) -> str:
+    return re.sub(r"\\s+", " ", line.strip())[:260]
+
+
+def evidence_id(index: int, line_number: int) -> str:
+    return f"S{index}:L{line_number}"
+
+
+def collect_candidates(records: list[dict[str, object]]) -> dict[str, list[dict[str, object]]]:
+    sections: dict[str, list[dict[str, object]]] = {
+        category: [] for category in CATEGORY_TERMS
+    }
+    seen: set[tuple[str, str]] = set()
+
+    for source_index, record in enumerate(records, start=1):
+        stored_path = ROOT / str(record["stored_path"])
+        text = stored_path.read_text(encoding="utf-8", errors="replace")
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            normalized = clean_line(line)
+            if not normalized:
+                continue
+            lowered = normalized.lower()
+            for category, terms in CATEGORY_TERMS.items():
+                if not any(term in lowered for term in terms):
+                    continue
+                key = (category, lowered)
+                if key in seen:
+                    continue
+                seen.add(key)
+                sections[category].append(
+                    {
+                        "text": normalized,
+                        "evidence": evidence_id(source_index, line_number),
+                        "source_name": record.get("source_name", "unknown"),
+                        "source_path": record.get("stored_path", "unknown"),
+                        "source_sha256": record.get("sha256", "unknown"),
+                    }
+                )
+                break
+
+    return {category: items[:10] for category, items in sections.items()}
+
+
+def build_observability(records: list[dict[str, object]], sections: dict[str, list[dict[str, object]]]) -> list[str]:
+    category_counts = Counter(
+        {category: len(items) for category, items in sections.items()}
+    )
+    lines = [
+        "## Pipeline Observability",
+        "",
+        f"- Raw imports reviewed: {len(records)}",
+        f"- Proposed memory items: {sum(category_counts.values())}",
+        "- Policy mutations: 0",
+        "- Strategy mutations: 0",
+        "- Status: review_only",
+        "",
+    ]
+    for category in sections:
+        lines.append(f"- {category}: {category_counts[category]}")
+    return lines
+
+
+def build_sources(records: list[dict[str, object]]) -> list[str]:
+    lines = ["## Evidence Sources", ""]
+    for source_index, record in enumerate(records, start=1):
+        lines.extend(
+            [
+                f"### S{source_index}: {record.get('source_name', 'unknown')}",
+                "",
+                f"- stored path: `{record.get('stored_path', 'unknown')}`",
+                f"- sha256: `{record.get('sha256', 'unknown')}`",
+                f"- imported at: {record.get('imported_at', 'unknown')}",
+                "",
+            ]
+        )
+    return lines
+
+
+def build_report(records: list[dict[str, object]]) -> str:
+    sections = collect_candidates(records)
+    lines = [
+        "# Memory Update Report",
+        "",
+        f"Generated: {datetime.now(timezone.utc).isoformat()}",
+        "",
+        "This report is review-only. It does not mutate policy, strategy, alerts, releases, or execution settings.",
+        "",
+    ]
+    lines.extend(build_observability(records, sections))
+    lines.extend(["", "## Proposed Memory Updates", ""])
+    for category, items in sections.items():
+        lines.extend([f"### {category}", ""])
+        if not items:
+            lines.extend(["- None detected.", ""])
+            continue
+        for item in items:
+            lines.append(
+                f"- {item['text']} "
+                f"(evidence: {item['evidence']}, source: {item['source_name']}, sha256: {item['source_sha256']})"
+            )
+        lines.append("")
+    lines.extend(build_sources(records))
+    lines.extend(
+        [
+            "## Next Step",
+            "",
+            "Review these proposed memory updates before promoting anything into policy, strategy, alerts, or evolution proposals.",
+            "",
+        ]
+    )
+    return "\\n".join(lines)
+
+
+def write_report(report: str) -> None:
+    STRUCTURED_MEMORY_DIR.mkdir(parents=True, exist_ok=True)
+    REPORT_PATH.write_text(report, encoding="utf-8")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Generate a review-only memory update report from raw imported conversations.",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Review all raw imports instead of only the latest import.",
+    )
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    records = load_manifest()
+    if not records:
+        print("No raw conversation imports found. Run import_conversation.py first.")
+        return 1
+    if not args.all:
+        records = records[-1:]
+
+    write_report(build_report(records))
+    print(f"Wrote review-only memory update report to {REPORT_PATH}")
+    print("No policy, strategy, alert, release, or execution settings were mutated.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
+
+
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:
     create_agent_directories(output_dir)
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
@@ -672,6 +933,7 @@ python import_portfolio_watchlist.py path/to/watchlist.csv
 python import_portfolio_market_data.py path/to/market_data.csv
 python import_conversation.py path/to/chatgpt-finance-export.md
 python extract_memory.py
+python memory_update_report.py --all
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -680,6 +942,7 @@ python handoff.py
 
 Raw conversation imports are stored in `memory/raw` and do not mutate strategy.
 Structured memory drafts are written to `memory/structured` for review before promotion.
+Memory update reports are written to `memory/structured/memory_update_report.md` with source evidence and no policy mutation.
 ntfy push is available but disabled by default in `config.json`.
 Portfolio snapshots, transactions, cash balances, watchlists, and market data are local CSV imports only; no broker credentials are stored.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
@@ -1573,6 +1836,7 @@ This is a local, advisory Health OS scaffold generated by Setup OS.
 ```bash
 python import_conversation.py path/to/health-notes-export.md
 python extract_memory.py
+python memory_update_report.py --all
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -1581,6 +1845,7 @@ python handoff.py
 
 Raw conversation imports are stored in `memory/raw` and do not mutate behavior.
 Structured memory drafts are written to `memory/structured` for review before promotion.
+Memory update reports are written to `memory/structured/memory_update_report.md` with source evidence and no behavior mutation.
 ntfy push is available but disabled by default in `config.json`.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
 
