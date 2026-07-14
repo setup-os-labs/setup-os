@@ -65,6 +65,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_memory_extractor(output_dir)
     write_memory_update_reporter(output_dir)
     write_functional_evolution_reporter(output_dir)
+    write_extraction_observability_reporter(output_dir)
 
 
 def write_verifier(output_dir: Path) -> None:
@@ -89,6 +90,7 @@ REQUIRED_PATHS = [
     "extract_memory.py",
     "memory_update_report.py",
     "functional_evolution_report.py",
+    "extraction_observability.py",
     "report.py",
     "health.py",
     "runtime_node.py",
@@ -142,6 +144,7 @@ REQUIRED_PATHS = [
     "extract_memory.py",
     "memory_update_report.py",
     "functional_evolution_report.py",
+    "extraction_observability.py",
     "report.py",
     "verify.py",
     "runtime_node.py",
@@ -392,6 +395,7 @@ def build_handoff() -> str:
         exists_line("Structured memory drafts", "memory/structured/extraction_drafts.jsonl"),
         exists_line("Memory update report", "memory/structured/memory_update_report.md"),
         exists_line("Functional evolution report", "evolution/functional_evolution_report.md"),
+        exists_line("Extraction observability report", "memory/structured/extraction_observability.md"),
         "",
         "## Current Counts",
         "",
@@ -412,8 +416,9 @@ def build_handoff() -> str:
         "4. Run `python extract_memory.py` and review structured drafts before promotion.",
         "5. Run `python memory_update_report.py --all` and review evidence before promoting memory.",
         "6. Run `python functional_evolution_report.py --all` and review proposed extractor upgrades separately.",
-        "7. Run `python runtime_node.py --skip-report` before scheduling on an always-on machine.",
-        "8. Keep phone notifications approval-gated until alert volume feels useful.",
+        "7. Run `python extraction_observability.py` to inspect traceability and quality signals.",
+        "8. Run `python runtime_node.py --skip-report` before scheduling on an always-on machine.",
+        "9. Keep phone notifications approval-gated until alert volume feels useful.",
         "",
     ]
     return "\\n".join(lines)
@@ -1131,6 +1136,161 @@ if __name__ == "__main__":
     )
 
 
+def write_extraction_observability_reporter(output_dir: Path) -> None:
+    _write(
+        output_dir / "extraction_observability.py",
+        """from __future__ import annotations
+
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import re
+
+
+ROOT = Path(__file__).parent
+RAW_MANIFEST_PATH = ROOT / "memory" / "raw" / "import_manifest.jsonl"
+DRAFTS_PATH = ROOT / "memory" / "structured" / "extraction_drafts.jsonl"
+MEMORY_REPORT_PATH = ROOT / "memory" / "structured" / "memory_update_report.md"
+FUNCTIONAL_REPORT_PATH = ROOT / "evolution" / "functional_evolution_report.md"
+REPORT_PATH = ROOT / "memory" / "structured" / "extraction_observability.md"
+
+
+CONFLICT_TERMS = ["but", "however", "rejected", "avoid", "do not", "don't", "changed my mind"]
+EVIDENCE_PATTERN = re.compile(r"S\\d+:L\\d+")
+
+
+def read_jsonl(path: Path) -> list[dict[str, object]]:
+    if not path.exists():
+        return []
+    records = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            records.append(json.loads(line))
+    return records
+
+
+def read_text(path: Path) -> str:
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8", errors="replace")
+
+
+def source_line_stats(records: list[dict[str, object]]) -> tuple[int, int, int]:
+    total_lines = 0
+    noisy_lines = 0
+    conflict_lines = 0
+    for record in records:
+        path = ROOT / str(record.get("stored_path", ""))
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+            normalized = line.strip()
+            if not normalized:
+                noisy_lines += 1
+                continue
+            total_lines += 1
+            if len(normalized) < 12:
+                noisy_lines += 1
+            lowered = normalized.lower()
+            if any(term in lowered for term in CONFLICT_TERMS):
+                conflict_lines += 1
+    return total_lines, noisy_lines, conflict_lines
+
+
+def evidence_ids(*texts: str) -> list[str]:
+    ids = []
+    seen = set()
+    for text in texts:
+        for match in EVIDENCE_PATTERN.findall(text):
+            if match not in seen:
+                seen.add(match)
+                ids.append(match)
+    return ids
+
+
+def build_report() -> str:
+    raw_records = read_jsonl(RAW_MANIFEST_PATH)
+    drafts = read_jsonl(DRAFTS_PATH)
+    memory_report = read_text(MEMORY_REPORT_PATH)
+    functional_report = read_text(FUNCTIONAL_REPORT_PATH)
+    total_lines, noisy_lines, conflict_lines = source_line_stats(raw_records)
+    low_confidence = [
+        draft
+        for draft in drafts
+        if float(draft.get("confidence", 0) or 0) < 0.60
+    ]
+    ids = evidence_ids(memory_report, functional_report)
+
+    lines = [
+        "# Extraction Observability Report",
+        "",
+        f"Generated: {datetime.now(timezone.utc).isoformat()}",
+        "",
+        "This report is review-only. It summarizes extraction quality, traceability, and source evidence without mutating memory or behavior.",
+        "",
+        "## Processing Summary",
+        "",
+        f"- Raw imports processed: {len(raw_records)}",
+        f"- Source non-empty lines scanned: {total_lines}",
+        f"- Rejected or noisy lines: {noisy_lines}",
+        f"- Structured memory drafts: {len(drafts)}",
+        f"- Low-confidence drafts: {len(low_confidence)}",
+        f"- Conflict-signal lines: {conflict_lines}",
+        f"- Evidence anchors found: {len(ids)}",
+        "",
+        "## Source Checksums",
+        "",
+    ]
+    if not raw_records:
+        lines.append("- None. Run `python import_conversation.py path/to/export.md` first.")
+    for index, record in enumerate(raw_records, start=1):
+        lines.append(
+            f"- S{index}: `{record.get('source_name', 'unknown')}` "
+            f"stored at `{record.get('stored_path', 'unknown')}`, sha256 `{record.get('sha256', 'unknown')}`"
+        )
+
+    lines.extend(["", "## Low-Confidence Items", ""])
+    if not low_confidence:
+        lines.append("- None.")
+    for draft in low_confidence:
+        lines.append(
+            f"- {draft.get('source_name', 'unknown')}: confidence {float(draft.get('confidence', 0) or 0):.2f}, "
+            f"status {draft.get('status', 'unknown')}, sha256 `{draft.get('source_sha256', 'unknown')}`"
+        )
+
+    lines.extend(["", "## Evidence Locations", ""])
+    if ids:
+        for evidence in ids[:50]:
+            lines.append(f"- {evidence}")
+    else:
+        lines.append("- None found. Run memory and functional evolution reports first.")
+
+    lines.extend(
+        [
+            "",
+            "## Next Step",
+            "",
+            "Review noisy lines, low-confidence drafts, conflict signals, and evidence coverage before approving any memory or extractor evolution.",
+            "",
+        ]
+    )
+    return "\\n".join(lines)
+
+
+def main() -> int:
+    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    REPORT_PATH.write_text(build_report(), encoding="utf-8")
+    print(f"Wrote extraction observability report to {REPORT_PATH}")
+    print("No memory, policy, strategy, extractor, release, or execution settings were mutated.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
+
+
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:
     create_agent_directories(output_dir)
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
@@ -1168,6 +1328,7 @@ python import_conversation.py path/to/chatgpt-finance-export.md
 python extract_memory.py
 python memory_update_report.py --all
 python functional_evolution_report.py --all
+python extraction_observability.py
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -1178,6 +1339,7 @@ Raw conversation imports are stored in `memory/raw` and do not mutate strategy.
 Structured memory drafts are written to `memory/structured` for review before promotion.
 Memory update reports are written to `memory/structured/memory_update_report.md` with source evidence and no policy mutation.
 Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
+Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
 ntfy push is available but disabled by default in `config.json`.
 Portfolio snapshots, transactions, cash balances, watchlists, and market data are local CSV imports only; no broker credentials are stored.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
@@ -2073,6 +2235,7 @@ python import_conversation.py path/to/health-notes-export.md
 python extract_memory.py
 python memory_update_report.py --all
 python functional_evolution_report.py --all
+python extraction_observability.py
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -2083,6 +2246,7 @@ Raw conversation imports are stored in `memory/raw` and do not mutate behavior.
 Structured memory drafts are written to `memory/structured` for review before promotion.
 Memory update reports are written to `memory/structured/memory_update_report.md` with source evidence and no behavior mutation.
 Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
+Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
 ntfy push is available but disabled by default in `config.json`.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
 

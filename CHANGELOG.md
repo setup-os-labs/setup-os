@@ -13,6 +13,8 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Portfolio Management OS future direction for Memory Update Reports, Functional Evolution Reports, extraction observability, evidence maps, and approval-gated extractor improvements.
 - Generated agents now include `memory_update_report.py`, which turns raw imported conversations into a review-only, evidence-linked Memory Update Report without mutating policy or strategy.
 - Generated agents now include `functional_evolution_report.py`, which recommends extractor, schema, classifier, scoring, and quality-check upgrades behind approval without activating them.
+- Generated agents now include `extraction_observability.py`, which writes a review-only traceability report with processed inputs, noisy lines, low-confidence drafts, conflict signals, checksums, and evidence anchors.
+- Desktop backend can read generated Portfolio extraction observability reports and show next-step guidance when they are missing.
 - Desktop release workflow now uses explicit Tauri bundle icons so Linux AppImage and Windows MSI packaging can find required icon assets.
 - Desktop release readiness check for packaging workflow, Tauri config, icons, CI, CLI, and release testing notes.
 - Python sidecar packaging contract for future desktop releases that run without requiring local Python.

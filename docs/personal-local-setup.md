@@ -68,8 +68,10 @@ Start raw-first.
 7. Review `memory/structured/memory_update_report.md`.
 8. Run `python functional_evolution_report.py --all`.
 9. Review `evolution/functional_evolution_report.md`.
-10. Run **Review drafts**.
-11. Do not treat extracted drafts, report items, or proposed extractor upgrades as live behavior until reviewed and approved.
+10. Run `python extraction_observability.py`.
+11. Review `memory/structured/extraction_observability.md`.
+12. Run **Review drafts**.
+13. Do not treat extracted drafts, report items, or proposed extractor upgrades as live behavior until reviewed and approved.
 
 The current extraction is intentionally review-only. It should help you organize facts, preferences, open loops, decisions, risk rules, tax notes, watchlist items, and constraints before any automation exists.
 
@@ -140,6 +142,7 @@ Setup OS is personally usable when:
 - `handoff.md` summarizes readiness, runtime cycles, imports, drafts, and next steps;
 - `memory/structured/memory_update_report.md` gives evidence-linked memory candidates for review;
 - `evolution/functional_evolution_report.md` gives approval-gated extractor improvement candidates;
+- `memory/structured/extraction_observability.md` gives extraction quality and traceability signals;
 - phone notifications only carry approved alert summaries.
 
 ## Still Not Public-Release Ready
