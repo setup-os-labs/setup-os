@@ -48,6 +48,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "functional_evolution_report.py").exists())
             self.assertTrue((output / "extraction_observability.py").exists())
             self.assertTrue((output / "extractor_versioning.py").exists())
+            self.assertTrue((output / "weekly_review.py").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
@@ -493,6 +494,26 @@ class BlueprintTests(unittest.TestCase):
             rollback_plan = rollback_plan_path.read_text(encoding="utf-8")
             self.assertIn("# Extractor Rollback Plan", rollback_plan)
             self.assertIn("No extractor change is active", rollback_plan)
+
+            weekly_result = subprocess.run(
+                [sys.executable, "weekly_review.py", "--skip-report"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(weekly_result.returncode, 0)
+            self.assertIn("weekly review log", weekly_result.stdout)
+            weekly_log_path = output / ".setup_os" / "weekly_review.jsonl"
+            self.assertTrue(weekly_log_path.exists())
+            weekly_events = [
+                json.loads(line)
+                for line in weekly_log_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
+            self.assertEqual(weekly_events[-1]["event"], "weekly_review")
+            self.assertEqual(weekly_events[-1]["status"], "success")
+            self.assertFalse(weekly_events[-1]["mutated_policy_or_strategy"])
 
             verify = subprocess.run(
                 [sys.executable, "verify.py"],

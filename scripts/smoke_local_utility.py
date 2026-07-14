@@ -58,6 +58,7 @@ def main() -> int:
             "functional_evolution_report.py",
             "extraction_observability.py",
             "extractor_versioning.py",
+            "weekly_review.py",
             "data/holdings.csv",
             "data/transactions.csv",
             "data/cash.csv",
@@ -82,6 +83,7 @@ def main() -> int:
         run([sys.executable, "functional_evolution_report.py", "--all"], output)
         run([sys.executable, "extraction_observability.py"], output)
         run([sys.executable, "extractor_versioning.py", "snapshot"], output)
+        run([sys.executable, "weekly_review.py", "--skip-report"], output)
         run([sys.executable, "handoff.py"], output)
 
         for relative_path in [
@@ -94,6 +96,7 @@ def main() -> int:
             "memory/structured/extraction_observability.md",
             "evolution/extractor_versions.jsonl",
             "evolution/extractor_rollback_plan.md",
+            ".setup_os/weekly_review.jsonl",
             "handoff.md",
         ]:
             require_file(output / relative_path)
