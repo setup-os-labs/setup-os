@@ -67,6 +67,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_functional_evolution_reporter(output_dir)
     write_extraction_observability_reporter(output_dir)
     write_extractor_versioning(output_dir)
+    write_weekly_review_runner(output_dir)
 
 
 def write_verifier(output_dir: Path) -> None:
@@ -93,6 +94,7 @@ REQUIRED_PATHS = [
     "functional_evolution_report.py",
     "extraction_observability.py",
     "extractor_versioning.py",
+    "weekly_review.py",
     "report.py",
     "health.py",
     "runtime_node.py",
@@ -148,6 +150,7 @@ REQUIRED_PATHS = [
     "functional_evolution_report.py",
     "extraction_observability.py",
     "extractor_versioning.py",
+    "weekly_review.py",
     "report.py",
     "verify.py",
     "runtime_node.py",
@@ -1417,6 +1420,113 @@ if __name__ == "__main__":
     raise SystemExit(main())
 """,
     )
+
+
+def write_weekly_review_runner(output_dir: Path) -> None:
+    _write(
+        output_dir / "weekly_review.py",
+        """from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+
+ROOT = Path(__file__).parent
+LOG_PATH = ROOT / ".setup_os" / "weekly_review.jsonl"
+
+
+def run_step(name: str, command: list[str]) -> dict[str, object]:
+    result = subprocess.run(
+        [sys.executable, *command],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return {
+        "name": name,
+        "command": [sys.executable, *command],
+        "returncode": result.returncode,
+        "stdout": result.stdout.strip(),
+        "stderr": result.stderr.strip(),
+    }
+
+
+def append_event(event: dict[str, object]) -> None:
+    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with LOG_PATH.open("a", encoding="utf-8") as file:
+        file.write(json.dumps(event, sort_keys=True) + "\\n")
+
+
+def build_steps(conversation_path: str | None, skip_report: bool) -> list[tuple[str, list[str]]]:
+    steps: list[tuple[str, list[str]]] = []
+    if conversation_path:
+        steps.append(("import_conversation", ["import_conversation.py", conversation_path]))
+    steps.extend(
+        [
+            ("extract_memory", ["extract_memory.py"]),
+            ("memory_update_report", ["memory_update_report.py", "--all"]),
+            ("functional_evolution_report", ["functional_evolution_report.py", "--all"]),
+            ("extraction_observability", ["extraction_observability.py"]),
+            ("extractor_version_snapshot", ["extractor_versioning.py", "snapshot"]),
+            ("health", ["health.py"]),
+            ("handoff", ["handoff.py"]),
+        ]
+    )
+    if not skip_report:
+        steps.insert(-2, ("report", ["report.py"]))
+    return steps
+
+
+def run_weekly_review(conversation_path: str | None, skip_report: bool) -> int:
+    event: dict[str, object] = {
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "event": "weekly_review",
+        "conversation_path": conversation_path,
+        "skip_report": skip_report,
+        "status": "success",
+        "steps": [],
+        "mutated_policy_or_strategy": False,
+        "next_step": "Review memory, functional evolution, observability, versioning, and handoff artifacts before approving changes.",
+    }
+    steps: list[dict[str, object]] = []
+    for name, command in build_steps(conversation_path, skip_report):
+        step = run_step(name, command)
+        steps.append(step)
+        if step["returncode"] != 0:
+            event["status"] = "failed"
+            break
+    event["steps"] = steps
+    append_event(event)
+    print(f"Wrote weekly review log to {LOG_PATH}")
+    print(f"Status: {event['status']}")
+    return 0 if event["status"] == "success" else 1
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Run the local weekly Portfolio review loop.")
+    parser.add_argument(
+        "conversation_path",
+        nargs="?",
+        help="Optional saved ChatGPT finance conversation to import before review.",
+    )
+    parser.add_argument("--skip-report", action="store_true", help="Skip the daily report step.")
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    return run_weekly_review(args.conversation_path, args.skip_report)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:
     create_agent_directories(output_dir)
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
@@ -1456,6 +1566,7 @@ python memory_update_report.py --all
 python functional_evolution_report.py --all
 python extraction_observability.py
 python extractor_versioning.py snapshot
+python weekly_review.py path/to/chatgpt-finance-export.md
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -1468,6 +1579,7 @@ Memory update reports are written to `memory/structured/memory_update_report.md`
 Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
 Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
 Extractor version snapshots and rollback plans are written to `evolution/` before extractor changes are approved.
+Weekly reviews are logged to `.setup_os/weekly_review.jsonl` after running import, extraction, review reports, observability, version snapshot, health, report, and handoff steps.
 ntfy push is available but disabled by default in `config.json`.
 Portfolio snapshots, transactions, cash balances, watchlists, and market data are local CSV imports only; no broker credentials are stored.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
@@ -2365,6 +2477,7 @@ python memory_update_report.py --all
 python functional_evolution_report.py --all
 python extraction_observability.py
 python extractor_versioning.py snapshot
+python weekly_review.py path/to/health-notes-export.md
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -2377,6 +2490,7 @@ Memory update reports are written to `memory/structured/memory_update_report.md`
 Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
 Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
 Extractor version snapshots and rollback plans are written to `evolution/` before extractor changes are approved.
+Weekly reviews are logged to `.setup_os/weekly_review.jsonl` after running import, extraction, review reports, observability, version snapshot, health, report, and handoff steps.
 ntfy push is available but disabled by default in `config.json`.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
 

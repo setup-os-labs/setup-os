@@ -30,6 +30,7 @@ It is a local, advisory, alert-first investing assistant.
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
 - produce a review-only memory update report from recurring saved finance conversations
 - let the extraction layer recommend its own new extractors, schema fields, scoring rubrics, and checks behind approval
+- run a weekly local review loop that imports a saved conversation, extracts memory, writes review artifacts, snapshots extractor versions, checks health, refreshes reports, and writes handoff status
 - produce daily Markdown portfolio reports
 - summarize offline unrealized performance from local cost basis and market snapshot files
 - warn on concentration above the local review threshold
@@ -64,7 +65,17 @@ portfolio-management-os/
   import_portfolio_cash.py
   import_portfolio_watchlist.py
   import_portfolio_market_data.py
+  import_conversation.py
+  extract_memory.py
+  memory_update_report.py
+  functional_evolution_report.py
+  extraction_observability.py
+  extractor_versioning.py
+  weekly_review.py
   report.py
+  health.py
+  runtime_node.py
+  handoff.py
   data/
     holdings.csv
     allocation_targets.csv
@@ -90,6 +101,7 @@ portfolio-management-os/
     audit.jsonl
     timeline.jsonl
     notifications.jsonl
+    weekly_review.jsonl
     releases/
 ```
 
