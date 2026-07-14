@@ -33,6 +33,7 @@ It is a local, advisory, alert-first investing assistant.
 - let the extraction layer recommend its own new extractors, schema fields, scoring rubrics, and checks behind approval
 - review Functional Evolution Reports from the desktop app before any extractor, schema, classifier, scoring, or quality-check proposal is versioned
 - review extractor version snapshots and rollback plans from the desktop app before limited automation is considered
+- draft approval-gated extractor/schema/scoring proposal skeletons without mutating behavior
 - run a weekly local review loop that imports a saved conversation, extracts memory, writes review artifacts, snapshots extractor versions, checks health, refreshes reports, and writes handoff status
 - bundle the review artifacts into one local approval packet before any memory, policy, strategy, or extractor behavior changes are promoted
 - generate and read the Evolution Review Packet from the desktop app as the single operator view for approval review
@@ -76,6 +77,7 @@ portfolio-management-os/
   functional_evolution_report.py
   extraction_observability.py
   extractor_versioning.py
+  extractor_change_proposal.py
   weekly_review.py
   review_packet.py
   report.py
@@ -101,6 +103,7 @@ portfolio-management-os/
     policy/
   notifications/
   evolution/
+    extractor_change_proposal.md
     review_packet.md
   audit/
   deployment/
