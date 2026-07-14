@@ -32,6 +32,7 @@ import {
   readRuntimeNodeLog,
   resetPortfolioWorkspace,
   reviewPortfolioHandoffGuidance,
+  reviewPortfolioFunctionalEvolutionReport,
   reviewPortfolioMemoryDrafts,
   reviewPortfolioMemoryUpdateReport,
   reviewPortfolioInsights,
@@ -488,6 +489,22 @@ export function App() {
     }
   }
 
+  async function reviewPortfolioFunctionalEvolution() {
+    if (!requirePortfolioOutput()) {
+      return;
+    }
+
+    setActionStatus("Reviewing functional evolution");
+    try {
+      const output = await reviewPortfolioFunctionalEvolutionReport(portfolioOutputPath);
+      setCliOutput(output);
+      setActionStatus("Functional evolution loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function refreshPortfolioStatus() {
     if (!requirePortfolioOutput()) {
       return;
@@ -748,6 +765,9 @@ export function App() {
               </button>
               <button className="secondary" type="button" onClick={reviewPortfolioMemoryReport}>
                 <FileText size={17} /> Review memory report
+              </button>
+              <button className="secondary" type="button" onClick={reviewPortfolioFunctionalEvolution}>
+                <FileText size={17} /> Review functional evolution
               </button>
               <button className="secondary" type="button" onClick={checkPortfolioAgentHealth}>
                 <Stethoscope size={17} /> Check health

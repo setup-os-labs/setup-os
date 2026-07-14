@@ -124,6 +124,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-106 | done | Codex | `codex/weekly-review-runner` | Add generated weekly review runner | Generated agents can run the local import, extraction, memory update, functional evolution, observability, version snapshot, health, report, and handoff loop with JSONL evidence |
 | SO-107 | done | Codex | `codex/evolution-review-packet` | Add generated evolution review packet | Generated agents can bundle memory update, functional evolution, observability, rollback, weekly review, and handoff artifacts into one approval packet |
 | SO-108 | done | Codex | `codex/desktop-memory-update-review` | Add desktop Memory Update Report review | Desktop can read `memory/structured/memory_update_report.md`, summarize review-only candidates, and show no-promotion guidance |
+| SO-109 | done | Codex | `codex/desktop-functional-evolution-review` | Add desktop Functional Evolution Report review | Desktop can read `evolution/functional_evolution_report.md` and group proposed extractor, schema, scoring, classifier, and quality-check upgrades |
 
 ## Backlog Rules
 
