@@ -140,11 +140,13 @@ The public release is a separate path from your local utility. It needs more pol
 
 ## What To Build Next
 
-1. Packaged local install smoke test on your Windows machine.
-2. Import and extract from your real saved Portfolio Management conversations.
-3. Personal runtime-node setup guide for your chosen always-on machine.
-4. Phone notification adapter decision and first approved channel.
-5. Real sidecar artifact assembly in the desktop release workflow.
+1. Karan runs the installed Windows artifact smoke test using `packaged-smoke-manifest.json` and the generated local evidence file.
+2. Fix any installed-app launch/runtime issues found by that test.
+3. Import and extract from a real saved Portfolio Management conversation.
+4. Choose the always-on runtime node target and schedule `runtime_node.py`.
+5. Build real sidecar artifacts in the desktop release workflow.
+
+Codex can continue release hardening after KT-005 evidence exists. Without that installed-app evidence, the next packaging work would be theoretical.
 
 For the current practical path, use [Personal local setup guide](personal-local-setup.md).
 

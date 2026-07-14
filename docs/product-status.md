@@ -61,6 +61,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Packaged app smoke-test notes now start with checking the generated artifact smoke manifest.
+- Installed-app smoke evidence template and generator define exactly what Karan should capture from a downloaded artifact before public release hardening continues.
 - Sidecar release workflow scaffold defines how future release jobs should assemble Python without committing runtime binaries.
 - Development and release timeline visualizes the local-first utility path, Portfolio OS path, and public commercial release path.
 - Python CLI for create, evolve, and approval-gated apply.
@@ -70,6 +71,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 ## Remaining After 95%
 
 - Build real sidecar artifacts during release workflows.
+- Capture installed Windows artifact smoke evidence from a downloaded artifact.
 - Execute signing/notarization with real project credentials.
 - Add installer/updater policy and rollback procedure.
 - Add desktop review for extractor rollback snapshots before limited automation.
