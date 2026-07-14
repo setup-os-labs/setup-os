@@ -20,6 +20,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Generated agents now include `extractor_versioning.py`, which snapshots extractor file hashes and writes `evolution/extractor_rollback_plan.md` before approved extractor changes.
 - Generated agents now include `weekly_review.py`, which runs the local import, extraction, memory update, functional evolution, observability, version snapshot, health, report, and handoff loop with a JSONL audit log.
 - Generated agents now include `review_packet.py`, which bundles memory, functional evolution, observability, versioning, weekly review, and handoff artifacts into `evolution/review_packet.md` for human approval review.
+- Desktop shell can generate or read the generated Portfolio Evolution Review Packet and summarize artifact readiness plus approval checklist counts.
 - Desktop release workflow now uses explicit Tauri bundle icons so Linux AppImage and Windows MSI packaging can find required icon assets.
 - Desktop release readiness check for packaging workflow, Tauri config, icons, CI, CLI, and release testing notes.
 - Python sidecar packaging contract for future desktop releases that run without requiring local Python.

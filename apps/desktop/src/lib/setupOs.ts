@@ -96,6 +96,10 @@ export async function reviewPortfolioFunctionalEvolutionReport(agentDir: string)
   return invoke<string>("setup_os_review_portfolio_functional_evolution_report", { agentDir });
 }
 
+export async function reviewPortfolioEvolutionReviewPacket(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_review_portfolio_evolution_review_packet", { agentDir });
+}
+
 export async function reviewPortfolioExtractionObservability(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_review_portfolio_extraction_observability", { agentDir });
 }

@@ -764,6 +764,54 @@ fn setup_os_review_portfolio_functional_evolution_report(
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_evolution_review_packet(agent_dir: String) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let packet_path = agent_dir.join("evolution").join("review_packet.md");
+    let packet_command = agent_dir.join("review_packet.py");
+
+    let generation_note = if packet_command.exists() {
+        let repo_dir = setup_os_repo_dir()?;
+        let python = resolve_python_command(&repo_dir);
+        let output = Command::new(python)
+            .arg("review_packet.py")
+            .current_dir(&agent_dir)
+            .output()
+            .map_err(|error| format!("failed to generate Portfolio evolution review packet: {error}"))?;
+
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+            return Err(format!(
+                "Portfolio evolution review packet command exited with {}: {stderr}",
+                output.status
+            ));
+        }
+        String::from_utf8_lossy(&output.stdout).trim().to_string()
+    } else {
+        format!(
+            "No review_packet.py command found. Reading existing packet if present.\nExpected command: {}",
+            packet_command.display()
+        )
+    };
+
+    if !packet_path.exists() {
+        return Ok(format!(
+            "No Evolution Review Packet yet.\nExpected packet: {}\nNext: generate memory, functional evolution, observability, rollback, weekly review, and handoff artifacts, then run review_packet.py.",
+            packet_path.display()
+        ));
+    }
+
+    let packet = fs::read_to_string(&packet_path)
+        .map_err(|error| format!("failed to read {}: {error}", packet_path.display()))?;
+    Ok(format!(
+        "Portfolio Evolution Review Packet\n{}\n\n{}\n\n{}\n\n{}",
+        packet_path.display(),
+        generation_note,
+        format_evolution_review_packet(&packet),
+        packet
+    ))
+}
+
+#[tauri::command]
 fn setup_os_review_portfolio_extraction_observability(
     agent_dir: String,
 ) -> Result<String, String> {
@@ -1351,6 +1399,27 @@ fn format_functional_evolution_report_review(report: &str) -> String {
     .join("\n")
 }
 
+fn format_evolution_review_packet(packet: &str) -> String {
+    let artifact_status = extract_markdown_section(packet, "Artifact Status");
+    let checklist = extract_markdown_section(packet, "Approval Checklist");
+    let present_count = artifact_status.matches(": present").count();
+    let missing_count = artifact_status.matches(": missing").count();
+    let checklist_count = checklist
+        .lines()
+        .filter(|line| line.trim_start().starts_with("- "))
+        .count();
+
+    [
+        "## Operator Summary".to_string(),
+        format!("- Present artifacts: {present_count}"),
+        format!("- Missing artifacts: {missing_count}"),
+        format!("- Approval checklist items: {checklist_count}"),
+        "- Scope: memory updates, functional evolution, observability, rollback/versioning, weekly review log, and handoff.".to_string(),
+        "- Next: resolve missing artifacts and approve/reject items from this packet before changing memory, policy, strategy, extractor behavior, release state, or execution settings.".to_string(),
+    ]
+    .join("\n")
+}
+
 fn count_keyword(text: &str, keyword: &str) -> usize {
     text.matches(keyword).count()
 }
@@ -1540,6 +1609,7 @@ pub fn run() {
             setup_os_review_portfolio_memory_drafts,
             setup_os_review_portfolio_memory_update_report,
             setup_os_review_portfolio_functional_evolution_report,
+            setup_os_review_portfolio_evolution_review_packet,
             setup_os_review_portfolio_extraction_observability,
             setup_os_portfolio_status,
             setup_os_portfolio_summary,
