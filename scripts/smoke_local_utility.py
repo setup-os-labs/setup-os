@@ -57,6 +57,7 @@ def main() -> int:
             "memory_update_report.py",
             "functional_evolution_report.py",
             "extraction_observability.py",
+            "extractor_versioning.py",
             "data/holdings.csv",
             "data/transactions.csv",
             "data/cash.csv",
@@ -80,6 +81,7 @@ def main() -> int:
         run([sys.executable, "memory_update_report.py", "--all"], output)
         run([sys.executable, "functional_evolution_report.py", "--all"], output)
         run([sys.executable, "extraction_observability.py"], output)
+        run([sys.executable, "extractor_versioning.py", "snapshot"], output)
         run([sys.executable, "handoff.py"], output)
 
         for relative_path in [
@@ -90,6 +92,8 @@ def main() -> int:
             "memory/structured/memory_update_report.md",
             "evolution/functional_evolution_report.md",
             "memory/structured/extraction_observability.md",
+            "evolution/extractor_versions.jsonl",
+            "evolution/extractor_rollback_plan.md",
             "handoff.md",
         ]:
             require_file(output / relative_path)
@@ -108,3 +112,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

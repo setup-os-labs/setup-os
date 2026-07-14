@@ -36,6 +36,7 @@ class HealthBlueprintTests(unittest.TestCase):
             self.assertTrue((output / "memory_update_report.py").exists())
             self.assertTrue((output / "functional_evolution_report.py").exists())
             self.assertTrue((output / "extraction_observability.py").exists())
+            self.assertTrue((output / "extractor_versioning.py").exists())
             self.assertTrue((output / "health.py").exists())
             self.assertTrue((output / "handoff.py").exists())
 
@@ -95,3 +96,4 @@ class HealthBlueprintTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
