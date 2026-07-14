@@ -34,6 +34,7 @@ It is a local, advisory, alert-first investing assistant.
 - review Functional Evolution Reports from the desktop app before any extractor, schema, classifier, scoring, or quality-check proposal is versioned
 - run a weekly local review loop that imports a saved conversation, extracts memory, writes review artifacts, snapshots extractor versions, checks health, refreshes reports, and writes handoff status
 - bundle the review artifacts into one local approval packet before any memory, policy, strategy, or extractor behavior changes are promoted
+- generate and read the Evolution Review Packet from the desktop app as the single operator view for approval review
 - produce daily Markdown portfolio reports
 - summarize offline unrealized performance from local cost basis and market snapshot files
 - warn on concentration above the local review threshold

@@ -125,6 +125,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-107 | done | Codex | `codex/evolution-review-packet` | Add generated evolution review packet | Generated agents can bundle memory update, functional evolution, observability, rollback, weekly review, and handoff artifacts into one approval packet |
 | SO-108 | done | Codex | `codex/desktop-memory-update-review` | Add desktop Memory Update Report review | Desktop can read `memory/structured/memory_update_report.md`, summarize review-only candidates, and show no-promotion guidance |
 | SO-109 | done | Codex | `codex/desktop-functional-evolution-review` | Add desktop Functional Evolution Report review | Desktop can read `evolution/functional_evolution_report.md` and group proposed extractor, schema, scoring, classifier, and quality-check upgrades |
+| SO-110 | done | Codex | `codex/desktop-evolution-review-packet` | Add desktop Evolution Review Packet action | Desktop can generate or read `evolution/review_packet.md` as the single operator view for approval review |
 
 ## Backlog Rules
 
