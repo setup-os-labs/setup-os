@@ -46,6 +46,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "memory_update_report.py").exists())
             self.assertTrue((output / "functional_evolution_report.py").exists())
+            self.assertTrue((output / "extraction_observability.py").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
@@ -435,6 +436,34 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("evidence:", functional_report)
             self.assertIn("sha256:", functional_report)
             self.assertIn("must not directly rewrite", functional_report)
+
+            observability_result = subprocess.run(
+                [sys.executable, "extraction_observability.py"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(observability_result.returncode, 0)
+            self.assertIn("extraction observability report", observability_result.stdout)
+            self.assertIn("No memory", observability_result.stdout)
+
+            observability_path = (
+                output / "memory" / "structured" / "extraction_observability.md"
+            )
+            self.assertTrue(observability_path.exists())
+            observability = observability_path.read_text(encoding="utf-8")
+            self.assertIn("# Extraction Observability Report", observability)
+            self.assertIn("## Processing Summary", observability)
+            self.assertIn("Raw imports processed: 1", observability)
+            self.assertIn("Rejected or noisy lines:", observability)
+            self.assertIn("Low-confidence drafts:", observability)
+            self.assertIn("Conflict-signal lines:", observability)
+            self.assertIn("Evidence anchors found:", observability)
+            self.assertIn("## Source Checksums", observability)
+            self.assertIn("sha256", observability)
+            self.assertIn("## Evidence Locations", observability)
+            self.assertIn("S1:L", observability)
 
             verify = subprocess.run(
                 [sys.executable, "verify.py"],

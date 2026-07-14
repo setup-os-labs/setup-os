@@ -717,6 +717,35 @@ fn setup_os_review_portfolio_memory_drafts(agent_dir: String) -> Result<String, 
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_extraction_observability(
+    agent_dir: String,
+) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let observability_path = agent_dir
+        .join("memory")
+        .join("structured")
+        .join("extraction_observability.md");
+    if !observability_path.exists() {
+        return Ok(format!(
+            "No extraction observability report yet.\nExpected report: {}\nNext: run extraction_observability.py after importing a conversation and generating memory/functional reports.",
+            observability_path.display()
+        ));
+    }
+
+    let observability = fs::read_to_string(&observability_path).map_err(|error| {
+        format!(
+            "failed to read {}: {error}",
+            observability_path.display()
+        )
+    })?;
+    Ok(format!(
+        "Portfolio extraction observability\n{}\n\n{}",
+        observability_path.display(),
+        observability
+    ))
+}
+
+#[tauri::command]
 fn setup_os_portfolio_status(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     let checks = [
@@ -737,6 +766,14 @@ fn setup_os_portfolio_status(agent_dir: String) -> Result<String, String> {
                 .join("memory")
                 .join("structured")
                 .join("extraction_drafts.jsonl")
+                .exists(),
+        ),
+        (
+            "Extraction observability",
+            agent_dir
+                .join("memory")
+                .join("structured")
+                .join("extraction_observability.md")
                 .exists(),
         ),
         (
@@ -1384,6 +1421,7 @@ pub fn run() {
             setup_os_import_portfolio_market_data,
             setup_os_extract_portfolio_memory,
             setup_os_review_portfolio_memory_drafts,
+            setup_os_review_portfolio_extraction_observability,
             setup_os_portfolio_status,
             setup_os_portfolio_summary,
             setup_os_read_portfolio_notifications,

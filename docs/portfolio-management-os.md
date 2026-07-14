@@ -141,6 +141,7 @@ The saved-chat ingestion loop now produces the first two report types and should
 - Functional Evolution Report: recommended extractors, schema fields, comparison dimensions, contradiction checks, scoring rubrics, and noise filters.
 - Pipeline Observability Summary: chats processed, drafts created, low-confidence items, conflicts, rejected noise, and proposed upgrades.
 - Evidence Map: links from each proposed memory or functional change back to imported conversation records.
+- Extraction Observability Report: processed inputs, noisy lines, low-confidence drafts, conflict signals, source checksums, and evidence locations.
 
 The functional layer should learn how to learn better only through approved changes. Examples include a cash yield optimization extractor, speculative trading risk gate, AI bottleneck thesis tracker, intent-state classifier, and contradiction checker.
 

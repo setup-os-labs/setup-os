@@ -48,6 +48,8 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Desktop can extract concise guidance from `handoff.md`, including missing readiness items, runtime status, counts, and next local steps.
 - Generated agents can write a review-only `memory/structured/memory_update_report.md` with evidence-linked facts, preferences, open loops, decisions, risk rules, tax notes, and watchlist drafts.
 - Generated agents can write a review-only `evolution/functional_evolution_report.md` with proposed extractor, schema, classifier, scoring, and quality-check upgrades.
+- Generated agents can write a review-only `memory/structured/extraction_observability.md` with processed input counts, noisy lines, low-confidence drafts, conflict signals, source checksums, and evidence locations.
+- Desktop backend can read generated Portfolio extraction observability reports.
 - Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Packaged app smoke-test notes now start with checking the generated artifact smoke manifest.
@@ -70,7 +72,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Bundled Python sidecar.
 - Desktop review flow for generated Memory Update Reports.
 - Desktop review flow for generated Functional Evolution Reports.
-- Desktop observability and traceability review for recurring extraction runs.
+- Desktop UI surface for extraction observability and traceability review.
 - Approval-gated extractor upgrades for new schemas, classifiers, comparison dimensions, contradiction checks, and scoring rubrics.
 - Robinhood read-only connector.
 - OpenBB/live market data adapter.
