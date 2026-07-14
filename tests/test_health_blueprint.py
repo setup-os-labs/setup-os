@@ -38,6 +38,7 @@ class HealthBlueprintTests(unittest.TestCase):
             self.assertTrue((output / "extraction_observability.py").exists())
             self.assertTrue((output / "extractor_versioning.py").exists())
             self.assertTrue((output / "weekly_review.py").exists())
+            self.assertTrue((output / "review_packet.py").exists())
             self.assertTrue((output / "health.py").exists())
             self.assertTrue((output / "handoff.py").exists())
 

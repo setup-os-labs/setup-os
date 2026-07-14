@@ -122,6 +122,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-104 | done | Codex | `codex/extractor-versioning-rollback` | Add extractor versioning and rollback plan | Approved memory, schema, prompt, scoring, and extractor changes are versioned with a documented rollback path before limited automation |
 | SO-105 | done | Codex | `codex/desktop-decision-first-ux` | Apply decision-first desktop UX layering | Desktop shell separates Work, Review, and Operator surfaces and docs capture the reusable Setup OS UX philosophy |
 | SO-106 | done | Codex | `codex/weekly-review-runner` | Add generated weekly review runner | Generated agents can run the local import, extraction, memory update, functional evolution, observability, version snapshot, health, report, and handoff loop with JSONL evidence |
+| SO-107 | done | Codex | `codex/evolution-review-packet` | Add generated evolution review packet | Generated agents can bundle memory update, functional evolution, observability, rollback, weekly review, and handoff artifacts into one approval packet |
 
 ## Backlog Rules
 
