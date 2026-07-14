@@ -34,6 +34,7 @@ timeline
         Done : Python CLI
         Done : Tauri desktop launcher
         Done : Portfolio OS create/import/report loop
+        Done : Work, Review, and Operator desktop surfaces
         Done : Runtime node scaffold and scheduler notes
         Done : Generated handoff and desktop handoff review
         Done : Packaged artifact smoke manifest
@@ -130,6 +131,7 @@ The public release is a separate path from your local utility. It needs more pol
 | Milestone | Target | Done When |
 | --- | --- | --- |
 | Local install loop | Personal use | You can launch the desktop app from an installed artifact without relying on repo dev commands. |
+| First-run orientation | Personal use | The desktop app explains the local system loop and keeps work, review, and diagnostics in separate surfaces. |
 | Portfolio from your conversations | Personal use | Your saved ChatGPT financial conversations import and produce reviewable strategy/risk/watchlist drafts. |
 | Handoff-driven readiness | Personal use | The generated `handoff.md` and desktop dashboard show what is ready and what needs attention. |
 | Runtime node in the home setup | Personal use | A laptop, Mac mini, mini PC, or private VPS runs scheduled `runtime_node.py` and logs cycles. |

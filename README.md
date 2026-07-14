@@ -127,8 +127,10 @@ Setup OS is CLI-first for the engine, but the product should become desktop-firs
 - Local data: files and JSONL first; SQLite when the desktop needs indexed local state.
 - Always-on runtime: personal node first, such as a Mac mini, NAS, mini PC, spare laptop, or private VPS, for schedulers, watchers, and phone notification dispatch.
 - First desktop surface: richer vertical agent launcher and dashboard shell.
+- Desktop UX rule: decision-first Work, Review, and Operator surfaces keep daily use separate from diagnostics and release mechanics.
 - First generated vertical: [Portfolio Management OS](docs/portfolio-management-os.md).
 - Current checkpoint: [Product status](docs/product-status.md).
+- UX philosophy: [Desktop UX philosophy](docs/desktop-ux-philosophy.md).
 - Visual roadmap: [Development and release timeline](docs/development-release-timeline.md).
 - Personal local setup: [Personal local setup guide](docs/personal-local-setup.md).
 - Unsigned release artifact testing: [Desktop release testing](docs/desktop-release-testing.md).
