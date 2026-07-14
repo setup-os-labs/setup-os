@@ -52,6 +52,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Desktop backend can read generated Portfolio extraction observability reports.
 - Generated agents can write `evolution/extractor_versions.jsonl` and `evolution/extractor_rollback_plan.md` before approving extractor changes.
 - Generated agents can run `weekly_review.py` to execute the local import, extraction, review reports, observability, version snapshot, health, report, and handoff loop with `.setup_os/weekly_review.jsonl` evidence.
+- Generated agents can write `evolution/review_packet.md` as a single approval packet across memory updates, functional evolution, observability, rollback/versioning, weekly logs, and handoff status.
 - Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Packaged app smoke-test notes now start with checking the generated artifact smoke manifest.

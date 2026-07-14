@@ -72,13 +72,15 @@ Start raw-first.
 11. Review `memory/structured/extraction_observability.md`.
 12. Run `python extractor_versioning.py snapshot`.
 13. Review `evolution/extractor_rollback_plan.md`.
-14. Run `python weekly_review.py path\to\saved-finance-chat.md` once the individual steps are familiar.
-15. Run **Review drafts**.
-16. Do not treat extracted drafts, report items, or proposed extractor upgrades as live behavior until reviewed and approved.
+14. Run `python review_packet.py`.
+15. Review `evolution/review_packet.md`.
+16. Run `python weekly_review.py path\to\saved-finance-chat.md` once the individual steps are familiar.
+17. Run **Review drafts**.
+18. Do not treat extracted drafts, report items, or proposed extractor upgrades as live behavior until reviewed and approved.
 
 The current extraction is intentionally review-only. It should help you organize facts, preferences, open loops, decisions, risk rules, tax notes, watchlist items, and constraints before any automation exists.
 
-`weekly_review.py` is the convenience loop after you trust the individual commands. It logs each step to `.setup_os/weekly_review.jsonl` and still does not promote memory, policy, strategy, extractor behavior, or execution settings.
+`review_packet.py` is the human approval surface for the generated artifacts. `weekly_review.py` is the convenience loop after you trust the individual commands. It logs each step to `.setup_os/weekly_review.jsonl` and still does not promote memory, policy, strategy, extractor behavior, or execution settings.
 
 ## Always-On Runtime Node
 

@@ -68,6 +68,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_extraction_observability_reporter(output_dir)
     write_extractor_versioning(output_dir)
     write_weekly_review_runner(output_dir)
+    write_review_packet(output_dir)
 
 
 def write_verifier(output_dir: Path) -> None:
@@ -95,6 +96,7 @@ REQUIRED_PATHS = [
     "extraction_observability.py",
     "extractor_versioning.py",
     "weekly_review.py",
+    "review_packet.py",
     "report.py",
     "health.py",
     "runtime_node.py",
@@ -151,6 +153,7 @@ REQUIRED_PATHS = [
     "extraction_observability.py",
     "extractor_versioning.py",
     "weekly_review.py",
+    "review_packet.py",
     "report.py",
     "verify.py",
     "runtime_node.py",
@@ -1475,6 +1478,7 @@ def build_steps(conversation_path: str | None, skip_report: bool) -> list[tuple[
             ("extractor_version_snapshot", ["extractor_versioning.py", "snapshot"]),
             ("health", ["health.py"]),
             ("handoff", ["handoff.py"]),
+            ("review_packet", ["review_packet.py"]),
         ]
     )
     if not skip_report:
@@ -1527,6 +1531,88 @@ if __name__ == "__main__":
     raise SystemExit(main())
 """,
     )
+
+
+def write_review_packet(output_dir: Path) -> None:
+    _write(
+        output_dir / "review_packet.py",
+        """from __future__ import annotations
+
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+ROOT = Path(__file__).parent
+PACKET_PATH = ROOT / "evolution" / "review_packet.md"
+SOURCES = [
+    ("Memory Update Report", ROOT / "memory" / "structured" / "memory_update_report.md"),
+    ("Functional Evolution Report", ROOT / "evolution" / "functional_evolution_report.md"),
+    ("Extraction Observability Report", ROOT / "memory" / "structured" / "extraction_observability.md"),
+    ("Extractor Rollback Plan", ROOT / "evolution" / "extractor_rollback_plan.md"),
+    ("Weekly Review Log", ROOT / ".setup_os" / "weekly_review.jsonl"),
+    ("Local Utility Handoff", ROOT / "handoff.md"),
+]
+
+
+def read_excerpt(path: Path, max_lines: int = 40) -> list[str]:
+    if not path.exists():
+        return ["Missing."]
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if len(lines) <= max_lines:
+        return lines or ["Present but empty."]
+    return [*lines[:max_lines], f"... truncated {len(lines) - max_lines} lines ..."]
+
+
+def build_packet() -> str:
+    generated = datetime.now(timezone.utc).isoformat()
+    lines = [
+        "# Portfolio Evolution Review Packet",
+        "",
+        f"Generated: {generated}",
+        "",
+        "This packet collects review-only artifacts for human approval. It does not promote memory, policy, strategy, extractor behavior, release state, or execution settings.",
+        "",
+        "## Artifact Status",
+        "",
+    ]
+    for title, path in SOURCES:
+        status = "present" if path.exists() else "missing"
+        lines.append(f"- {title}: {status} (`{path.relative_to(ROOT)}`)")
+
+    lines.extend(
+        [
+            "",
+            "## Approval Checklist",
+            "",
+            "- Confirm memory updates have evidence links and no policy mutation.",
+            "- Confirm proposed extractor upgrades are useful, bounded, and separate from memory promotion.",
+            "- Confirm observability shows acceptable rejected/noisy and low-confidence items.",
+            "- Confirm a rollback plan exists before approving extractor behavior changes.",
+            "- Confirm weekly review and handoff logs match the intended local operating loop.",
+            "",
+        ]
+    )
+
+    for title, path in SOURCES:
+        lines.extend([f"## {title}", "", "```text"])
+        lines.extend(read_excerpt(path))
+        lines.extend(["```", ""])
+
+    return "\\n".join(lines)
+
+
+def main() -> int:
+    PACKET_PATH.parent.mkdir(parents=True, exist_ok=True)
+    PACKET_PATH.write_text(build_packet(), encoding="utf-8")
+    print(f"Wrote Portfolio evolution review packet to {PACKET_PATH}")
+    print("No memory, policy, strategy, extractor, release, or execution settings were mutated.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:
     create_agent_directories(output_dir)
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
@@ -1567,6 +1653,7 @@ python functional_evolution_report.py --all
 python extraction_observability.py
 python extractor_versioning.py snapshot
 python weekly_review.py path/to/chatgpt-finance-export.md
+python review_packet.py
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -1580,6 +1667,7 @@ Functional evolution reports are written to `evolution/functional_evolution_repo
 Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
 Extractor version snapshots and rollback plans are written to `evolution/` before extractor changes are approved.
 Weekly reviews are logged to `.setup_os/weekly_review.jsonl` after running import, extraction, review reports, observability, version snapshot, health, report, and handoff steps.
+Evolution review packets are written to `evolution/review_packet.md` for approval-oriented review across memory, functional evolution, observability, versioning, weekly logs, and handoff.
 ntfy push is available but disabled by default in `config.json`.
 Portfolio snapshots, transactions, cash balances, watchlists, and market data are local CSV imports only; no broker credentials are stored.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
@@ -2478,6 +2566,7 @@ python functional_evolution_report.py --all
 python extraction_observability.py
 python extractor_versioning.py snapshot
 python weekly_review.py path/to/health-notes-export.md
+python review_packet.py
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -2491,6 +2580,7 @@ Functional evolution reports are written to `evolution/functional_evolution_repo
 Extraction observability reports are written to `memory/structured/extraction_observability.md` for traceability review.
 Extractor version snapshots and rollback plans are written to `evolution/` before extractor changes are approved.
 Weekly reviews are logged to `.setup_os/weekly_review.jsonl` after running import, extraction, review reports, observability, version snapshot, health, report, and handoff steps.
+Evolution review packets are written to `evolution/review_packet.md` for approval-oriented review across memory, functional evolution, observability, versioning, weekly logs, and handoff.
 ntfy push is available but disabled by default in `config.json`.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
 

@@ -49,6 +49,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "extraction_observability.py").exists())
             self.assertTrue((output / "extractor_versioning.py").exists())
             self.assertTrue((output / "weekly_review.py").exists())
+            self.assertTrue((output / "review_packet.py").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
@@ -514,6 +515,15 @@ class BlueprintTests(unittest.TestCase):
             self.assertEqual(weekly_events[-1]["event"], "weekly_review")
             self.assertEqual(weekly_events[-1]["status"], "success")
             self.assertFalse(weekly_events[-1]["mutated_policy_or_strategy"])
+
+            packet_path = output / "evolution" / "review_packet.md"
+            self.assertTrue(packet_path.exists())
+            packet = packet_path.read_text(encoding="utf-8")
+            self.assertIn("# Portfolio Evolution Review Packet", packet)
+            self.assertIn("Memory Update Report", packet)
+            self.assertIn("Functional Evolution Report", packet)
+            self.assertIn("Extractor Rollback Plan", packet)
+            self.assertIn("Weekly Review Log", packet)
 
             verify = subprocess.run(
                 [sys.executable, "verify.py"],
