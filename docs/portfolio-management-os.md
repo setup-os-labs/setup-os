@@ -29,6 +29,7 @@ It is a local, advisory, alert-first investing assistant.
 - store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
 - produce a review-only memory update report from recurring saved finance conversations
+- review Memory Update Reports from the desktop app before any fact, preference, open-loop, risk-rule, tax-note, or watchlist item is promoted
 - let the extraction layer recommend its own new extractors, schema fields, scoring rubrics, and checks behind approval
 - run a weekly local review loop that imports a saved conversation, extracts memory, writes review artifacts, snapshots extractor versions, checks health, refreshes reports, and writes handoff status
 - bundle the review artifacts into one local approval packet before any memory, policy, strategy, or extractor behavior changes are promoted

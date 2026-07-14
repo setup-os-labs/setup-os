@@ -47,6 +47,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Desktop demo flow writes the generated Portfolio `handoff.md`, and status/dashboard show whether it exists.
 - Desktop can extract concise guidance from `handoff.md`, including missing readiness items, runtime status, counts, and next local steps.
 - Generated agents can write a review-only `memory/structured/memory_update_report.md` with evidence-linked facts, preferences, open loops, decisions, risk rules, tax notes, and watchlist drafts.
+- Desktop can review generated Portfolio Memory Update Reports with candidate counts, evidence counts, categories, and no-promotion guidance.
 - Generated agents can write a review-only `evolution/functional_evolution_report.md` with proposed extractor, schema, classifier, scoring, and quality-check upgrades.
 - Generated agents can write a review-only `memory/structured/extraction_observability.md` with processed input counts, noisy lines, low-confidence drafts, conflict signals, source checksums, and evidence locations.
 - Desktop backend can read generated Portfolio extraction observability reports.

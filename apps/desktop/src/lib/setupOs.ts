@@ -88,6 +88,10 @@ export async function reviewPortfolioMemoryDrafts(agentDir: string): Promise<str
   return invoke<string>("setup_os_review_portfolio_memory_drafts", { agentDir });
 }
 
+export async function reviewPortfolioMemoryUpdateReport(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_review_portfolio_memory_update_report", { agentDir });
+}
+
 export async function reviewPortfolioExtractionObservability(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_review_portfolio_extraction_observability", { agentDir });
 }
