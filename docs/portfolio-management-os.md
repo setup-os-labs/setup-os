@@ -28,7 +28,7 @@ It is a local, advisory, alert-first investing assistant.
 - import Robinhood/manual portfolio data, transactions, cash balances, watchlists, and market snapshots as read-only local CSV files
 - store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
-- eventually produce separate memory update and functional evolution reports from recurring saved finance conversations
+- produce a review-only memory update report from recurring saved finance conversations
 - eventually let the extraction layer recommend its own new extractors, schema fields, scoring rubrics, and checks behind approval
 - produce daily Markdown portfolio reports
 - summarize offline unrealized performance from local cost basis and market snapshot files
@@ -135,7 +135,7 @@ Default policy:
 
 Portfolio Management OS should become the first proof vertical for the self-evolving extraction engine.
 
-The weekly saved-chat ingestion loop should eventually produce:
+The saved-chat ingestion loop now produces the first report type and should eventually produce the full set:
 
 - Memory Update Report: new facts, preferences, decisions, open loops, risk rules, tax notes, and watchlist changes.
 - Functional Evolution Report: recommended extractors, schema fields, comparison dimensions, contradiction checks, scoring rubrics, and noise filters.
@@ -152,7 +152,7 @@ Finance-specific extraction should distinguish curiosity, serious consideration,
 2. Robinhood/manual read-only CSV holdings, transactions, cash, watchlist, and market snapshot import with local reports.
 3. ChatGPT financial discussion import into raw memory.
 4. Structured extraction drafts from raw conversations into holdings context, strategy notes, risk rules, and watchlists.
-5. Weekly memory update report with evidence, confidence, and approval status.
+5. Memory update report with evidence and review-only approval status.
 6. Functional evolution report for extractor, schema, comparison, scoring, and contradiction-check upgrades.
 7. Pipeline observability and traceability review in the desktop app.
 8. Allocation drift and concentration alerts.

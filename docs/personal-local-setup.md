@@ -64,10 +64,12 @@ Start raw-first.
 3. Run **Preview conversation** to verify the file is readable and looks relevant.
 4. Run **Import**.
 5. Run **Extract drafts**.
-6. Run **Review drafts**.
-7. Do not treat extracted drafts as live strategy until reviewed.
+6. In the generated workspace, run `python memory_update_report.py --all`.
+7. Review `memory/structured/memory_update_report.md`.
+8. Run **Review drafts**.
+9. Do not treat extracted drafts or report items as live strategy until reviewed.
 
-The current extraction is intentionally review-only. It should help you organize strategy, risk rules, watchlist items, and constraints before any automation exists.
+The current extraction is intentionally review-only. It should help you organize facts, preferences, open loops, decisions, risk rules, tax notes, watchlist items, and constraints before any automation exists.
 
 ## Always-On Runtime Node
 
@@ -134,6 +136,7 @@ Setup OS is personally usable when:
 - reports and insights are useful enough for daily review;
 - `runtime_node.py` runs on an always-on machine;
 - `handoff.md` summarizes readiness, runtime cycles, imports, drafts, and next steps;
+- `memory/structured/memory_update_report.md` gives evidence-linked memory candidates for review;
 - phone notifications only carry approved alert summaries.
 
 ## Still Not Public-Release Ready
