@@ -100,6 +100,10 @@ export async function reviewPortfolioEvolutionReviewPacket(agentDir: string): Pr
   return invoke<string>("setup_os_review_portfolio_evolution_review_packet", { agentDir });
 }
 
+export async function reviewPortfolioExtractorRollback(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_review_portfolio_extractor_rollback", { agentDir });
+}
+
 export async function reviewPortfolioExtractionObservability(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_review_portfolio_extraction_observability", { agentDir });
 }

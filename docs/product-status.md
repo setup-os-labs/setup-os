@@ -53,6 +53,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Generated agents can write a review-only `memory/structured/extraction_observability.md` with processed input counts, noisy lines, low-confidence drafts, conflict signals, source checksums, and evidence locations.
 - Desktop backend can read generated Portfolio extraction observability reports.
 - Generated agents can write `evolution/extractor_versions.jsonl` and `evolution/extractor_rollback_plan.md` before approving extractor changes.
+- Desktop can review generated Portfolio extractor version snapshots and rollback plans, including latest tracked hashes and rollback readiness.
 - Generated agents can run `weekly_review.py` to execute the local import, extraction, review reports, observability, version snapshot, health, report, and handoff loop with `.setup_os/weekly_review.jsonl` evidence.
 - Generated agents can write `evolution/review_packet.md` as a single approval packet across memory updates, functional evolution, observability, rollback/versioning, weekly logs, and handoff status.
 - Desktop can generate or read the generated Portfolio Evolution Review Packet and summarize artifact readiness plus approval checklist counts.
