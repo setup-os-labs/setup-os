@@ -741,6 +741,29 @@ fn setup_os_review_portfolio_memory_update_report(agent_dir: String) -> Result<S
 }
 
 #[tauri::command]
+fn setup_os_review_portfolio_functional_evolution_report(
+    agent_dir: String,
+) -> Result<String, String> {
+    let agent_dir = resolve_agent_dir(&agent_dir)?;
+    let report_path = agent_dir.join("evolution").join("functional_evolution_report.md");
+    if !report_path.exists() {
+        return Ok(format!(
+            "No Functional Evolution Report yet.\nExpected report: {}\nNext: run functional_evolution_report.py --all after importing a conversation and generating memory reports.",
+            report_path.display()
+        ));
+    }
+
+    let report = fs::read_to_string(&report_path)
+        .map_err(|error| format!("failed to read {}: {error}", report_path.display()))?;
+    Ok(format!(
+        "Portfolio Functional Evolution Report review\n{}\n\n{}\n\n{}",
+        report_path.display(),
+        format_functional_evolution_report_review(&report),
+        report
+    ))
+}
+
+#[tauri::command]
 fn setup_os_review_portfolio_extraction_observability(
     agent_dir: String,
 ) -> Result<String, String> {
@@ -1291,6 +1314,43 @@ fn format_memory_update_report_review(report: &str) -> String {
     .join("\n")
 }
 
+fn format_functional_evolution_report_review(report: &str) -> String {
+    let upgrades = extract_markdown_section(report, "Proposed Functional Upgrades");
+    let titles = upgrades
+        .lines()
+        .filter(|line| line.starts_with("### "))
+        .map(|line| line.trim_start_matches("### ").trim().to_string())
+        .collect::<Vec<_>>();
+    let kinds = upgrades
+        .lines()
+        .filter_map(|line| line.trim().strip_prefix("- kind: "))
+        .map(|kind| kind.to_string())
+        .collect::<Vec<_>>();
+    let risk_count = upgrades.matches("- risk:").count();
+    let rollback_count = upgrades.matches("- rollback path:").count();
+    let not_active = report.contains("- Active extractor changes: 0")
+        && report.contains("activation: not_active");
+
+    [
+        "## Operator Summary".to_string(),
+        format!("- Proposed upgrades: {}", titles.len()),
+        format!("- Upgrade kinds: {}", list_or_none(&kinds)),
+        format!("- Proposal titles: {}", list_or_none(&titles)),
+        format!("- Risk statements: {risk_count}"),
+        format!("- Rollback paths: {rollback_count}"),
+        format!(
+            "- Activation status: {}",
+            if not_active {
+                "not active; approval must create a versioned proposal first"
+            } else {
+                "needs manual verification before any extractor behavior changes"
+            }
+        ),
+        "- Next: reject noisy upgrades or turn useful ones into a separate versioned extractor/schema/scoring proposal.".to_string(),
+    ]
+    .join("\n")
+}
+
 fn count_keyword(text: &str, keyword: &str) -> usize {
     text.matches(keyword).count()
 }
@@ -1479,6 +1539,7 @@ pub fn run() {
             setup_os_extract_portfolio_memory,
             setup_os_review_portfolio_memory_drafts,
             setup_os_review_portfolio_memory_update_report,
+            setup_os_review_portfolio_functional_evolution_report,
             setup_os_review_portfolio_extraction_observability,
             setup_os_portfolio_status,
             setup_os_portfolio_summary,

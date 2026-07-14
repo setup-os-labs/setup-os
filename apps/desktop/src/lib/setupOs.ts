@@ -92,6 +92,10 @@ export async function reviewPortfolioMemoryUpdateReport(agentDir: string): Promi
   return invoke<string>("setup_os_review_portfolio_memory_update_report", { agentDir });
 }
 
+export async function reviewPortfolioFunctionalEvolutionReport(agentDir: string): Promise<string> {
+  return invoke<string>("setup_os_review_portfolio_functional_evolution_report", { agentDir });
+}
+
 export async function reviewPortfolioExtractionObservability(agentDir: string): Promise<string> {
   return invoke<string>("setup_os_review_portfolio_extraction_observability", { agentDir });
 }
