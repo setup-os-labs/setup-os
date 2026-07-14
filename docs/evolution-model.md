@@ -17,6 +17,24 @@ Raw conversation
 
 The raw conversation can be messy. The generated agent's operating rules must stay structured.
 
+Future generated systems should split memory updates from functional updates:
+
+```text
+Raw conversation batch
+  -> proposed memory updates
+  -> Memory Update Report
+  -> human approval
+  -> versioned memory update
+
+Raw conversation batch
+  -> extractor self-evaluation
+  -> Functional Evolution Report
+  -> human approval
+  -> versioned extractor/schema update
+```
+
+The second path is for improving how the system learns, not merely adding more facts.
+
 ## Memory Layers
 
 - Raw memory: original conversations and notes. This never directly drives behavior.
@@ -24,6 +42,34 @@ The raw conversation can be messy. The generated agent's operating rules must st
 - Policy memory: protected action rules such as approval requirements and automation limits.
 
 Policy memory is the most protected layer.
+
+## Functional Evolution Layer
+
+The extraction engine is itself a versioned system component.
+
+It can propose:
+
+- new extractors
+- new schema fields
+- new comparison dimensions
+- new intent-state classifications
+- new contradiction checks
+- new quality scoring rubrics
+- new noise and duplicate filters
+- new evidence requirements
+
+It must not activate those changes without approval.
+
+Each functional evolution proposal should include:
+
+- problem observed
+- source evidence
+- proposed change
+- expected benefit
+- risk or overfitting concern
+- affected schemas, prompts, or generated files
+- tests or checks to run
+- rollback path
 
 ## Confidence Gates
 
@@ -55,6 +101,21 @@ Each proposal should include:
 - risk
 - conflicts
 - approval requirement
+
+Functional evolution proposals should be labeled separately from memory update proposals so the user can approve memory growth without also approving extractor changes.
+
+## Control Pillars
+
+Generated systems that learn from recurring personal data should expose:
+
+- self-evaluation: what the extractor missed, over-extracted, or classified poorly
+- observability: counts of inputs, outputs, conflicts, low-confidence drafts, rejected noise, and proposed upgrades
+- traceability: source import, checksum, and evidence location for every proposed durable claim
+- governance: explicit approval before memory, policy, schema, prompt, maturity, or extractor changes
+- versioning: append-only records of approved memory and functional changes
+- rollback: a path to undo bad memory or functional updates
+- data quality control: duplicate, stale, noisy, conflicting, and low-confidence input handling
+- objective alignment: extraction and recommendations should serve the generated system's approved goals
 
 ## Timeline
 

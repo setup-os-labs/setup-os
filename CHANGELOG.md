@@ -8,6 +8,9 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
+- ADR 0007 documenting self-evolving extraction as a future architecture pillar with separate approval-gated memory updates and functional extractor upgrades.
+- Evolution model rules for self-evaluation, observability, traceability, governance, versioning, rollback, data quality, and objective alignment in recurring personal-data ingestion.
+- Portfolio Management OS future direction for Memory Update Reports, Functional Evolution Reports, extraction observability, evidence maps, and approval-gated extractor improvements.
 - Desktop release workflow now uses explicit Tauri bundle icons so Linux AppImage and Windows MSI packaging can find required icon assets.
 - Desktop release readiness check for packaging workflow, Tauri config, icons, CI, CLI, and release testing notes.
 - Python sidecar packaging contract for future desktop releases that run without requiring local Python.
