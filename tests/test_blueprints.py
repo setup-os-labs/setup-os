@@ -45,6 +45,7 @@ class BlueprintTests(unittest.TestCase):
             self.assertTrue((output / "import_conversation.py").exists())
             self.assertTrue((output / "extract_memory.py").exists())
             self.assertTrue((output / "memory_update_report.py").exists())
+            self.assertTrue((output / "functional_evolution_report.py").exists())
             self.assertTrue((output / "report.py").exists())
             self.assertTrue((output / "verify.py").exists())
             self.assertTrue((output / "health.py").exists())
@@ -408,6 +409,32 @@ class BlueprintTests(unittest.TestCase):
             self.assertIn("Policy mutations: 0", memory_report)
             self.assertIn("Strategy mutations: 0", memory_report)
             self.assertIn("Review these proposed memory updates", memory_report)
+
+            functional_report_result = subprocess.run(
+                [sys.executable, "functional_evolution_report.py", "--all"],
+                cwd=output,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(functional_report_result.returncode, 0)
+            self.assertIn("functional evolution report", functional_report_result.stdout)
+            self.assertIn("No extractor", functional_report_result.stdout)
+
+            functional_report_path = output / "evolution" / "functional_evolution_report.md"
+            self.assertTrue(functional_report_path.exists())
+            functional_report = functional_report_path.read_text(encoding="utf-8")
+            self.assertIn("# Functional Evolution Report", functional_report)
+            self.assertIn("## Pipeline Observability", functional_report)
+            self.assertIn("## Proposed Functional Upgrades", functional_report)
+            self.assertIn("Add Intent-State Classifier", functional_report)
+            self.assertIn("Require Evidence Anchors For Durable Memory", functional_report)
+            self.assertIn("proposed_requires_approval", functional_report)
+            self.assertIn("activation: not_active", functional_report)
+            self.assertIn("rollback path", functional_report)
+            self.assertIn("evidence:", functional_report)
+            self.assertIn("sha256:", functional_report)
+            self.assertIn("must not directly rewrite", functional_report)
 
             verify = subprocess.run(
                 [sys.executable, "verify.py"],

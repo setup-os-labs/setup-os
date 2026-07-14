@@ -55,6 +55,7 @@ def main() -> int:
             "import_conversation.py",
             "extract_memory.py",
             "memory_update_report.py",
+            "functional_evolution_report.py",
             "data/holdings.csv",
             "data/transactions.csv",
             "data/cash.csv",
@@ -76,6 +77,7 @@ def main() -> int:
         )
         run([sys.executable, "extract_memory.py"], output)
         run([sys.executable, "memory_update_report.py", "--all"], output)
+        run([sys.executable, "functional_evolution_report.py", "--all"], output)
         run([sys.executable, "handoff.py"], output)
 
         for relative_path in [
@@ -84,6 +86,7 @@ def main() -> int:
             "memory/raw/import_manifest.jsonl",
             "memory/structured/extraction_drafts.jsonl",
             "memory/structured/memory_update_report.md",
+            "evolution/functional_evolution_report.md",
             "handoff.md",
         ]:
             require_file(output / relative_path)

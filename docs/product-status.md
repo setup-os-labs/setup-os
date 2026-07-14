@@ -29,6 +29,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Architecture now defines the personal always-on runtime node for schedulers, generated agents, and phone notification dispatch.
 - Desktop runtime diagnostics show the configured Python executable, version, repo root, and CLI import status.
 - Desktop Portfolio dashboard cards summarize selected workspace, health, report, handoff, notifications, and memory drafts.
+- Desktop shell now uses decision-first Work, Review, and Operator surfaces so daily Portfolio use is separated from evidence review and diagnostics.
 - Desktop Portfolio insight review extracts holdings, alerts, transactions, cash, watchlist, market snapshot, and performance sections from generated reports.
 - Generated agents include a first `runtime_node.py` one-shot runner for personal runtime node health/report/inbox cycles.
 - Generated agents include `handoff.py`, which writes `handoff.md` as a one-file local utility readiness checklist.
@@ -46,6 +47,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Desktop demo flow writes the generated Portfolio `handoff.md`, and status/dashboard show whether it exists.
 - Desktop can extract concise guidance from `handoff.md`, including missing readiness items, runtime status, counts, and next local steps.
 - Generated agents can write a review-only `memory/structured/memory_update_report.md` with evidence-linked facts, preferences, open loops, decisions, risk rules, tax notes, and watchlist drafts.
+- Generated agents can write a review-only `evolution/functional_evolution_report.md` with proposed extractor, schema, classifier, scoring, and quality-check upgrades.
 - Personal local setup guide explains the Windows-first local utility path, saved conversation import flow, runtime-node handoff, and phone-notification guardrails.
 - Packaged app smoke-test notes define Windows and macOS manual verification.
 - Packaged app smoke-test notes now start with checking the generated artifact smoke manifest.
@@ -67,7 +69,7 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Signed installers and updater flow.
 - Bundled Python sidecar.
 - Desktop review flow for generated Memory Update Reports.
-- Weekly saved-chat ingestion into Functional Evolution Reports.
+- Desktop review flow for generated Functional Evolution Reports.
 - Desktop observability and traceability review for recurring extraction runs.
 - Approval-gated extractor upgrades for new schemas, classifiers, comparison dimensions, contradiction checks, and scoring rubrics.
 - Robinhood read-only connector.
@@ -75,3 +77,4 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - SQLite state layer.
 - Full Notification OS.
 - Rich Portfolio dashboard.
+- Richer first-run onboarding and clickable system explainer built around the Work, Review, and Operator model.

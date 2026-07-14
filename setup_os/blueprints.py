@@ -64,6 +64,7 @@ def write_agent_metadata(spec: AgentSpec, output_dir: Path) -> None:
     write_conversation_importer(output_dir)
     write_memory_extractor(output_dir)
     write_memory_update_reporter(output_dir)
+    write_functional_evolution_reporter(output_dir)
 
 
 def write_verifier(output_dir: Path) -> None:
@@ -87,6 +88,7 @@ REQUIRED_PATHS = [
     "import_conversation.py",
     "extract_memory.py",
     "memory_update_report.py",
+    "functional_evolution_report.py",
     "report.py",
     "health.py",
     "runtime_node.py",
@@ -139,6 +141,7 @@ REQUIRED_PATHS = [
     "import_conversation.py",
     "extract_memory.py",
     "memory_update_report.py",
+    "functional_evolution_report.py",
     "report.py",
     "verify.py",
     "runtime_node.py",
@@ -388,6 +391,7 @@ def build_handoff() -> str:
         exists_line("Raw memory import manifest", "memory/raw/import_manifest.jsonl"),
         exists_line("Structured memory drafts", "memory/structured/extraction_drafts.jsonl"),
         exists_line("Memory update report", "memory/structured/memory_update_report.md"),
+        exists_line("Functional evolution report", "evolution/functional_evolution_report.md"),
         "",
         "## Current Counts",
         "",
@@ -407,8 +411,9 @@ def build_handoff() -> str:
         "3. Import saved conversations with `python import_conversation.py path/to/export.md`.",
         "4. Run `python extract_memory.py` and review structured drafts before promotion.",
         "5. Run `python memory_update_report.py --all` and review evidence before promoting memory.",
-        "6. Run `python runtime_node.py --skip-report` before scheduling on an always-on machine.",
-        "7. Keep phone notifications approval-gated until alert volume feels useful.",
+        "6. Run `python functional_evolution_report.py --all` and review proposed extractor upgrades separately.",
+        "7. Run `python runtime_node.py --skip-report` before scheduling on an always-on machine.",
+        "8. Keep phone notifications approval-gated until alert volume feels useful.",
         "",
     ]
     return "\\n".join(lines)
@@ -898,6 +903,234 @@ if __name__ == "__main__":
     )
 
 
+def write_functional_evolution_reporter(output_dir: Path) -> None:
+    _write(
+        output_dir / "functional_evolution_report.py",
+        """from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import re
+
+
+ROOT = Path(__file__).parent
+RAW_MEMORY_DIR = ROOT / "memory" / "raw"
+MANIFEST_PATH = RAW_MEMORY_DIR / "import_manifest.jsonl"
+EVOLUTION_DIR = ROOT / "evolution"
+REPORT_PATH = EVOLUTION_DIR / "functional_evolution_report.md"
+
+
+UPGRADE_RULES = [
+    {
+        "title": "Add Intent-State Classifier",
+        "kind": "classifier",
+        "terms": ["?", "should", "maybe", "thinking about", "curious", "explore"],
+        "reason": "The input includes exploratory language that should not automatically become user intent.",
+        "expected_benefit": "Separates curiosity, serious consideration, rejected ideas, approved strategy, and active behavior.",
+        "risk": "May over-classify short notes unless evidence remains visible.",
+    },
+    {
+        "title": "Add Cash Yield Optimization Extractor",
+        "kind": "extractor",
+        "terms": ["hysa", "sgov", "t-bill", "treasury", "interest", "state tax", "after-tax", "cash"],
+        "reason": "The input discusses cash, yield, liquidity, or tax drag.",
+        "expected_benefit": "Future reports can compare cash options using after-tax yield and liquidity assumptions.",
+        "risk": "Could overfit to current interest rates unless the extractor records dates and assumptions.",
+    },
+    {
+        "title": "Add Speculative Trading Risk Gate",
+        "kind": "risk_gate",
+        "terms": ["options", "trading", "agentic", "bot", "moonshot", "speculative", "max loss"],
+        "reason": "The input includes high-risk trading or speculative allocation language.",
+        "expected_benefit": "Keeps speculative ideas bounded by max loss, approved bucket size, backtesting, and tax review.",
+        "risk": "Can become too restrictive if all exploration is treated as a live strategy.",
+    },
+    {
+        "title": "Add AI Bottleneck Thesis Tracker",
+        "kind": "schema",
+        "terms": ["ai", "compute", "gpu", "nvda", "memory bandwidth", "networking", "power", "cooling", "photonics"],
+        "reason": "The input mentions AI infrastructure or bottleneck investing themes.",
+        "expected_benefit": "Tracks thesis dimensions separately from generic watchlist symbols.",
+        "risk": "Theme extraction can become noisy without source evidence and confidence.",
+    },
+    {
+        "title": "Add Contradiction Checker",
+        "kind": "quality_check",
+        "terms": ["but", "however", "instead", "changed my mind", "rejected", "avoid", "do not", "don't"],
+        "reason": "The input includes reversal, rejection, or contrast language.",
+        "expected_benefit": "Flags possible conflicts between prior rules, new statements, and current drafts.",
+        "risk": "May flag ordinary nuance as conflict until reviewed by the user.",
+    },
+    {
+        "title": "Require Evidence Anchors For Durable Memory",
+        "kind": "evidence_requirement",
+        "terms": ["preference", "rule", "decision", "watchlist", "risk", "tax", "portfolio"],
+        "reason": "The input contains durable memory candidates.",
+        "expected_benefit": "Prevents memory updates without source file, checksum, and line-level evidence.",
+        "risk": "Adds review overhead, but keeps the system debuggable.",
+    },
+]
+
+
+def load_manifest() -> list[dict[str, object]]:
+    if not MANIFEST_PATH.exists():
+        return []
+    records = []
+    for line in MANIFEST_PATH.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            records.append(json.loads(line))
+    return records
+
+
+def clean_line(line: str) -> str:
+    return re.sub(r"\\s+", " ", line.strip())[:260]
+
+
+def evidence_id(index: int, line_number: int) -> str:
+    return f"S{index}:L{line_number}"
+
+
+def matching_evidence(records: list[dict[str, object]], terms: list[str]) -> list[dict[str, object]]:
+    matches = []
+    seen: set[str] = set()
+    for source_index, record in enumerate(records, start=1):
+        stored_path = ROOT / str(record["stored_path"])
+        text = stored_path.read_text(encoding="utf-8", errors="replace")
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            normalized = clean_line(line)
+            lowered = normalized.lower()
+            if not normalized or not any(term in lowered for term in terms):
+                continue
+            key = f"{source_index}:{line_number}:{lowered}"
+            if key in seen:
+                continue
+            seen.add(key)
+            matches.append(
+                {
+                    "evidence": evidence_id(source_index, line_number),
+                    "text": normalized,
+                    "source_name": record.get("source_name", "unknown"),
+                    "source_sha256": record.get("sha256", "unknown"),
+                }
+            )
+            if len(matches) >= 5:
+                return matches
+    return matches
+
+
+def build_recommendations(records: list[dict[str, object]]) -> list[dict[str, object]]:
+    recommendations = []
+    for rule in UPGRADE_RULES:
+        evidence = matching_evidence(records, rule["terms"])
+        if not evidence:
+            continue
+        recommendations.append(
+            {
+                **rule,
+                "evidence": evidence,
+                "status": "proposed_requires_approval",
+                "activation": "not_active",
+                "rollback_path": "Do not activate this upgrade until it is versioned; reject the proposal to keep current extraction behavior.",
+            }
+        )
+    return recommendations
+
+
+def build_report(records: list[dict[str, object]]) -> str:
+    recommendations = build_recommendations(records)
+    lines = [
+        "# Functional Evolution Report",
+        "",
+        f"Generated: {datetime.now(timezone.utc).isoformat()}",
+        "",
+        "This report is review-only. It recommends extractor, schema, classifier, scoring, or quality-check upgrades without activating them.",
+        "",
+        "## Pipeline Observability",
+        "",
+        f"- Raw imports reviewed: {len(records)}",
+        f"- Functional upgrades proposed: {len(recommendations)}",
+        "- Active extractor changes: 0",
+        "- Policy mutations: 0",
+        "- Strategy mutations: 0",
+        "- Status: proposed_requires_approval",
+        "",
+        "## Proposed Functional Upgrades",
+        "",
+    ]
+    if not recommendations:
+        lines.extend(["- None detected.", ""])
+    for index, recommendation in enumerate(recommendations, start=1):
+        lines.extend(
+            [
+                f"### {index}. {recommendation['title']}",
+                "",
+                f"- kind: {recommendation['kind']}",
+                f"- status: {recommendation['status']}",
+                f"- activation: {recommendation['activation']}",
+                f"- reason: {recommendation['reason']}",
+                f"- expected benefit: {recommendation['expected_benefit']}",
+                f"- risk: {recommendation['risk']}",
+                f"- rollback path: {recommendation['rollback_path']}",
+                "- evidence:",
+            ]
+        )
+        for item in recommendation["evidence"]:
+            lines.append(
+                f"  - {item['evidence']} {item['text']} "
+                f"(source: {item['source_name']}, sha256: {item['source_sha256']})"
+            )
+        lines.append("")
+    lines.extend(
+        [
+            "## Approval Rule",
+            "",
+            "Approving this report should create a versioned extractor/schema proposal. It must not directly rewrite prompts, code, policy, or strategy.",
+            "",
+        ]
+    )
+    return "\\n".join(lines)
+
+
+def write_report(report: str) -> None:
+    EVOLUTION_DIR.mkdir(parents=True, exist_ok=True)
+    REPORT_PATH.write_text(report, encoding="utf-8")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Generate a review-only functional evolution report from raw imported conversations.",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Review all raw imports instead of only the latest import.",
+    )
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    records = load_manifest()
+    if not records:
+        print("No raw conversation imports found. Run import_conversation.py first.")
+        return 1
+    if not args.all:
+        records = records[-1:]
+
+    write_report(build_report(records))
+    print(f"Wrote review-only functional evolution report to {REPORT_PATH}")
+    print("No extractor, schema, policy, strategy, alert, release, or execution settings were mutated.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+""",
+    )
+
+
 def generate_portfolio_blueprint(spec: AgentSpec, output_dir: Path) -> None:
     create_agent_directories(output_dir)
     (output_dir / "data").mkdir(parents=True, exist_ok=True)
@@ -934,6 +1167,7 @@ python import_portfolio_market_data.py path/to/market_data.csv
 python import_conversation.py path/to/chatgpt-finance-export.md
 python extract_memory.py
 python memory_update_report.py --all
+python functional_evolution_report.py --all
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -943,6 +1177,7 @@ python handoff.py
 Raw conversation imports are stored in `memory/raw` and do not mutate strategy.
 Structured memory drafts are written to `memory/structured` for review before promotion.
 Memory update reports are written to `memory/structured/memory_update_report.md` with source evidence and no policy mutation.
+Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
 ntfy push is available but disabled by default in `config.json`.
 Portfolio snapshots, transactions, cash balances, watchlists, and market data are local CSV imports only; no broker credentials are stored.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
@@ -1837,6 +2072,7 @@ This is a local, advisory Health OS scaffold generated by Setup OS.
 python import_conversation.py path/to/health-notes-export.md
 python extract_memory.py
 python memory_update_report.py --all
+python functional_evolution_report.py --all
 python report.py
 python health.py
 python runtime_node.py --skip-report
@@ -1846,6 +2082,7 @@ python handoff.py
 Raw conversation imports are stored in `memory/raw` and do not mutate behavior.
 Structured memory drafts are written to `memory/structured` for review before promotion.
 Memory update reports are written to `memory/structured/memory_update_report.md` with source evidence and no behavior mutation.
+Functional evolution reports are written to `evolution/functional_evolution_report.md` with proposed extractor upgrades that require approval.
 ntfy push is available but disabled by default in `config.json`.
 `handoff.py` writes `handoff.md` as a local utility checklist for your laptop or always-on runtime node.
 
