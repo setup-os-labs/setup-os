@@ -82,3 +82,18 @@ read -> alert -> draft -> approve -> execute -> auto_execute
 ```
 
 High-risk domains such as finance and health should start at `alert` and prohibit dangerous automation by default.
+
+## 11. Extraction Engines Must Evolve Under Control
+
+Generated systems should separate memory evolution from functional evolution.
+
+Memory evolution changes what the system knows. Functional evolution changes how the system extracts, classifies, compares, evaluates, and governs future inputs.
+
+Functional evolution requires:
+
+- self-evaluation of extraction quality and missed patterns
+- observability summaries for each pipeline run
+- traceability from every durable claim back to source evidence
+- human approval before changing extractors, schemas, prompts, checks, or scoring rubrics
+- versioning and rollback for approved changes
+- objective alignment so the system keeps optimizing for the user's approved goals

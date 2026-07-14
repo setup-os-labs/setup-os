@@ -52,17 +52,22 @@ The desktop MVP has reached the 95% target for a local-first scaffold. The remai
 - Development and release timeline visualizes the local-first utility path, Portfolio OS path, and public commercial release path.
 - Python CLI for create, evolve, and approval-gated apply.
 - Generated Portfolio Management OS scaffold with local imports, reports, alerts, memory drafts, audit trail, health checks, handoff summaries, and notifications.
+- Architecture now records self-evolving extraction as a future direction: memory updates and functional extractor upgrades are separate approval-gated paths.
 
 ## Remaining After 95%
 
 - Build real sidecar artifacts during release workflows.
 - Execute signing/notarization with real project credentials.
 - Add installer/updater policy and rollback procedure.
+- Add rollback policy for approved memory, schema, prompt, and extractor changes before limited automation.
 
 ## Still Later
 
 - Signed installers and updater flow.
 - Bundled Python sidecar.
+- Weekly saved-chat ingestion into Memory Update Reports and Functional Evolution Reports.
+- Desktop observability and traceability review for recurring extraction runs.
+- Approval-gated extractor upgrades for new schemas, classifiers, comparison dimensions, contradiction checks, and scoring rubrics.
 - Robinhood read-only connector.
 - OpenBB/live market data adapter.
 - SQLite state layer.

@@ -28,6 +28,8 @@ It is a local, advisory, alert-first investing assistant.
 - import Robinhood/manual portfolio data, transactions, cash balances, watchlists, and market snapshots as read-only local CSV files
 - store imported conversations as raw memory first, with manifest metadata and checksum, then extract structured portfolio facts
 - keep structured extraction outputs as review-only drafts until promoted by an approved proposal
+- eventually produce separate memory update and functional evolution reports from recurring saved finance conversations
+- eventually let the extraction layer recommend its own new extractors, schema fields, scoring rubrics, and checks behind approval
 - produce daily Markdown portfolio reports
 - summarize offline unrealized performance from local cost basis and market snapshot files
 - warn on concentration above the local review threshold
@@ -126,7 +128,23 @@ Default policy:
 - no automated trades
 - no sell orders without explicit approval
 - no strategy mutation without an evolution proposal
+- no extractor, schema, prompt, or scoring-rubric mutation without a functional evolution proposal
 - all external actions require approval
+
+## Self-Evolving Extraction Direction
+
+Portfolio Management OS should become the first proof vertical for the self-evolving extraction engine.
+
+The weekly saved-chat ingestion loop should eventually produce:
+
+- Memory Update Report: new facts, preferences, decisions, open loops, risk rules, tax notes, and watchlist changes.
+- Functional Evolution Report: recommended extractors, schema fields, comparison dimensions, contradiction checks, scoring rubrics, and noise filters.
+- Pipeline Observability Summary: chats processed, drafts created, low-confidence items, conflicts, rejected noise, and proposed upgrades.
+- Evidence Map: links from each proposed memory or functional change back to imported conversation records.
+
+The functional layer should learn how to learn better only through approved changes. Examples include a cash yield optimization extractor, speculative trading risk gate, AI bottleneck thesis tracker, intent-state classifier, and contradiction checker.
+
+Finance-specific extraction should distinguish curiosity, serious consideration, rejected ideas, approved strategies, and active behavior so exploratory questions do not become false preferences.
 
 ## Future Phases
 
@@ -134,11 +152,14 @@ Default policy:
 2. Robinhood/manual read-only CSV holdings, transactions, cash, watchlist, and market snapshot import with local reports.
 3. ChatGPT financial discussion import into raw memory.
 4. Structured extraction drafts from raw conversations into holdings context, strategy notes, risk rules, and watchlists.
-5. Allocation drift and concentration alerts.
-6. Local price/event snapshot enrichment and offline performance summary before live data APIs.
-7. Optional ntfy or Apprise notifications.
-8. Human-approved execution through a supported broker interface.
-9. Limited automation only for pre-approved rules.
+5. Weekly memory update report with evidence, confidence, and approval status.
+6. Functional evolution report for extractor, schema, comparison, scoring, and contradiction-check upgrades.
+7. Pipeline observability and traceability review in the desktop app.
+8. Allocation drift and concentration alerts.
+9. Local price/event snapshot enrichment and offline performance summary before live data APIs.
+10. Optional ntfy or Apprise notifications.
+11. Human-approved execution through a supported broker interface.
+12. Limited automation only for pre-approved rules after rollback is designed.
 
 ## Robinhood Direction
 
@@ -160,6 +181,7 @@ Recommended center of gravity:
 - Setup OS generated local Python vertical for v0.
 - Raw-first conversation memory, then structured extraction after review.
 - Structured memory drafts must be marked `draft_requires_review` and must not mutate strategy, policy, alerts, or releases directly.
+- Functional extraction upgrades must be review-only proposals until approved and versioned.
 - OpenBB-style market data adapter when real data enrichment begins.
 - LangGraph-style workflow orchestration when the agent needs durable, human-in-the-loop state.
 - Ghostfolio-style cockpit only after the raw import, reports, alerts, and evolution flow are proven.
