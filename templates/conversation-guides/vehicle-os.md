@@ -1,6 +1,8 @@
 # Vehicle OS Conversation Guide
 
-Use this when planning a local vehicle maintenance and ownership assistant.
+> **Not the independent [vehicleos.app](https://vehicleos.app) product.** This guide is for planning a **future Setup OS–generated** local vehicle agent. The production Vehicle OS is a separate ground-up product. First factory output: Portfolio Management OS.
+
+Use this when planning a local vehicle maintenance and ownership assistant **via Setup OS codegen**.
 
 ## Goal
 
