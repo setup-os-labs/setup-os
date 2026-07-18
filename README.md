@@ -1,3 +1,13 @@
+# Moved to Interview Prep
+
+> **Pointer:** `~/Interview Prep/rounds/02-applied-ai/projects/setup-os/`  
+> **Code submodule:** `~/Interview Prep/rounds/02-applied-ai/projects/setup-os/repo/` (after consolidation)  
+> **Edit in Cursor:** this submodule · **commit in Terminal.app only** (pre-commit guard)
+>
+> Migrated 2026-07-15 (M3 SO-S3).
+
+---
+
 <p align="center">
   <img src="assets/brand/setup-os-logo.svg" alt="Setup OS" width="760">
 </p>

@@ -12,12 +12,14 @@ Source: `ChatGPT-Setup OS, Portfolio Mngt Agent.md`. Reverify external product d
 | Core promise | Start a backend quickly | Turn a planning conversation into a local living agent |
 | Main input | Schema, tables, functions, app code | Finalized planning conversation |
 | Core abstraction | Database and backend primitives | Vertical agents, memory, notifications, evolution |
-| Output | Postgres, auth, APIs, storage, realtime | Portfolio OS, Vehicle OS, Health OS, Career OS, custom agents |
+| Output | Postgres, auth, APIs, storage, realtime | Portfolio OS (first output), Career OS, Health OS, custom agents — plus optional blueprint templates for future verticals |
 | What it composes | Postgres, auth, storage, realtime, functions | LLMs, memory, tools, schedulers, notifications, deployment |
 | Source of truth | Postgres | Agent DNA, structured memory, policy memory, timeline |
 | Runtime posture | Cloud-first with self-host option | Local-first with optional cloud layers |
 | Evolution model | Developer changes app/backend | User approves conversation-derived evolution proposals |
 | Marketplace potential | Extensions and templates | Vertical blueprints, capabilities, recipes, connectors |
+
+**Boundary note (2026-07-06):** [Vehicle OS](https://vehicleos.app) is an **independent product** built ground-up — not a Setup OS generated output. Portfolio Management OS is the first factory deliverable. A `vehicle-os` conversation guide exists for future *generated* local agents only.
 
 Clean framing:
 
