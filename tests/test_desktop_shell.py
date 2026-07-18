@@ -25,6 +25,7 @@ class DesktopShellTests(unittest.TestCase):
             "src-tauri/sidecar/README.md",
             "src-tauri/tauri.conf.json",
             "src-tauri/src/lib.rs",
+            "src-tauri/src/main.rs",
         ]
 
         for relative_path in expected:
@@ -206,10 +207,20 @@ class DesktopShellTests(unittest.TestCase):
     def test_desktop_ui_accepts_portfolio_output_path(self) -> None:
         app = (DESKTOP / "src" / "App.tsx").read_text(encoding="utf-8")
         setup_os = (DESKTOP / "src" / "lib" / "setupOs.ts").read_text(encoding="utf-8")
+        main_rs = (DESKTOP / "src-tauri" / "src" / "main.rs").read_text(encoding="utf-8")
 
+        self.assertIn('windows_subsystem = "windows"', main_rs)
         self.assertIn("portfolioOutputPath", app)
         self.assertIn("requirePath", app)
         self.assertIn("is required before running this action.", app)
+        self.assertIn("showActionStart", app)
+        self.assertIn("primaryNav", app)
+        self.assertIn("openPrimaryNav", app)
+        self.assertIn('type="button"', app)
+        self.assertNotIn('href="#agents"', app)
+        self.assertNotIn('href="#import"', app)
+        self.assertNotIn('href="#proposals"', app)
+        self.assertNotIn('href="#notifications"', app)
         self.assertIn("Seed conversation path", app)
         self.assertIn("Conversation path", app)
         self.assertIn("window.localStorage", app)
@@ -225,6 +236,9 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Local smoke test", app)
         self.assertIn("Current state", app)
         self.assertIn("Workspace details", app)
+        self.assertIn("Latest action", app)
+        self.assertIn('aria-live="polite"', app)
+        self.assertIn("Click an action to see status and output here.", app)
         self.assertIn("parsePortfolioDashboard", app)
         self.assertIn("DashboardCard", app)
         self.assertIn("Update dashboard", app)
@@ -304,6 +318,8 @@ class DesktopShellTests(unittest.TestCase):
         styles = (DESKTOP / "src" / "styles.css").read_text(encoding="utf-8")
         self.assertIn(".dashboard-grid", styles)
         self.assertIn(".dashboard-card", styles)
+        self.assertIn(".action-output", styles)
+        self.assertIn("nav button", styles)
 
         sidecar_notes = (ROOT / "docs" / "python-sidecar-packaging.md").read_text(encoding="utf-8")
         self.assertIn("Resolver Order", sidecar_notes)
