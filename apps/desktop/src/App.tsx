@@ -86,6 +86,7 @@ type PortfolioDashboard = {
 };
 
 type SurfaceId = "work" | "review" | "operator";
+type PrimaryNavId = "agents" | "imports" | "proposals" | "inbox";
 type GuideId = "start" | "how" | "use";
 
 const surfaces: Array<{
@@ -118,6 +119,18 @@ const guides: Array<{ id: GuideId; label: string; icon: ReactNode }> = [
   { id: "start", label: "Start", icon: <Play size={16} /> },
   { id: "how", label: "How it works", icon: <Route size={16} /> },
   { id: "use", label: "How to use", icon: <BookOpen size={16} /> },
+];
+
+const primaryNav: Array<{
+  id: PrimaryNavId;
+  label: string;
+  surface: SurfaceId;
+  icon: ReactNode;
+}> = [
+  { id: "agents", label: "Agents", surface: "work", icon: <Bot size={18} /> },
+  { id: "imports", label: "Imports", surface: "work", icon: <FolderInput size={18} /> },
+  { id: "proposals", label: "Proposals", surface: "review", icon: <FileText size={18} /> },
+  { id: "inbox", label: "Inbox", surface: "review", icon: <Bell size={18} /> },
 ];
 
 const onboardingSteps = [
@@ -204,6 +217,7 @@ export function App() {
     drafts: "Unknown",
   });
   const [activeSurface, setActiveSurface] = useState<SurfaceId>("work");
+  const [activePrimaryNav, setActivePrimaryNav] = useState<PrimaryNavId>("agents");
   const [activeGuide, setActiveGuide] = useState<GuideId>("start");
 
   useEffect(() => {
@@ -236,14 +250,27 @@ export function App() {
     return requirePath("Portfolio output path", portfolioOutputPath);
   }
 
+  function showActionStart(status: string, output: string) {
+    setActionStatus(status);
+    setCliOutput(output);
+  }
+
+  function openPrimaryNav(item: (typeof primaryNav)[number]) {
+    setActivePrimaryNav(item.id);
+    setActiveSurface(item.surface);
+  }
+
   async function checkCli() {
     setCliStatus("Checking");
+    showActionStart("Checking engine", "Checking the Setup OS engine...");
     try {
       const output = await getSetupOsHelp();
       setCliOutput(output);
       setCliStatus("Ready");
+      setActionStatus("Engine checked");
     } catch (error) {
       setCliStatus("Needs attention");
+      setActionStatus("Needs attention");
       setCliOutput(error instanceof Error ? error.message : String(error));
     }
   }
@@ -283,7 +310,7 @@ export function App() {
   }
 
   async function checkReleaseReadiness() {
-    setActionStatus("Checking release readiness");
+    showActionStart("Checking release readiness", "Checking release readiness...");
     try {
       const output = await getDesktopReleaseReadiness();
       setCliOutput(output);
@@ -295,8 +322,7 @@ export function App() {
   }
 
   async function runLocalSmokeTest() {
-    setActionStatus("Running local smoke test");
-    setCliOutput("Running the local Setup OS utility smoke test...");
+    showActionStart("Running local smoke test", "Running the local Setup OS utility smoke test...");
     try {
       const output = await runLocalUtilitySmokeTest();
       setCliOutput(output);
@@ -314,8 +340,10 @@ export function App() {
       return;
     }
 
-    setActionStatus("Generating");
-    setCliOutput(`Creating Portfolio Management OS in ${portfolioOutputPath} from ${seedConversationPath}...`);
+    showActionStart(
+      "Generating",
+      `Creating Portfolio Management OS in ${portfolioOutputPath} from ${seedConversationPath}...`,
+    );
     try {
       const output = await createPortfolioExample(portfolioOutputPath, seedConversationPath);
       setCliOutput(output);
@@ -340,8 +368,10 @@ export function App() {
       return;
     }
 
-    setActionStatus("Resetting workspace");
-    setCliOutput(`Archiving and recreating ${portfolioOutputPath} from ${seedConversationPath}...`);
+    showActionStart(
+      "Resetting workspace",
+      `Archiving and recreating ${portfolioOutputPath} from ${seedConversationPath}...`,
+    );
     try {
       const output = await resetPortfolioWorkspace(portfolioOutputPath, seedConversationPath);
       setCliOutput(output);
@@ -358,8 +388,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Running report");
-    setCliOutput("Running generated Portfolio Management OS report...");
+    showActionStart("Running report", "Running generated Portfolio Management OS report...");
     try {
       const output = await runPortfolioReport(portfolioOutputPath);
       setCliOutput(output);
@@ -376,7 +405,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reviewing report");
+    showActionStart("Reviewing report", "Loading generated Portfolio report sections...");
     try {
       const output = await reviewPortfolioReportSections(portfolioOutputPath);
       setCliOutput(output);
@@ -392,8 +421,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Checking health");
-    setCliOutput("Running generated Portfolio Management OS health check...");
+    showActionStart("Checking health", "Running generated Portfolio Management OS health check...");
     try {
       const output = await checkPortfolioHealth(portfolioOutputPath);
       setCliOutput(output);
@@ -410,7 +438,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reviewing insights");
+    showActionStart("Reviewing insights", "Loading Portfolio dashboard insights...");
     try {
       const output = await reviewPortfolioInsights(portfolioOutputPath);
       setCliOutput(output);
@@ -426,7 +454,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Previewing conversation");
+    showActionStart("Previewing conversation", `Previewing ${conversationPath}...`);
     try {
       const output = await previewPortfolioConversation(conversationPath);
       setCliOutput(output);
@@ -442,8 +470,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Importing conversation");
-    setCliOutput(`Importing ${conversationPath} into raw Portfolio memory...`);
+    showActionStart("Importing conversation", `Importing ${conversationPath} into raw Portfolio memory...`);
     try {
       const output = await importPortfolioConversationFile(portfolioOutputPath, conversationPath);
       setCliOutput(output);
@@ -476,8 +503,7 @@ export function App() {
       return;
     }
 
-    setActionStatus(`Importing ${labels[kind]}`);
-    setCliOutput(`Importing ${path} into Portfolio ${labels[kind]}...`);
+    showActionStart(`Importing ${labels[kind]}`, `Importing ${path} into Portfolio ${labels[kind]}...`);
     try {
       const output = await actions[kind](portfolioOutputPath, path);
       setCliOutput(output);
@@ -498,8 +524,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Extracting memory");
-    setCliOutput("Extracting review-only Portfolio memory drafts...");
+    showActionStart("Extracting memory", "Extracting review-only Portfolio memory drafts...");
     try {
       const output = await extractPortfolioMemory(portfolioOutputPath);
       setCliOutput(output);
@@ -516,7 +541,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reviewing drafts");
+    showActionStart("Reviewing drafts", "Loading review-only Portfolio memory drafts...");
     try {
       const output = await reviewPortfolioMemoryDrafts(portfolioOutputPath);
       setCliOutput(output);
@@ -532,7 +557,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reviewing memory report");
+    showActionStart("Reviewing memory report", "Loading the Memory Update Report...");
     try {
       const output = await reviewPortfolioMemoryUpdateReport(portfolioOutputPath);
       setCliOutput(output);
@@ -548,7 +573,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reviewing functional evolution");
+    showActionStart("Reviewing functional evolution", "Loading the Functional Evolution Report...");
     try {
       const output = await reviewPortfolioFunctionalEvolutionReport(portfolioOutputPath);
       setCliOutput(output);
@@ -564,7 +589,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reviewing evolution packet");
+    showActionStart("Reviewing evolution packet", "Loading the Evolution Review Packet...");
     try {
       const output = await reviewPortfolioEvolutionReviewPacket(portfolioOutputPath);
       setCliOutput(output);
@@ -580,7 +605,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reviewing rollback");
+    showActionStart("Reviewing rollback", "Loading extractor snapshots and rollback readiness...");
     try {
       const output = await reviewPortfolioExtractorRollback(portfolioOutputPath);
       setCliOutput(output);
@@ -596,7 +621,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Refreshing status");
+    showActionStart("Refreshing status", "Refreshing Portfolio workspace status...");
     try {
       const output = await getPortfolioStatus(portfolioOutputPath);
       setCliOutput(output);
@@ -612,7 +637,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Loading summary");
+    showActionStart("Loading summary", "Loading Portfolio dashboard summary...");
     try {
       const output = await getPortfolioSummary(portfolioOutputPath);
       setCliOutput(output);
@@ -629,7 +654,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reading inbox");
+    showActionStart("Reading inbox", "Reading Portfolio notification inbox...");
     try {
       const output = await readPortfolioNotifications(portfolioOutputPath);
       setCliOutput(output);
@@ -645,7 +670,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reading runtime log");
+    showActionStart("Reading runtime log", "Reading runtime node log...");
     try {
       const output = await readRuntimeNodeLog(portfolioOutputPath);
       setCliOutput(output);
@@ -661,7 +686,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Writing handoff");
+    showActionStart("Writing handoff", "Writing local utility handoff...");
     try {
       const output = await writePortfolioHandoff(portfolioOutputPath);
       setCliOutput(output);
@@ -677,7 +702,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Reviewing handoff");
+    showActionStart("Reviewing handoff", "Loading handoff guidance...");
     try {
       const output = await reviewPortfolioHandoffGuidance(portfolioOutputPath);
       setCliOutput(output);
@@ -693,8 +718,7 @@ export function App() {
       return;
     }
 
-    setActionStatus("Running full flow");
-    setCliOutput("Running the full local Portfolio Management OS flow...");
+    showActionStart("Running full flow", "Running the full local Portfolio Management OS flow...");
     try {
       const output = await runPortfolioDemoFlow(portfolioOutputPath);
       setCliOutput(output);
@@ -717,18 +741,17 @@ export function App() {
           </div>
         </div>
         <nav aria-label="Primary">
-          <a className="active" href="#agents">
-            <Bot size={18} /> Agents
-          </a>
-          <a href="#import">
-            <FolderInput size={18} /> Imports
-          </a>
-          <a href="#proposals">
-            <FileText size={18} /> Proposals
-          </a>
-          <a href="#notifications">
-            <Bell size={18} /> Inbox
-          </a>
+          {primaryNav.map((item) => (
+            <button
+              className={activePrimaryNav === item.id ? "active" : ""}
+              key={item.id}
+              type="button"
+              onClick={() => openPrimaryNav(item)}
+            >
+              {item.icon}
+              {item.label}
+            </button>
+          ))}
         </nav>
       </aside>
 
@@ -853,6 +876,14 @@ export function App() {
           </details>
         </section>
 
+        <section className="action-output" aria-live="polite" aria-label="Latest action output">
+          <div>
+            <p className="eyebrow">Latest action</p>
+            <h3>{actionStatus}</h3>
+          </div>
+          <pre>{cliOutput || "Click an action to see status and output here."}</pre>
+        </section>
+
         <section className="surface-tabs" aria-label="Workspace modes">
           {surfaces.map((surface) => (
             <button
@@ -868,7 +899,7 @@ export function App() {
           ))}
         </section>
 
-        <section id="agents" className="content-band">
+        <section className="content-band">
           {activeSurface === "work" && (
             <div className="surface-grid">
               <section className="panel action-panel">
@@ -1088,7 +1119,7 @@ export function App() {
           )}
         </section>
 
-        <section className="details-drawer output-drawer" id="import" aria-label="Engine output">
+        <section className="details-drawer output-drawer" aria-label="Engine output">
           <details>
             <summary>Engine output</summary>
             <p className="panel-status">Portfolio action: {actionStatus}</p>
