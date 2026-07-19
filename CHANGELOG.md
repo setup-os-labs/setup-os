@@ -24,6 +24,7 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 - Desktop shell can review generated Portfolio extractor version snapshots and rollback plans, including latest tracked hashes and rollback readiness.
 - Generated agents now include `extractor_change_proposal.py`, which writes an approval-gated extractor/schema/scoring proposal skeleton without mutating behavior.
 - Desktop primary navigation now switches the first-screen workspace directly so installed KT-005 retests do not appear stuck behind onboarding content.
+- Desktop release bundles the Setup OS Python engine source and examples as packaged resources, so installed builds no longer need `SETUP_OS_REPO_DIR` just to locate `setup_os.cli`.
 - Generated agents now include `weekly_review.py`, which runs the local import, extraction, memory update, functional evolution, observability, version snapshot, health, report, and handoff loop with a JSONL audit log.
 - Generated agents now include `review_packet.py`, which bundles memory, functional evolution, observability, versioning, weekly review, and handoff artifacts into `evolution/review_packet.md` for human approval review.
 - Desktop shell can generate or read the generated Portfolio Evolution Review Packet and summarize artifact readiness plus approval checklist counts.

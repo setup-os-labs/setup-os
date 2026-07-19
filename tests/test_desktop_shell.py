@@ -114,7 +114,11 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("SETUP_OS_REPO_DIR", lib_rs)
         self.assertIn("Could not locate the Setup OS engine/repo root.", lib_rs)
         self.assertIn("Searched:", lib_rs)
-        self.assertIn("bundled Setup OS engine/sidecar", lib_rs)
+        self.assertIn("packaged Setup OS engine resource", lib_rs)
+        self.assertIn("setup_os_engine_candidates", lib_rs)
+        self.assertIn("packaged_engine_candidates", lib_rs)
+        self.assertIn("configure_packaged_engine_resource", lib_rs)
+        self.assertIn("SETUP_OS_RESOURCE_DIR", lib_rs)
         self.assertIn("Setup OS Python runtime", lib_rs)
         self.assertIn("SETUP_OS_PYTHON", lib_rs)
         self.assertIn("resolve_python_command", lib_rs)
@@ -351,6 +355,13 @@ class DesktopShellTests(unittest.TestCase):
         self.assertIn("Windows", smoke_tests)
         self.assertIn("macOS", smoke_tests)
         self.assertIn("Run **Release readiness**", smoke_tests)
+
+        tauri_config = (DESKTOP / "src-tauri" / "tauri.conf.json").read_text(encoding="utf-8")
+        self.assertIn('"resources"', tauri_config)
+        self.assertIn('"../../../setup_os/*.py"', tauri_config)
+        self.assertIn('"engine/setup_os/"', tauri_config)
+        self.assertIn('"../../../examples/*"', tauri_config)
+        self.assertIn('"engine/examples/"', tauri_config)
 
         release_contract = (ROOT / "scripts" / "check_desktop_release_contract.py").read_text(
             encoding="utf-8"

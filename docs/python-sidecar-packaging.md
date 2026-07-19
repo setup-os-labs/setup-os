@@ -5,7 +5,8 @@ Setup OS keeps the Python engine as the product core. The desktop app should eve
 ## Current Decision
 
 - Development builds can use the local `python` executable or `SETUP_OS_PYTHON`.
-- Release builds should prefer a bundled Python sidecar.
+- Release builds bundle the `setup_os` package and example inputs as desktop resources under `engine/`.
+- Release builds should prefer a bundled Python sidecar once the runtime packaging step lands.
 - The desktop app should keep calling Python through a single resolver path so the switch from local Python to bundled sidecar is contained.
 - FastAPI is not part of the desktop default. It remains an option only if the Python engine needs a long-running local service boundary.
 
@@ -16,16 +17,30 @@ apps/desktop/src-tauri/sidecar/
   README.md
   python/
     <platform-specific runtime>
+
+Packaged Tauri resources:
+
+engine/
   setup_os/
-    <packaged Python package>
+    <packaged Python package source>
+  examples/
+    <bundled example inputs>
 ```
 
 The first packaged release should include:
 
+- `setup_os` package code and example inputs as packaged resources.
 - Python runtime for the target platform.
-- `setup_os` package code.
-- Generated-agent template assets needed by `python -m setup_os.cli`.
+- Generated-agent template assets needed by `python -m setup_os.cli create`.
 - A smoke check equivalent to `python -m setup_os.cli --help`.
+
+## Engine Resolver Order
+
+The desktop app should resolve the Setup OS engine root in this order:
+
+1. `SETUP_OS_REPO_DIR`, for development and explicit installed smoke overrides.
+2. Packaged Tauri resource `engine/`, for installed release builds.
+3. Nearby repo checkout search, for local development convenience.
 
 ## Resolver Order
 
@@ -39,6 +54,7 @@ The desktop command runner should resolve Python in this order:
 
 A release is not considered end-user ready until:
 
+- the packaged engine resource exists and contains `setup_os/cli.py` plus bundled examples;
 - the sidecar runtime exists for Windows and macOS;
 - CI runs the packaged CLI smoke check;
 - unsigned bundles can run without a preinstalled Python;

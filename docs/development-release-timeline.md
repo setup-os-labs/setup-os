@@ -141,12 +141,12 @@ The public release is a separate path from your local utility. It needs more pol
 ## What To Build Next
 
 1. Karan runs the installed Windows artifact smoke test using `packaged-smoke-manifest.json` and the generated local evidence file.
-2. Retest the installed Windows artifact after the KT-005 launch, action-feedback, navigation, and repo-root diagnostic fixes.
-3. Import and extract from a real saved Portfolio Management conversation.
-4. Choose the always-on runtime node target and schedule `runtime_node.py`.
-5. Build real sidecar artifacts in the desktop release workflow.
+2. Retest the installed Windows artifact after the KT-005 launch, action-feedback, navigation, and packaged-engine fixes.
+3. Build real Python runtime sidecar artifacts in the desktop release workflow.
+4. Import and extract from a real saved Portfolio Management conversation.
+5. Choose the always-on runtime node target and schedule `runtime_node.py`.
 
-Codex can continue deeper release hardening after the KT-005 retest confirms whether installed navigation is fixed and whether the remaining runtime blocker is only the missing bundled Setup OS engine/sidecar.
+KT-005 confirmed installed launch and primary navigation. The current release-hardening slice bundles the Setup OS engine source as a desktop resource so installed builds no longer need `SETUP_OS_REPO_DIR` to locate `setup_os.cli`; the remaining runtime blocker is the full bundled Python sidecar.
 
 For the current practical path, use [Personal local setup guide](personal-local-setup.md).
 
