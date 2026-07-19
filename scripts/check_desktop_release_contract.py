@@ -36,7 +36,16 @@ def main() -> int:
         "apps/desktop/src-tauri/src/lib.rs",
         "SETUP_OS_PYTHON -> bundled sidecar -> system python",
     )
+    require_text(
+        "apps/desktop/src-tauri/src/lib.rs",
+        "SETUP_OS_REPO_DIR -> packaged engine resource -> nearby repo checkout",
+    )
     require_text("apps/desktop/src-tauri/src/lib.rs", "sidecar_python_candidates")
+    require_text("apps/desktop/src-tauri/src/lib.rs", "configure_packaged_engine_resource")
+    require_text("apps/desktop/src-tauri/tauri.conf.json", '"../../../setup_os/*.py"')
+    require_text("apps/desktop/src-tauri/tauri.conf.json", '"engine/setup_os/"')
+    require_text("apps/desktop/src-tauri/tauri.conf.json", '"../../../examples/*"')
+    require_text("apps/desktop/src-tauri/tauri.conf.json", '"engine/examples/"')
     require_text("docs/python-sidecar-packaging.md", "Release Gate")
     require_text("docs/desktop-signing-notarization.md", "Do not add real secrets to the repo")
     require_text("docs/packaged-app-smoke-tests.md", "Run **Release readiness**")

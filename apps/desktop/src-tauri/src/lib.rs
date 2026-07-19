@@ -2,6 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
+use tauri::Manager;
 
 #[tauri::command]
 fn setup_os_help() -> Result<String, String> {
@@ -31,6 +32,7 @@ fn setup_os_python_runtime_status() -> Result<String, String> {
         format!(
             "- Resolver order: SETUP_OS_PYTHON -> bundled sidecar -> system python"
         ),
+        format!("- Engine resolver: SETUP_OS_REPO_DIR -> packaged engine resource -> nearby repo checkout"),
     ];
 
     match runtime_probe {
@@ -1657,12 +1659,7 @@ fn setup_os_repo_dir() -> Result<PathBuf, String> {
 
     let current_dir =
         std::env::current_dir().map_err(|error| format!("failed to read current dir: {error}"))?;
-    let candidates = [
-        current_dir.clone(),
-        current_dir.join(".."),
-        current_dir.join("../.."),
-        current_dir.join("../../.."),
-    ];
+    let candidates = setup_os_engine_candidates(&current_dir);
     for candidate in &candidates {
         if candidate.join("setup_os").join("cli.py").exists() {
             return Ok(candidate.to_path_buf());
@@ -1675,15 +1672,59 @@ fn setup_os_repo_dir() -> Result<PathBuf, String> {
         .collect::<Vec<_>>()
         .join("\n");
     Err(format!(
-        "Could not locate the Setup OS engine/repo root.\n\nCurrent directory:\n{}\n\nSearched:\n{}\n\nNext: set SETUP_OS_REPO_DIR to C:\\Users\\karan\\Documents\\Codex\\Setup OS project\\Setup OS for this installed smoke test, or use a future release with the bundled Setup OS engine/sidecar.",
+        "Could not locate the Setup OS engine/repo root.\n\nCurrent directory:\n{}\n\nSearched:\n{}\n\nNext: set SETUP_OS_REPO_DIR to C:\\Users\\karan\\Documents\\Codex\\Setup OS project\\Setup OS for this installed smoke test, or install a release artifact that includes the packaged Setup OS engine resource.",
         current_dir.display(),
         searched
     ))
 }
 
+fn setup_os_engine_candidates(current_dir: &PathBuf) -> Vec<PathBuf> {
+    let mut candidates = Vec::new();
+    candidates.push(current_dir.clone());
+    candidates.push(current_dir.join(".."));
+    candidates.push(current_dir.join("../.."));
+    candidates.push(current_dir.join("../../.."));
+    candidates.extend(packaged_engine_candidates());
+    candidates
+}
+
+fn packaged_engine_candidates() -> Vec<PathBuf> {
+    let mut candidates = Vec::new();
+    if let Ok(resource_dir) = std::env::var("SETUP_OS_RESOURCE_DIR") {
+        candidates.push(PathBuf::from(resource_dir).join("engine"));
+    }
+    if let Ok(exe) = std::env::current_exe() {
+        if let Some(exe_dir) = exe.parent() {
+            candidates.push(exe_dir.join("engine"));
+            candidates.push(exe_dir.join("resources").join("engine"));
+            candidates.push(exe_dir.join("..").join("Resources").join("engine"));
+            candidates.push(exe_dir.join("..").join("resources").join("engine"));
+        }
+    }
+    candidates
+}
+
+fn configure_packaged_engine_resource(app: &tauri::App) {
+    if std::env::var("SETUP_OS_REPO_DIR").is_ok() {
+        return;
+    }
+
+    if let Ok(resource_dir) = app.path().resource_dir() {
+        std::env::set_var("SETUP_OS_RESOURCE_DIR", &resource_dir);
+        let engine_dir = resource_dir.join("engine");
+        if engine_dir.join("setup_os").join("cli.py").exists() {
+            std::env::set_var("SETUP_OS_REPO_DIR", engine_dir);
+        }
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .setup(|app| {
+            configure_packaged_engine_resource(app);
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             setup_os_help,
             setup_os_python_runtime_status,

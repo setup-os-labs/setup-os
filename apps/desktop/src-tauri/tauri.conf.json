@@ -29,6 +29,10 @@
     "icon": [
       "icons/icon.png",
       "icons/icon.ico"
-    ]
+    ],
+    "resources": {
+      "../../../setup_os/*.py": "engine/setup_os/",
+      "../../../examples/*": "engine/examples/"
+    }
   }
 }
