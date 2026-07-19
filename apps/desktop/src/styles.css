@@ -135,7 +135,14 @@ nav button:hover {
 }
 
 .topbar h2 {
+  margin-bottom: 4px;
   font-size: 26px;
+}
+
+.topbar-subtitle {
+  max-width: 620px;
+  color: #66756d;
+  line-height: 1.4;
 }
 
 .topbar-actions {
@@ -383,8 +390,7 @@ button:disabled {
 .status-tile,
 .dashboard-card,
 .agent-card,
-.panel,
-.surface-tab {
+.panel {
   border: 1px solid #d8ded6;
   border-radius: 8px;
   background: #ffffff;
