@@ -141,12 +141,12 @@ The public release is a separate path from your local utility. It needs more pol
 ## What To Build Next
 
 1. Karan runs the installed Windows artifact smoke test using `packaged-smoke-manifest.json` and the generated local evidence file.
-2. Retest the installed Windows artifact after the KT-005 launch, action-feedback, and navigation fixes.
+2. Retest the installed Windows artifact after the KT-005 launch, action-feedback, navigation, and repo-root diagnostic fixes.
 3. Import and extract from a real saved Portfolio Management conversation.
 4. Choose the always-on runtime node target and schedule `runtime_node.py`.
 5. Build real sidecar artifacts in the desktop release workflow.
 
-Codex can continue deeper release hardening after the KT-005 retest confirms whether installed actions now produce visible results and which runtime/sidecar gaps remain.
+Codex can continue deeper release hardening after the KT-005 retest confirms whether installed navigation is fixed and whether the remaining runtime blocker is only the missing bundled Setup OS engine/sidecar.
 
 For the current practical path, use [Personal local setup guide](personal-local-setup.md).
 

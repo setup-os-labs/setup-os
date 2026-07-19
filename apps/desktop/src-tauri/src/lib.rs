@@ -1645,23 +1645,40 @@ fn sidecar_python_candidates(repo_dir: &PathBuf) -> Vec<PathBuf> {
 
 fn setup_os_repo_dir() -> Result<PathBuf, String> {
     if let Ok(path) = std::env::var("SETUP_OS_REPO_DIR") {
-        return Ok(PathBuf::from(path));
+        let configured = PathBuf::from(path);
+        if configured.join("setup_os").join("cli.py").exists() {
+            return Ok(configured);
+        }
+        return Err(format!(
+            "SETUP_OS_REPO_DIR is set but does not look like the Setup OS repo root: {}\nExpected: setup_os/cli.py\nNext: set SETUP_OS_REPO_DIR to the repo root or use a build with the bundled Setup OS engine.",
+            configured.display()
+        ));
     }
 
     let current_dir =
         std::env::current_dir().map_err(|error| format!("failed to read current dir: {error}"))?;
-    for candidate in [
+    let candidates = [
         current_dir.clone(),
         current_dir.join(".."),
         current_dir.join("../.."),
         current_dir.join("../../.."),
-    ] {
+    ];
+    for candidate in &candidates {
         if candidate.join("setup_os").join("cli.py").exists() {
-            return Ok(candidate);
+            return Ok(candidate.to_path_buf());
         }
     }
 
-    Err("could not locate Setup OS repo root; set SETUP_OS_REPO_DIR".to_string())
+    let searched = candidates
+        .iter()
+        .map(|candidate| format!("- {}", candidate.display()))
+        .collect::<Vec<_>>()
+        .join("\n");
+    Err(format!(
+        "Could not locate the Setup OS engine/repo root.\n\nCurrent directory:\n{}\n\nSearched:\n{}\n\nNext: set SETUP_OS_REPO_DIR to C:\\Users\\karan\\Documents\\Codex\\Setup OS project\\Setup OS for this installed smoke test, or use a future release with the bundled Setup OS engine/sidecar.",
+        current_dir.display(),
+        searched
+    ))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

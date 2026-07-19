@@ -124,13 +124,43 @@ const guides: Array<{ id: GuideId; label: string; icon: ReactNode }> = [
 const primaryNav: Array<{
   id: PrimaryNavId;
   label: string;
+  title: string;
+  description: string;
   surface: SurfaceId;
   icon: ReactNode;
 }> = [
-  { id: "agents", label: "Agents", surface: "work", icon: <Bot size={18} /> },
-  { id: "imports", label: "Imports", surface: "work", icon: <FolderInput size={18} /> },
-  { id: "proposals", label: "Proposals", surface: "review", icon: <FileText size={18} /> },
-  { id: "inbox", label: "Inbox", surface: "review", icon: <Bell size={18} /> },
+  {
+    id: "agents",
+    label: "Agents",
+    title: "Agents",
+    description: "Create or run local vertical systems.",
+    surface: "work",
+    icon: <Bot size={18} />,
+  },
+  {
+    id: "imports",
+    label: "Imports",
+    title: "Imports",
+    description: "Choose local conversations and CSV snapshots.",
+    surface: "work",
+    icon: <FolderInput size={18} />,
+  },
+  {
+    id: "proposals",
+    label: "Proposals",
+    title: "Proposals",
+    description: "Review reports, memory drafts, evolution packets, and rollback readiness.",
+    surface: "review",
+    icon: <FileText size={18} />,
+  },
+  {
+    id: "inbox",
+    label: "Inbox",
+    title: "Inbox",
+    description: "Inspect notifications, handoff guidance, runtime logs, and release diagnostics.",
+    surface: "operator",
+    icon: <Bell size={18} />,
+  },
 ];
 
 const onboardingSteps = [
@@ -258,6 +288,12 @@ export function App() {
   function openPrimaryNav(item: (typeof primaryNav)[number]) {
     setActivePrimaryNav(item.id);
     setActiveSurface(item.surface);
+  }
+
+  function openSurface(surface: SurfaceId) {
+    setActiveSurface(surface);
+    const fallbackNav = surface === "work" ? "agents" : surface === "review" ? "proposals" : "inbox";
+    setActivePrimaryNav(fallbackNav);
   }
 
   async function checkCli() {
@@ -730,6 +766,8 @@ export function App() {
     }
   }
 
+  const currentPrimaryView = primaryNav.find((item) => item.id === activePrimaryNav) || primaryNav[0];
+
   return (
     <main className="shell">
       <aside className="sidebar">
@@ -891,7 +929,7 @@ export function App() {
               key={surface.id}
               type="button"
               title={surface.description}
-              onClick={() => setActiveSurface(surface.id)}
+              onClick={() => openSurface(surface.id)}
             >
               {surface.icon}
               <span>{surface.label}</span>
@@ -899,8 +937,16 @@ export function App() {
           ))}
         </section>
 
+        <section className="primary-view-heading" aria-live="polite">
+          <div>
+            <p className="eyebrow">Current view</p>
+            <h3>{currentPrimaryView.title}</h3>
+          </div>
+          <p>{currentPrimaryView.description}</p>
+        </section>
+
         <section className="content-band">
-          {activeSurface === "work" && (
+          {activePrimaryNav === "agents" && (
             <div className="surface-grid">
               <section className="panel action-panel">
                 <p className="eyebrow">Work</p>
@@ -977,46 +1023,86 @@ export function App() {
                   ))}
                 </div>
               </section>
+            </div>
+          )}
 
+          {activePrimaryNav === "imports" && (
+            <div className="surface-grid">
+              <section className="panel action-panel full-span">
+                <p className="eyebrow">Conversation</p>
+                <h3>Input paths</h3>
+                <div className="action-row">
+                  <button className="primary" type="button" onClick={previewPortfolioConversationFromPath}>
+                    <FileText size={17} /> Preview conversation
+                  </button>
+                  <button className="secondary" type="button" onClick={importPortfolioConversationFromPath}>
+                    <FolderInput size={17} /> Import conversation
+                  </button>
+                </div>
+                <div className="path-grid visible-path-grid">
+                  <label className="path-field">
+                    <span>Output</span>
+                    <input
+                      value={portfolioOutputPath}
+                      onChange={(event) => setPortfolioOutputPath(event.target.value)}
+                      aria-label="Portfolio output path"
+                    />
+                  </label>
+                  <label className="path-field">
+                    <span>Seed</span>
+                    <input
+                      value={seedConversationPath}
+                      onChange={(event) => setSeedConversationPath(event.target.value)}
+                      aria-label="Seed conversation path"
+                    />
+                  </label>
+                  <label className="path-field">
+                    <span>Conversation</span>
+                    <input
+                      value={conversationPath}
+                      onChange={(event) => setConversationPath(event.target.value)}
+                      aria-label="Conversation path"
+                    />
+                  </label>
+                </div>
+              </section>
               <section className="panel data-imports full-span" aria-label="Portfolio data imports">
-                <details>
-                  <summary>Local CSV imports</summary>
-                  <DataImportRow
-                    label="Holdings"
-                    value={dataImportPaths.holdings}
-                    onChange={(value) => updateDataImportPath("holdings", value)}
-                    onImport={() => importPortfolioData("holdings")}
-                  />
-                  <DataImportRow
-                    label="Transactions"
-                    value={dataImportPaths.transactions}
-                    onChange={(value) => updateDataImportPath("transactions", value)}
-                    onImport={() => importPortfolioData("transactions")}
-                  />
-                  <DataImportRow
-                    label="Cash"
-                    value={dataImportPaths.cash}
-                    onChange={(value) => updateDataImportPath("cash", value)}
-                    onImport={() => importPortfolioData("cash")}
-                  />
-                  <DataImportRow
-                    label="Watchlist"
-                    value={dataImportPaths.watchlist}
-                    onChange={(value) => updateDataImportPath("watchlist", value)}
-                    onImport={() => importPortfolioData("watchlist")}
-                  />
-                  <DataImportRow
-                    label="Market data"
-                    value={dataImportPaths.marketData}
-                    onChange={(value) => updateDataImportPath("marketData", value)}
-                    onImport={() => importPortfolioData("marketData")}
-                  />
-                </details>
+                <p className="eyebrow">Local CSV imports</p>
+                <DataImportRow
+                  label="Holdings"
+                  value={dataImportPaths.holdings}
+                  onChange={(value) => updateDataImportPath("holdings", value)}
+                  onImport={() => importPortfolioData("holdings")}
+                />
+                <DataImportRow
+                  label="Transactions"
+                  value={dataImportPaths.transactions}
+                  onChange={(value) => updateDataImportPath("transactions", value)}
+                  onImport={() => importPortfolioData("transactions")}
+                />
+                <DataImportRow
+                  label="Cash"
+                  value={dataImportPaths.cash}
+                  onChange={(value) => updateDataImportPath("cash", value)}
+                  onImport={() => importPortfolioData("cash")}
+                />
+                <DataImportRow
+                  label="Watchlist"
+                  value={dataImportPaths.watchlist}
+                  onChange={(value) => updateDataImportPath("watchlist", value)}
+                  onImport={() => importPortfolioData("watchlist")}
+                />
+                <DataImportRow
+                  label="Market data"
+                  value={dataImportPaths.marketData}
+                  onChange={(value) => updateDataImportPath("marketData", value)}
+                  onImport={() => importPortfolioData("marketData")}
+                />
               </section>
             </div>
           )}
 
-          {activeSurface === "review" && (
+          {activePrimaryNav === "proposals" && (
             <div className="surface-grid">
               <section className="panel action-panel">
                 <p className="eyebrow">Review</p>
@@ -1049,9 +1135,6 @@ export function App() {
                   <button className="secondary" type="button" onClick={reviewPortfolioRollbackReadiness}>
                     <ShieldCheck size={17} /> Review rollback
                   </button>
-                  <button className="secondary" type="button" onClick={readPortfolioInbox}>
-                    <Bell size={17} /> Read inbox
-                  </button>
                 </div>
               </section>
 
@@ -1076,8 +1159,24 @@ export function App() {
             </div>
           )}
 
-          {activeSurface === "operator" && (
+          {activePrimaryNav === "inbox" && (
             <div className="surface-grid">
+              <section className="panel action-panel">
+                <p className="eyebrow">Inbox</p>
+                <h3>Notifications and logs</h3>
+                <div className="action-row">
+                  <button className="primary" type="button" onClick={readPortfolioInbox}>
+                    <Bell size={17} /> Read inbox
+                  </button>
+                  <button className="secondary" type="button" onClick={readRuntimeLog}>
+                    <FileText size={17} /> Runtime log
+                  </button>
+                  <button className="secondary" type="button" onClick={reviewLocalHandoffGuidance}>
+                    <ClipboardCheck size={17} /> Review guidance
+                  </button>
+                </div>
+              </section>
+
               <section className="panel action-panel">
                 <p className="eyebrow">Diagnostics</p>
                 <h3>Runtime and health</h3>
@@ -1093,9 +1192,6 @@ export function App() {
                   </button>
                   <button className="secondary" type="button" onClick={checkReadiness}>
                     <ShieldCheck size={17} /> Check readiness
-                  </button>
-                  <button className="secondary" type="button" onClick={readRuntimeLog}>
-                    <FileText size={17} /> Runtime log
                   </button>
                 </div>
               </section>
