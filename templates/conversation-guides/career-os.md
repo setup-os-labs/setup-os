@@ -8,7 +8,7 @@ What career outcome should the system support?
 
 ## Inputs
 
-What can it read: resume, LinkedIn export, portfolio, writing samples, job posts, company lists, or interview notes?
+What can it read: resume, LinkedIn export, portfolio, writing samples, job posts, company lists, or practice notes?
 
 ## Strategy
 
@@ -16,7 +16,7 @@ What roles, companies, compensation targets, locations, and constraints matter?
 
 ## Workflows
 
-Should it track applications, tailor resumes, draft outreach, prep interviews, or maintain a learning plan?
+Should it track applications, tailor resumes, draft outreach, prepare for conversations, or maintain a learning plan?
 
 ## Approval Rules
 

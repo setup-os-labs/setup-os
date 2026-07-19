@@ -118,7 +118,7 @@ Possible responsibilities:
 
 ## Split Rules
 
-Split by stable responsibility, not by interview-style microservice instinct.
+Split by stable responsibility, not by premature microservice instinct.
 
 Likely process/service candidates:
 

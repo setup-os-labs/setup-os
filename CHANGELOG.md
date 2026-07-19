@@ -8,7 +8,6 @@ This project follows a lightweight form of Keep a Changelog and uses semantic ve
 
 ### Added
 
-- Interview-focused system and AI design guide covering Setup OS architecture, deterministic versus intelligence boundaries, production AI concerns, tradeoffs, and defense prompts.
 - ADR 0007 documenting self-evolving extraction as a future architecture pillar with separate approval-gated memory updates and functional extractor upgrades.
 - Desktop UX philosophy documenting Setup OS as a calm cockpit with distinct Work, Review, and Operator surfaces.
 - Desktop shell now opens with compact onboarding, visual "How it works" and "How to use" tabs, and collapsed details instead of a dense action wall.

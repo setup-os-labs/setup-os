@@ -87,7 +87,7 @@ Benefits:
 - keeps extractor improvement explicit, reviewable, and reversible
 - reduces memory poisoning and preference drift
 - gives the user a debuggable pipeline before trusting higher-stakes advice
-- creates a reusable pattern for future Career OS, Health OS, Learning OS, Vehicle OS, and other verticals
+- creates a reusable pattern for future Career OS, Health OS, Learning OS, and other verticals
 
 Costs:
 

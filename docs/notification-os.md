@@ -42,7 +42,7 @@ This is personal-scale reliability before web-scale microservices. See [ADR 0006
 
 ```text
 Portfolio Agent
-Vehicle Agent
+Asset Agent
 Career Agent
 Health Agent
   -> Notification OS
