@@ -130,6 +130,7 @@ Status values: `todo`, `in-progress`, `blocked`, `review`, `done`.
 | SO-112 | done | Codex | `codex/extractor-change-proposal-skeleton` | Add approval-gated extractor change proposal skeleton | Generated agents can draft a deterministic extractor/schema/scoring change proposal without mutating behavior |
 | SO-113 | done | Codex | `codex/installed-app-smoke-evidence` | Add installed-app smoke evidence kit | Docs and scripts create a local evidence file from `packaged-smoke-manifest.json` so Karan can validate downloaded artifacts before public release hardening continues |
 | SO-114 | done | Codex | `codex/kt005-installed-app-fixes` | Fix KT-005 installed-app launch and navigation issues | Windows release builds do not open a console window, app actions show immediate visible feedback, and primary desktop navigation switches app views instead of scrolling to anchor sections |
+| SO-115 | done | Codex | `codex/kt005-retest-navigation-runtime` | Fix KT-005 retest navigation and repo-root diagnostics | Primary sidebar items render visibly distinct app views, installed runtime diagnostics explain the `SETUP_OS_REPO_DIR` workaround, and KT-005 can separate UI navigation from the remaining bundled-engine gap |
 | KT-005 | retest | Karan | Installed Windows artifact | Download and smoke-test unsigned Windows artifact | Installed app launches without repo dev commands, release manifest matches artifact, self-evolving review surfaces stay review-only, and runtime diagnostics are understandable |
 
 ## Backlog Rules
