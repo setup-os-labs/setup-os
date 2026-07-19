@@ -1,8 +1,15 @@
+use std::ffi::OsStr;
 use std::fs;
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Command, Output};
 use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::Manager;
+
+#[cfg(target_os = "windows")]
+use std::os::windows::process::CommandExt;
+
+#[cfg(target_os = "windows")]
+const CREATE_NO_WINDOW: u32 = 0x08000000;
 
 #[tauri::command]
 fn setup_os_help() -> Result<String, String> {
@@ -13,14 +20,14 @@ fn setup_os_help() -> Result<String, String> {
 fn setup_os_python_runtime_status() -> Result<String, String> {
     let repo_dir = setup_os_repo_dir()?;
     let python = resolve_python_command(&repo_dir);
-    let runtime_probe = Command::new(&python)
+    let runtime_probe = hidden_command(&python)
         .args([
             "-c",
             "import sys; print(sys.executable); print(sys.version.split()[0])",
         ])
         .current_dir(&repo_dir)
         .output();
-    let cli_probe = Command::new(&python)
+    let cli_probe = hidden_command(&python)
         .args(["-m", "setup_os.cli", "--help"])
         .current_dir(&repo_dir)
         .output();
@@ -57,11 +64,18 @@ fn setup_os_python_runtime_status() -> Result<String, String> {
                 marker(false),
                 output.status
             ));
-            lines.push(format!("  Next: set SETUP_OS_PYTHON or install Python 3.12+. {stderr}"));
+            lines.push(format!(
+                "  Next: set SETUP_OS_PYTHON or install Python 3.12+. {stderr}"
+            ));
         }
         Err(error) => {
-            lines.push(format!("- {}: Python executable could not start", marker(false)));
-            lines.push(format!("  Next: set SETUP_OS_PYTHON or install Python 3.12+. {error}"));
+            lines.push(format!(
+                "- {}: Python executable could not start",
+                marker(false)
+            ));
+            lines.push(format!(
+                "  Next: set SETUP_OS_PYTHON or install Python 3.12+. {error}"
+            ));
         }
     }
 
@@ -81,12 +95,20 @@ fn setup_os_python_runtime_status() -> Result<String, String> {
             ));
         }
         Err(error) => {
-            lines.push(format!("- {}: Setup OS CLI import could not start", marker(false)));
-            lines.push(format!("  Next: check Python and repo configuration. {error}"));
+            lines.push(format!(
+                "- {}: Setup OS CLI import could not start",
+                marker(false)
+            ));
+            lines.push(format!(
+                "  Next: check Python and repo configuration. {error}"
+            ));
         }
     }
 
-    lines.push("Future release target: bundled Python sidecar so users do not install Python manually.".to_string());
+    lines.push(
+        "Future release target: bundled Python sidecar so users do not install Python manually."
+            .to_string(),
+    );
     Ok(lines.join("\n"))
 }
 
@@ -105,7 +127,10 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
         ),
         (
             "Tauri config",
-            desktop_dir.join("src-tauri").join("tauri.conf.json").exists(),
+            desktop_dir
+                .join("src-tauri")
+                .join("tauri.conf.json")
+                .exists(),
         ),
         (
             "Tauri Cargo manifest",
@@ -121,7 +146,10 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
         ),
         (
             "Python sidecar packaging notes",
-            repo_dir.join("docs").join("python-sidecar-packaging.md").exists(),
+            repo_dir
+                .join("docs")
+                .join("python-sidecar-packaging.md")
+                .exists(),
         ),
         (
             "Desktop icon PNG",
@@ -141,7 +169,11 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
         ),
         (
             "CI workflow",
-            repo_dir.join(".github").join("workflows").join("ci.yml").exists(),
+            repo_dir
+                .join(".github")
+                .join("workflows")
+                .join("ci.yml")
+                .exists(),
         ),
         (
             "Manual desktop release workflow",
@@ -157,7 +189,10 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
         ),
         (
             "Release testing notes",
-            repo_dir.join("docs").join("desktop-release-testing.md").exists(),
+            repo_dir
+                .join("docs")
+                .join("desktop-release-testing.md")
+                .exists(),
         ),
         (
             "Signing and notarization plan",
@@ -168,7 +203,10 @@ fn setup_os_desktop_release_readiness() -> Result<String, String> {
         ),
         (
             "Packaged app smoke tests",
-            repo_dir.join("docs").join("packaged-app-smoke-tests.md").exists(),
+            repo_dir
+                .join("docs")
+                .join("packaged-app-smoke-tests.md")
+                .exists(),
         ),
         (
             "Sidecar release workflow scaffold",
@@ -213,10 +251,9 @@ fn setup_os_run_local_utility_smoke_test() -> Result<String, String> {
     }
 
     let python = resolve_python_command(&repo_dir);
-    let output = Command::new(python)
-        .arg(&script_path)
-        .current_dir(&repo_dir)
-        .output()
+    let mut command = hidden_command(python);
+    command.arg(&script_path).current_dir(&repo_dir);
+    let output = run_logged_command("Local utility smoke test", command)
         .map_err(|error| format!("failed to start local utility smoke test: {error}"))?;
 
     if output.status.success() {
@@ -236,6 +273,53 @@ fn setup_os_run_local_utility_smoke_test() -> Result<String, String> {
 }
 
 #[tauri::command]
+fn setup_os_read_desktop_action_log() -> Result<String, String> {
+    let log_path = desktop_action_log_path();
+    if !log_path.exists() {
+        return Ok(format!(
+            "Desktop action log\n{}\n\nNo desktop actions have been logged yet. Run a Setup OS action, then return here.",
+            log_path.display()
+        ));
+    }
+
+    let log = fs::read_to_string(&log_path)
+        .map_err(|error| format!("failed to read {}: {error}", log_path.display()))?;
+    if log.trim().is_empty() {
+        return Ok(format!(
+            "Desktop action log\n{}\n\nThe log file exists, but it is empty.",
+            log_path.display()
+        ));
+    }
+
+    let entries = log
+        .split("\n## ")
+        .filter(|entry| !entry.trim().is_empty())
+        .collect::<Vec<_>>();
+    let recent = entries
+        .into_iter()
+        .rev()
+        .take(10)
+        .collect::<Vec<_>>()
+        .into_iter()
+        .rev()
+        .map(|entry| {
+            if entry.starts_with("Desktop") {
+                entry.to_string()
+            } else {
+                format!("## {entry}")
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    Ok(format!(
+        "Desktop action log\n{}\n\n{}",
+        log_path.display(),
+        recent.trim()
+    ))
+}
+
+#[tauri::command]
 fn setup_os_check_desktop_readiness(
     agent_dir: String,
     seed_conversation_path: String,
@@ -244,7 +328,7 @@ fn setup_os_check_desktop_readiness(
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     let seed_path = resolve_user_path(&repo_dir, &seed_conversation_path)?;
     let python = resolve_python_command(&repo_dir);
-    let python_check = Command::new(&python)
+    let python_check = hidden_command(&python)
         .args(["-m", "setup_os.cli", "--help"])
         .current_dir(&repo_dir)
         .output();
@@ -257,7 +341,11 @@ fn setup_os_check_desktop_readiness(
     ));
     lines.push(format!(
         "- {}: Python engine ({})",
-        marker(python_check.as_ref().map_or(false, |output| output.status.success())),
+        marker(
+            python_check
+                .as_ref()
+                .map_or(false, |output| output.status.success())
+        ),
         python
     ));
     if let Ok(output) = &python_check {
@@ -266,7 +354,9 @@ fn setup_os_check_desktop_readiness(
             lines.push(format!("  Next: fix Python engine startup. {stderr}"));
         }
     } else if let Err(error) = &python_check {
-        lines.push(format!("  Next: set SETUP_OS_PYTHON or install Python. {error}"));
+        lines.push(format!(
+            "  Next: set SETUP_OS_PYTHON or install Python. {error}"
+        ));
     }
     lines.push(format!(
         "- {}: seed conversation ({})",
@@ -274,7 +364,10 @@ fn setup_os_check_desktop_readiness(
         seed_path.display()
     ));
     if !seed_path.exists() {
-        lines.push("  Next: choose an existing Markdown/TXT planning conversation before creating.".to_string());
+        lines.push(
+            "  Next: choose an existing Markdown/TXT planning conversation before creating."
+                .to_string(),
+        );
     }
     lines.push(format!(
         "- {}: selected Portfolio workspace ({})",
@@ -303,7 +396,9 @@ fn setup_os_create_portfolio_example(
     let repo_dir = setup_os_repo_dir()?;
     let output_dir = normalize_required_path(&agent_dir, "agent output path is required")?;
     let seed_path = normalize_required_path(
-        &resolve_user_path(&repo_dir, &seed_conversation_path)?.display().to_string(),
+        &resolve_user_path(&repo_dir, &seed_conversation_path)?
+            .display()
+            .to_string(),
         "seed conversation path is required",
     )?;
     run_setup_os([
@@ -364,9 +459,9 @@ fn setup_os_reset_portfolio_workspace(
     };
 
     let create_output =
-        setup_os_create_portfolio_example(agent_dir, seed_path.display().to_string()).map_err(|error| {
-            format!("{archive_note}\nReset could not recreate the workspace: {error}")
-        })?;
+        setup_os_create_portfolio_example(agent_dir, seed_path.display().to_string()).map_err(
+            |error| format!("{archive_note}\nReset could not recreate the workspace: {error}"),
+        )?;
 
     Ok(format!(
         "Portfolio workspace reset complete.\n{archive_note}\n\n{create_output}"
@@ -401,7 +496,13 @@ fn setup_os_preview_portfolio_conversation(conversation_path: String) -> Result<
     let strategy_mentions = count_keyword(&lowercase, "strategy");
     let ticker_like_mentions = content
         .split(|character: char| !character.is_ascii_alphanumeric())
-        .filter(|token| token.len() >= 2 && token.len() <= 5 && token.chars().all(|character| character.is_ascii_uppercase()))
+        .filter(|token| {
+            token.len() >= 2
+                && token.len() <= 5
+                && token
+                    .chars()
+                    .all(|character| character.is_ascii_uppercase())
+        })
         .count();
 
     let mut lines = vec![
@@ -421,9 +522,15 @@ fn setup_os_preview_portfolio_conversation(conversation_path: String) -> Result<
     ];
 
     if word_count < 50 {
-        lines.push("Next: this looks short; use a fuller saved conversation for better memory drafts.".to_string());
+        lines.push(
+            "Next: this looks short; use a fuller saved conversation for better memory drafts."
+                .to_string(),
+        );
     } else if portfolio_mentions == 0 && risk_mentions == 0 && strategy_mentions == 0 {
-        lines.push("Next: this is readable, but it may not be a Portfolio Management conversation.".to_string());
+        lines.push(
+            "Next: this is readable, but it may not be a Portfolio Management conversation."
+                .to_string(),
+        );
     } else {
         lines.push("Next: run Import, then Extract drafts, then Review drafts.".to_string());
     }
@@ -438,10 +545,9 @@ fn setup_os_run_portfolio_report(agent_dir: String) -> Result<String, String> {
 
     let repo_dir = setup_os_repo_dir()?;
     let python = resolve_python_command(&repo_dir);
-    let output = Command::new(python)
-        .arg("report.py")
-        .current_dir(&agent_dir)
-        .output()
+    let mut command = hidden_command(python);
+    command.arg("report.py").current_dir(&agent_dir);
+    let output = run_logged_command("Generated Portfolio report", command)
         .map_err(|error| format!("failed to run generated Portfolio report: {error}"))?;
 
     if !output.status.success() {
@@ -507,10 +613,9 @@ fn setup_os_check_portfolio_health(agent_dir: String) -> Result<String, String> 
 
     let repo_dir = setup_os_repo_dir()?;
     let python = resolve_python_command(&repo_dir);
-    let output = Command::new(python)
-        .arg("health.py")
-        .current_dir(&agent_dir)
-        .output()
+    let mut command = hidden_command(python);
+    command.arg("health.py").current_dir(&agent_dir);
+    let output = run_logged_command("Generated Portfolio health check", command)
         .map_err(|error| format!("failed to run generated Portfolio health check: {error}"))?;
 
     if output.status.success() {
@@ -531,10 +636,9 @@ fn setup_os_write_portfolio_handoff(agent_dir: String) -> Result<String, String>
 
     let repo_dir = setup_os_repo_dir()?;
     let python = resolve_python_command(&repo_dir);
-    let output = Command::new(python)
-        .arg("handoff.py")
-        .current_dir(&agent_dir)
-        .output()
+    let mut command = hidden_command(python);
+    command.arg("handoff.py").current_dir(&agent_dir);
+    let output = run_logged_command("Generated Portfolio handoff", command)
         .map_err(|error| format!("failed to write Portfolio local utility handoff: {error}"))?;
 
     if !output.status.success() {
@@ -591,7 +695,10 @@ fn setup_os_import_portfolio_conversation(
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_holdings(agent_dir: String, holdings_path: String) -> Result<String, String> {
+fn setup_os_import_portfolio_holdings(
+    agent_dir: String,
+    holdings_path: String,
+) -> Result<String, String> {
     run_generated_portfolio_script(
         &agent_dir,
         "import_portfolio_snapshot.py",
@@ -630,7 +737,10 @@ fn setup_os_import_portfolio_cash(agent_dir: String, cash_path: String) -> Resul
 }
 
 #[tauri::command]
-fn setup_os_import_portfolio_watchlist(agent_dir: String, watchlist_path: String) -> Result<String, String> {
+fn setup_os_import_portfolio_watchlist(
+    agent_dir: String,
+    watchlist_path: String,
+) -> Result<String, String> {
     run_generated_portfolio_script(
         &agent_dir,
         "import_portfolio_watchlist.py",
@@ -663,10 +773,9 @@ fn setup_os_extract_portfolio_memory(agent_dir: String) -> Result<String, String
 
     let repo_dir = setup_os_repo_dir()?;
     let python = resolve_python_command(&repo_dir);
-    let output = Command::new(python)
-        .arg("extract_memory.py")
-        .current_dir(&agent_dir)
-        .output()
+    let mut command = hidden_command(python);
+    command.arg("extract_memory.py").current_dir(&agent_dir);
+    let output = run_logged_command("Generated Portfolio memory extraction", command)
         .map_err(|error| format!("failed to extract Portfolio memory drafts: {error}"))?;
 
     if output.status.success() {
@@ -747,7 +856,9 @@ fn setup_os_review_portfolio_functional_evolution_report(
     agent_dir: String,
 ) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
-    let report_path = agent_dir.join("evolution").join("functional_evolution_report.md");
+    let report_path = agent_dir
+        .join("evolution")
+        .join("functional_evolution_report.md");
     if !report_path.exists() {
         return Ok(format!(
             "No Functional Evolution Report yet.\nExpected report: {}\nNext: run functional_evolution_report.py --all after importing a conversation and generating memory reports.",
@@ -774,11 +885,12 @@ fn setup_os_review_portfolio_evolution_review_packet(agent_dir: String) -> Resul
     let generation_note = if packet_command.exists() {
         let repo_dir = setup_os_repo_dir()?;
         let python = resolve_python_command(&repo_dir);
-        let output = Command::new(python)
-            .arg("review_packet.py")
-            .current_dir(&agent_dir)
-            .output()
-            .map_err(|error| format!("failed to generate Portfolio evolution review packet: {error}"))?;
+        let mut command = hidden_command(python);
+        command.arg("review_packet.py").current_dir(&agent_dir);
+        let output = run_logged_command("Generated Portfolio evolution review packet", command)
+            .map_err(|error| {
+                format!("failed to generate Portfolio evolution review packet: {error}")
+            })?;
 
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr).to_string();
@@ -817,7 +929,9 @@ fn setup_os_review_portfolio_evolution_review_packet(agent_dir: String) -> Resul
 fn setup_os_review_portfolio_extractor_rollback(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     let version_log_path = agent_dir.join("evolution").join("extractor_versions.jsonl");
-    let rollback_plan_path = agent_dir.join("evolution").join("extractor_rollback_plan.md");
+    let rollback_plan_path = agent_dir
+        .join("evolution")
+        .join("extractor_rollback_plan.md");
 
     if !version_log_path.exists() && !rollback_plan_path.exists() {
         return Ok(format!(
@@ -855,9 +969,7 @@ fn setup_os_review_portfolio_extractor_rollback(agent_dir: String) -> Result<Str
 }
 
 #[tauri::command]
-fn setup_os_review_portfolio_extraction_observability(
-    agent_dir: String,
-) -> Result<String, String> {
+fn setup_os_review_portfolio_extraction_observability(agent_dir: String) -> Result<String, String> {
     let agent_dir = resolve_agent_dir(&agent_dir)?;
     let observability_path = agent_dir
         .join("memory")
@@ -870,12 +982,8 @@ fn setup_os_review_portfolio_extraction_observability(
         ));
     }
 
-    let observability = fs::read_to_string(&observability_path).map_err(|error| {
-        format!(
-            "failed to read {}: {error}",
-            observability_path.display()
-        )
-    })?;
+    let observability = fs::read_to_string(&observability_path)
+        .map_err(|error| format!("failed to read {}: {error}", observability_path.display()))?;
     Ok(format!(
         "Portfolio extraction observability\n{}\n\n{}",
         observability_path.display(),
@@ -946,11 +1054,23 @@ fn setup_os_portfolio_summary(agent_dir: String) -> Result<String, String> {
     let mut lines = vec![
         "Portfolio Management OS summary".to_string(),
         format!("Workspace: {}", agent_dir.display()),
-        format!("- {}", existence_line("Health command", agent_dir.join("health.py").exists())),
-        format!("- {}", existence_line("Latest report", report_path.exists())),
-        format!("- {}", existence_line("Local utility handoff", handoff_path.exists())),
+        format!(
+            "- {}",
+            existence_line("Health command", agent_dir.join("health.py").exists())
+        ),
+        format!(
+            "- {}",
+            existence_line("Latest report", report_path.exists())
+        ),
+        format!(
+            "- {}",
+            existence_line("Local utility handoff", handoff_path.exists())
+        ),
         format!("- {}", count_line("Notifications", &notifications_path)?),
-        format!("- {}", count_line("Structured memory drafts", &drafts_path)?),
+        format!(
+            "- {}",
+            count_line("Structured memory drafts", &drafts_path)?
+        ),
     ];
 
     if report_path.exists() {
@@ -1051,7 +1171,10 @@ fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String>
     append_demo_step(
         &mut transcript,
         "Import holdings",
-        setup_os_import_portfolio_holdings(agent_dir.clone(), "examples/portfolio_snapshot.csv".to_string()),
+        setup_os_import_portfolio_holdings(
+            agent_dir.clone(),
+            "examples/portfolio_snapshot.csv".to_string(),
+        ),
     )?;
     append_demo_step(
         &mut transcript,
@@ -1064,22 +1187,34 @@ fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String>
     append_demo_step(
         &mut transcript,
         "Import cash",
-        setup_os_import_portfolio_cash(agent_dir.clone(), "examples/portfolio_cash.csv".to_string()),
+        setup_os_import_portfolio_cash(
+            agent_dir.clone(),
+            "examples/portfolio_cash.csv".to_string(),
+        ),
     )?;
     append_demo_step(
         &mut transcript,
         "Import watchlist",
-        setup_os_import_portfolio_watchlist(agent_dir.clone(), "examples/portfolio_watchlist.csv".to_string()),
+        setup_os_import_portfolio_watchlist(
+            agent_dir.clone(),
+            "examples/portfolio_watchlist.csv".to_string(),
+        ),
     )?;
     append_demo_step(
         &mut transcript,
         "Import market data",
-        setup_os_import_portfolio_market_data(agent_dir.clone(), "examples/portfolio_market_data.csv".to_string()),
+        setup_os_import_portfolio_market_data(
+            agent_dir.clone(),
+            "examples/portfolio_market_data.csv".to_string(),
+        ),
     )?;
     append_demo_step(
         &mut transcript,
         "Import saved conversation",
-        setup_os_import_portfolio_conversation(agent_dir.clone(), "examples/portfolio_update.md".to_string()),
+        setup_os_import_portfolio_conversation(
+            agent_dir.clone(),
+            "examples/portfolio_update.md".to_string(),
+        ),
     )?;
     append_demo_step(
         &mut transcript,
@@ -1106,7 +1241,11 @@ fn setup_os_run_portfolio_demo_flow(agent_dir: String) -> Result<String, String>
         "Write local utility handoff",
         setup_os_write_portfolio_handoff(agent_dir.clone()),
     )?;
-    append_demo_step(&mut transcript, "Refresh status", setup_os_portfolio_status(agent_dir))?;
+    append_demo_step(
+        &mut transcript,
+        "Refresh status",
+        setup_os_portfolio_status(agent_dir),
+    )?;
 
     Ok(transcript.join("\n\n"))
 }
@@ -1215,7 +1354,10 @@ fn run_generated_portfolio_script(
         let trimmed = argument.trim();
         if trimmed.starts_with("--") {
             resolved_args.push(trimmed.to_string());
-        } else if resolved_args.last().map_or(false, |last| last == "--source") {
+        } else if resolved_args
+            .last()
+            .map_or(false, |last| last == "--source")
+        {
             resolved_args.push(trimmed.to_string());
         } else {
             resolved_args.push(resolve_user_path(&repo_dir, trimmed)?.display().to_string());
@@ -1223,12 +1365,13 @@ fn run_generated_portfolio_script(
     }
 
     let python = resolve_python_command(&repo_dir);
-    let output = Command::new(python)
+    let mut command = hidden_command(python);
+    command
         .arg(script_name)
         .args(resolved_args)
-        .current_dir(&agent_dir)
-        .output()
-        .map_err(|error| format!("{start_error}: {error}"))?;
+        .current_dir(&agent_dir);
+    let output =
+        run_logged_command(label, command).map_err(|error| format!("{start_error}: {error}"))?;
 
     if output.status.success() {
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
@@ -1283,16 +1426,21 @@ fn count_line(label: &str, path: &PathBuf) -> Result<String, String> {
     if !path.exists() {
         return Ok(format!("MISSING: {label}"));
     }
-    let content =
-        fs::read_to_string(path).map_err(|error| format!("failed to read {}: {error}", path.display()))?;
-    let count = content.lines().filter(|line| !line.trim().is_empty()).count();
+    let content = fs::read_to_string(path)
+        .map_err(|error| format!("failed to read {}: {error}", path.display()))?;
+    let count = content
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .count();
     Ok(format!("OK: {label} ({count})"))
 }
 
 fn format_memory_draft(index: usize, json_line: &str) -> String {
-    let source = json_string_value(json_line, "source_name").unwrap_or_else(|| "unknown source".to_string());
+    let source =
+        json_string_value(json_line, "source_name").unwrap_or_else(|| "unknown source".to_string());
     let status = json_string_value(json_line, "status").unwrap_or_else(|| "unknown".to_string());
-    let confidence = json_number_value(json_line, "confidence").unwrap_or_else(|| "unknown".to_string());
+    let confidence =
+        json_number_value(json_line, "confidence").unwrap_or_else(|| "unknown".to_string());
     let strategy_notes = json_array_values(json_line, "strategy_notes");
     let risk_rules = json_array_values(json_line, "risk_rules");
     let watchlist = json_array_values(json_line, "watchlist");
@@ -1473,7 +1621,12 @@ fn format_extractor_rollback_review(version_log: &str, rollback_plan: &str) -> S
     let hash_count = latest.matches("\"sha256\":").count();
     let rollback_steps = rollback_plan
         .lines()
-        .filter(|line| line.trim_start().chars().next().is_some_and(|character| character.is_ascii_digit()))
+        .filter(|line| {
+            line.trim_start()
+                .chars()
+                .next()
+                .is_some_and(|character| character.is_ascii_digit())
+        })
         .count();
     let approval_rule_present = rollback_plan.contains("No extractor change is active");
 
@@ -1599,18 +1752,202 @@ fn format_portfolio_insights(markdown: &str) -> String {
 fn run_setup_os<const N: usize>(args: [&str; N]) -> Result<String, String> {
     let repo_dir = setup_os_repo_dir()?;
     let python = resolve_python_command(&repo_dir);
-    let output = Command::new(python)
-        .args(args)
-        .current_dir(repo_dir)
-        .output()
+    let mut command = hidden_command(python);
+    command.args(args).current_dir(repo_dir);
+    let output = run_logged_command("Setup OS Python engine", command)
         .map_err(|error| format!("failed to start Setup OS Python engine: {error}"))?;
 
     if output.status.success() {
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     } else {
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-        Err(format!("Setup OS Python engine exited with {}: {stderr}", output.status))
+        Err(format!(
+            "Setup OS Python engine exited with {}: {stderr}",
+            output.status
+        ))
     }
+}
+
+fn hidden_command<S: AsRef<OsStr>>(program: S) -> Command {
+    let mut command = Command::new(program);
+    #[cfg(target_os = "windows")]
+    {
+        command.creation_flags(CREATE_NO_WINDOW);
+    }
+    command
+}
+
+fn run_logged_command(label: &str, mut command: Command) -> Result<Output, String> {
+    let program = command.get_program().to_string_lossy().to_string();
+    let args = command
+        .get_args()
+        .map(|arg| arg.to_string_lossy().to_string())
+        .collect::<Vec<_>>();
+    let cwd = command
+        .get_current_dir()
+        .map(|path| path.display().to_string());
+    let started_at = unix_timestamp();
+
+    record_desktop_action(
+        label,
+        "started",
+        &program,
+        &args,
+        cwd.as_deref(),
+        None,
+        "",
+        "",
+        started_at,
+        started_at,
+    );
+
+    match command.output() {
+        Ok(output) => {
+            let finished_at = unix_timestamp();
+            let status = if output.status.success() {
+                "succeeded"
+            } else {
+                "failed"
+            };
+            record_desktop_action(
+                label,
+                status,
+                &program,
+                &args,
+                cwd.as_deref(),
+                output.status.code(),
+                &String::from_utf8_lossy(&output.stdout),
+                &String::from_utf8_lossy(&output.stderr),
+                started_at,
+                finished_at,
+            );
+            Ok(output)
+        }
+        Err(error) => {
+            let finished_at = unix_timestamp();
+            record_desktop_action(
+                label,
+                "could not start",
+                &program,
+                &args,
+                cwd.as_deref(),
+                None,
+                "",
+                &error.to_string(),
+                started_at,
+                finished_at,
+            );
+            Err(error.to_string())
+        }
+    }
+}
+
+fn record_desktop_action(
+    label: &str,
+    status: &str,
+    program: &str,
+    args: &[String],
+    cwd: Option<&str>,
+    exit_code: Option<i32>,
+    stdout: &str,
+    stderr: &str,
+    started_at: u64,
+    finished_at: u64,
+) {
+    if let Some(log_dir) = desktop_log_dir() {
+        if fs::create_dir_all(&log_dir).is_err() {
+            return;
+        }
+
+        let duration = finished_at.saturating_sub(started_at);
+        let args_display = if args.is_empty() {
+            "(none)".to_string()
+        } else {
+            args.join(" ")
+        };
+        let stdout_excerpt = readable_excerpt(stdout);
+        let stderr_excerpt = readable_excerpt(stderr);
+        let markdown = format!(
+            "\n## {label}\n\n- Status: {status}\n- Started: {started_at}\n- Duration: {duration}s\n- Program: `{}`\n- Arguments: `{}`\n- Working folder: {}\n- Exit code: {}\n\n### Output\n\n{}\n\n### Errors\n\n{}\n",
+            program,
+            args_display,
+            cwd.unwrap_or("(not set)"),
+            exit_code.map_or("(not available)".to_string(), |code| code.to_string()),
+            if stdout_excerpt.is_empty() { "(none)" } else { stdout_excerpt.as_str() },
+            if stderr_excerpt.is_empty() { "(none)" } else { stderr_excerpt.as_str() },
+        );
+        let json = format!(
+            "{{\"label\":\"{}\",\"status\":\"{}\",\"started_at\":{},\"finished_at\":{},\"duration_seconds\":{},\"program\":\"{}\",\"args\":\"{}\",\"cwd\":\"{}\",\"exit_code\":{},\"stdout_excerpt\":\"{}\",\"stderr_excerpt\":\"{}\"}}\n",
+            json_escape(label),
+            json_escape(status),
+            started_at,
+            finished_at,
+            duration,
+            json_escape(program),
+            json_escape(&args_display),
+            json_escape(cwd.unwrap_or("")),
+            exit_code.map_or("null".to_string(), |code| code.to_string()),
+            json_escape(&stdout_excerpt),
+            json_escape(&stderr_excerpt),
+        );
+
+        let _ = append_text(&log_dir.join("desktop-actions.md"), &markdown);
+        let _ = append_text(&log_dir.join("desktop-actions.jsonl"), &json);
+    }
+}
+
+fn append_text(path: &PathBuf, text: &str) -> Result<(), String> {
+    use std::io::Write;
+    let mut file = fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .map_err(|error| format!("failed to open {}: {error}", path.display()))?;
+    file.write_all(text.as_bytes())
+        .map_err(|error| format!("failed to write {}: {error}", path.display()))
+}
+
+fn desktop_log_dir() -> Option<PathBuf> {
+    if let Ok(path) = std::env::var("SETUP_OS_APP_DATA_DIR") {
+        return Some(PathBuf::from(path).join("logs"));
+    }
+    std::env::current_exe()
+        .ok()
+        .and_then(|exe| exe.parent().map(|parent| parent.join("logs")))
+}
+
+fn desktop_action_log_path() -> PathBuf {
+    desktop_log_dir()
+        .unwrap_or_else(|| PathBuf::from("logs"))
+        .join("desktop-actions.md")
+}
+
+fn readable_excerpt(text: &str) -> String {
+    let trimmed = text.trim();
+    if trimmed.is_empty() {
+        return String::new();
+    }
+    let excerpt = trimmed.lines().take(30).collect::<Vec<_>>().join("\n");
+    if trimmed.lines().count() > 30 {
+        format!("{excerpt}\n...")
+    } else {
+        excerpt
+    }
+}
+
+fn json_escape(text: &str) -> String {
+    text.replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r")
+        .replace('\t', "\\t")
+}
+
+fn unix_timestamp() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|duration| duration.as_secs())
+        .unwrap_or(0)
 }
 
 fn resolve_python_command(repo_dir: &PathBuf) -> String {
@@ -1705,6 +2042,12 @@ fn packaged_engine_candidates() -> Vec<PathBuf> {
 }
 
 fn configure_packaged_engine_resource(app: &tauri::App) {
+    if let Ok(app_data_dir) = app.path().app_data_dir() {
+        if fs::create_dir_all(&app_data_dir).is_ok() {
+            std::env::set_var("SETUP_OS_APP_DATA_DIR", app_data_dir);
+        }
+    }
+
     if std::env::var("SETUP_OS_REPO_DIR").is_ok() {
         return;
     }
@@ -1730,6 +2073,7 @@ pub fn run() {
             setup_os_python_runtime_status,
             setup_os_desktop_release_readiness,
             setup_os_run_local_utility_smoke_test,
+            setup_os_read_desktop_action_log,
             setup_os_check_desktop_readiness,
             setup_os_create_portfolio_example,
             setup_os_reset_portfolio_workspace,

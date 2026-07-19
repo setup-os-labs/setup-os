@@ -34,6 +34,7 @@ import {
   importPortfolioTransactions,
   importPortfolioWatchlist,
   previewPortfolioConversation,
+  readDesktopActionLog,
   readPortfolioNotifications,
   readRuntimeNodeLog,
   resetPortfolioWorkspace,
@@ -676,6 +677,18 @@ export function App() {
     }
   }
 
+  async function readActionLog() {
+    showActionStart("Reading action log", "Loading recent desktop action log...");
+    try {
+      const output = await readDesktopActionLog();
+      setCliOutput(output);
+      setActionStatus("Action log loaded");
+    } catch (error) {
+      setActionStatus("Needs attention");
+      setCliOutput(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function writeLocalHandoff() {
     if (!requirePortfolioOutput()) {
       return;
@@ -1111,6 +1124,9 @@ export function App() {
                   </button>
                   <button className="secondary" type="button" onClick={readRuntimeLog}>
                     <FileText size={17} /> Runtime log
+                  </button>
+                  <button className="secondary" type="button" onClick={readActionLog}>
+                    <FileText size={17} /> Action log
                   </button>
                   <button className="secondary" type="button" onClick={reviewLocalHandoffGuidance}>
                     <ClipboardCheck size={17} /> Review guidance
