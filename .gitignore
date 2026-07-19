@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# JavaScript / desktop
+node_modules/
+*.tsbuildinfo
+apps/desktop/src-tauri/target/
+
+# Generated local outputs
+generated/
+dist/
+build/
+release-evidence/
+
+# Local config and secrets
+.env
+.env.*
+!.env.example
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

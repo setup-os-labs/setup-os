@@ -1,0 +1,4 @@
+symbol,name,quantity,price,cost_basis
+AAPL,Apple Inc.,5,200.00,850.00
+MSFT,Microsoft Corp.,2,500.00,700.00
+VXUS,Vanguard Total International Stock ETF,10,62.00,600.00

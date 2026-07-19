@@ -1,0 +1,140 @@
+# Changelog
+
+All notable changes to Setup OS are documented here.
+
+This project follows a lightweight form of Keep a Changelog and uses semantic versioning once releases begin.
+
+## [Unreleased]
+
+### Added
+
+- ADR 0007 documenting self-evolving extraction as a future architecture pillar with separate approval-gated memory updates and functional extractor upgrades.
+- Desktop UX philosophy documenting Setup OS as a calm cockpit with distinct Work, Review, and Operator surfaces.
+- Desktop shell now opens with compact onboarding, visual "How it works" and "How to use" tabs, and collapsed details instead of a dense action wall.
+- Evolution model rules for self-evaluation, observability, traceability, governance, versioning, rollback, data quality, and objective alignment in recurring personal-data ingestion.
+- Portfolio Management OS future direction for Memory Update Reports, Functional Evolution Reports, extraction observability, evidence maps, and approval-gated extractor improvements.
+- Generated agents now include `memory_update_report.py`, which turns raw imported conversations into a review-only, evidence-linked Memory Update Report without mutating policy or strategy.
+- Desktop shell can review generated Portfolio Memory Update Reports with candidate counts, evidence counts, category summaries, and no-promotion guidance.
+- Generated agents now include `functional_evolution_report.py`, which recommends extractor, schema, classifier, scoring, and quality-check upgrades behind approval without activating them.
+- Desktop shell can review generated Portfolio Functional Evolution Reports by summarizing proposed upgrade titles, kinds, risks, rollback paths, and not-active status.
+- Generated agents now include `extraction_observability.py`, which writes a review-only traceability report with processed inputs, noisy lines, low-confidence drafts, conflict signals, checksums, and evidence anchors.
+- Desktop backend can read generated Portfolio extraction observability reports and show next-step guidance when they are missing.
+- Generated agents now include `extractor_versioning.py`, which snapshots extractor file hashes and writes `evolution/extractor_rollback_plan.md` before approved extractor changes.
+- Desktop shell can review generated Portfolio extractor version snapshots and rollback plans, including latest tracked hashes and rollback readiness.
+- Generated agents now include `extractor_change_proposal.py`, which writes an approval-gated extractor/schema/scoring proposal skeleton without mutating behavior.
+- Desktop primary navigation now switches the first-screen workspace directly so installed KT-005 retests do not appear stuck behind onboarding content.
+- Desktop release bundles the Setup OS Python engine source and examples as packaged resources, so installed builds no longer need `SETUP_OS_REPO_DIR` just to locate `setup_os.cli`.
+- Desktop actions now write readable local action logs, expose an Action log view, and run Windows subprocesses without visible console flashes.
+- ADR 0008 records the local-first observability direction, with optional OSS observability adapters for cloud and enterprise deployments later.
+- Generated agents now include `weekly_review.py`, which runs the local import, extraction, memory update, functional evolution, observability, version snapshot, health, report, and handoff loop with a JSONL audit log.
+- Generated agents now include `review_packet.py`, which bundles memory, functional evolution, observability, versioning, weekly review, and handoff artifacts into `evolution/review_packet.md` for human approval review.
+- Desktop shell can generate or read the generated Portfolio Evolution Review Packet and summarize artifact readiness plus approval checklist counts.
+- Installed-app smoke evidence template and generator for validating downloaded desktop artifacts with screenshots, copied outputs, pass/fail notes, and follow-up tasks.
+- Installed Windows desktop smoke fixes hide the release console window, make action feedback visible near the top of the app, and switch primary navigation between app views instead of scrolling to page sections.
+- KT-005 retest fixes make sidebar items render distinct desktop views and improve installed-app repo-root diagnostics with `SETUP_OS_REPO_DIR` guidance until the bundled engine/sidecar lands.
+- Desktop release workflow now uses explicit Tauri bundle icons so Linux AppImage and Windows MSI packaging can find required icon assets.
+- Desktop release readiness check for packaging workflow, Tauri config, icons, CI, CLI, and release testing notes.
+- Python sidecar packaging contract for future desktop releases that run without requiring local Python.
+- Desktop Python command runner now resolves `SETUP_OS_PYTHON`, future sidecar Python, then system `python` through a single resolver.
+- Desktop signing and notarization plan for future Windows and macOS public release gates.
+- Desktop release contract CI smoke check for sidecar, signing, release workflow, and packaged-app readiness docs.
+- Local utility smoke test for generating Portfolio OS, running health/report/runtime node, importing a conversation, and extracting memory drafts.
+- Desktop launcher action for running the local utility smoke test interactively.
+- Desktop Portfolio conversation preview action that checks a saved conversation before importing it into raw memory.
+- Generated-agent `handoff.py` command that writes `handoff.md` as a local utility readiness checklist.
+- Desktop Portfolio handoff action that writes and displays the generated `handoff.md` readiness checklist.
+- Desktop Portfolio demo flow now writes the local utility handoff as part of the one-click path.
+- Desktop Portfolio status and dashboard now show whether the local utility handoff exists.
+- Development timeline and product status now reflect the handoff loop and updated local utility completion estimates.
+- Desktop Portfolio handoff guidance action summarizes missing readiness items, runtime status, counts, and next local steps from `handoff.md`.
+- PR hygiene guidance now explicitly requires task queue, changelog, timeline/product status, docs, and ADR updates when relevant.
+- Desktop release workflow now smoke-checks packaged bundle artifacts and uploads `packaged-smoke-manifest.json`.
+- Personal local setup guide for the Windows-first local utility path, saved conversation import, runtime-node handoff, and phone-notification guardrails.
+- Packaged app smoke-test notes for Windows and macOS verification.
+- Sidecar release workflow scaffold for future bundled Python artifacts without committing runtime binaries.
+- Development and release timeline visualizing the local utility, Portfolio Management OS, and public commercial release tracks.
+- Desktop ICO asset now has matching ICO directory and embedded PNG dimensions for macOS icon conversion during release packaging.
+- Manual desktop release workflow for unsigned Linux, Windows, and macOS Tauri bundle artifacts.
+- Verified manual desktop release workflow uploads Linux, Windows, and macOS unsigned bundle artifacts from `main`.
+- Desktop Portfolio launcher now accepts an editable generated-agent output path for create, import, extract, health, report, status, and demo flow actions.
+- Desktop Portfolio launcher now remembers the output path, conversation path, and CSV import paths between sessions.
+- Desktop Portfolio create action now accepts a user-entered seed conversation path instead of only the bundled example conversation.
+- Desktop Portfolio launcher can read the generated agent notification inbox from `.setup_os/notifications.jsonl`.
+- Product status checkpoint documenting current completion estimate and the remaining desktop MVP work needed to reach 75%.
+- Desktop readiness check for repo root, Python engine, seed conversation, and selected Portfolio workspace.
+- Desktop Portfolio actions now validate required paths before invoking backend commands and show immediate next-step messages.
+- Desktop Portfolio launcher can review structured memory draft JSONL files after extraction.
+- Desktop Portfolio launcher can load a summary of workspace state, latest report preview, notification count, and memory draft count.
+- Desktop Portfolio launcher can archive and recreate the selected generated workspace from the selected seed conversation.
+- Desktop Portfolio memory draft review now formats draft source, status, confidence, strategy notes, risk rules, and watchlist items for easier review.
+- Desktop Portfolio report review can group the generated daily report into readable Markdown sections.
+- Desktop release testing notes for validating unsigned Linux, Windows, and macOS artifacts.
+- Desktop Python runtime diagnostics for checking the configured Python executable, version, repo root, and CLI import status.
+- Desktop Portfolio dashboard cards for selected workspace, health, report, notifications, and memory draft status.
+- Desktop Portfolio insight review for generated report holdings, alerts, transactions, cash, watchlist, market snapshot, and performance sections.
+- Generated agents now include `runtime_node.py` for one-shot personal runtime node health/report/inbox cycles.
+- Runtime node scheduling notes for macOS launchd, Windows Task Scheduler, and Linux cron.
+- Desktop runtime-node log review for generated `.setup_os/runtime_node.jsonl` cycles.
+- Cross-platform native desktop CI matrix for Linux, Windows, and macOS Tauri compile checks.
+- Desktop full Portfolio demo flow that creates the agent, imports sample data, extracts memory drafts, checks health, runs report, and refreshes status.
+- Desktop Portfolio CSV import actions for holdings, transactions, cash, watchlist, and market snapshots.
+- Desktop Portfolio conversation import now accepts an editable conversation path.
+- Desktop launcher action for refreshing generated Portfolio Management OS artifact status.
+- Desktop launcher action for extracting review-only Portfolio memory drafts.
+- Desktop launcher action for importing an example saved Portfolio conversation into raw memory.
+- Desktop launcher action for running the generated Portfolio Management OS health check.
+- Desktop launcher action for running the generated Portfolio Management OS report and displaying the Markdown output.
+- Desktop launcher action for generating the Portfolio Management OS example through the Python CLI.
+- Generated Portfolio Manager offline performance summary using holdings cost basis and local market snapshots.
+- Generated Portfolio Manager read-only market snapshot CSV importer and market-aware report pricing.
+- Generated Portfolio Manager read-only watchlist CSV importer and watchlist report section.
+- Generated Portfolio Manager read-only cash CSV importer and cash-aware total portfolio value reporting.
+- Generated Portfolio Manager read-only transaction CSV importer and recent-activity report section.
+- Generated Portfolio Manager allocation drift warnings against local target weights.
+- Generated Portfolio Manager read-only holdings snapshot importer with validation and import manifest.
+- ADR 0005 documenting that repository-native Markdown remains canonical through MVP before adding a docs site.
+- ADR 0006 documenting the personal always-on runtime node for schedulers, generated agents, and phone notification dispatch.
+- Optional disabled-by-default ntfy notification adapter for core notifications and generated agents.
+- Generated Portfolio Manager daily report concentration warnings with local warning notifications.
+- Generated-agent `extract_memory.py` command that turns raw conversation imports into review-only structured memory drafts.
+- Generated-agent raw conversation import command that copies saved chats into `memory/raw` with a manifest and checksum without mutating strategy.
+- Parallel CI jobs and Rust build caching to shorten feedback for Python, desktop frontend, and native Tauri checks.
+- Standard generated diagram pack with offline HTML, editable D2 source, local SVG icons, and diagram manifest.
+- Branch history policy for retained archival branches such as `codex/setup-os-brand`.
+- Native Tauri CI validation with Linux prerequisites and `tauri build --no-bundle`.
+- Desktop Rust dependency pin for reproducible native Tauri builds.
+- Desktop Tauri icon asset required by the native build context.
+- Branch-retention workflow guidance for keeping merged Codex branches visible on GitHub.
+- ADR index and convention for keeping architecture decisions discoverable.
+- Generated-agent `health.py` runtime checks for required files, config policy, scheduler folder, reports folder, and notification inbox validity.
+- CI checks for the desktop frontend package, including npm install, TypeScript, production build, and dependency audit.
+- Tauri-ready desktop shell scaffold with React/TypeScript launcher UI and a Python CLI command contract.
+- Portfolio Management OS building-block research with ranked stack options, rejected alternatives, and plug-and-play architecture guidance.
+- Changelog hygiene rule requiring every PR to update `CHANGELOG.md` before merge.
+- Python CLI scaffold for creating, evolving, and applying generated systems.
+- Markdown/TXT conversation ingestion and deterministic v0 spec extraction.
+- Portfolio and Health OS generated-agent scaffolds with reports, notifications, policy, release metadata, and `verify.py`.
+- Evolution proposals with timeline events, notification inbox events, risk metadata, maturity levels, and approved candidate releases.
+- Agent DNA, capability graph, action trust-level policy, and local audit/release snapshots.
+- Documentation for the monorepo split policy, Notification OS boundary, agnostic architecture, desktop app stack, and Portfolio Management OS blueprint.
+- README status tiles, tech stack, and desktop-first app direction.
+- Codex development workflow, active task queue, GitHub templates, CI, and branch protection expectations.
+
+### Decided
+
+- Keep Setup OS in a monorepo through MVP.
+- Build the Setup OS desktop app before building the real Portfolio Management OS.
+- Use Tauri v2, React, and TypeScript for the desktop shell.
+- Package Python as a bundled sidecar for desktop releases.
+- Keep FastAPI optional until the desktop app needs a long-running local service.
+- Start Portfolio Management OS with official Robinhood Agentic/MCP-style read-only access when available.
+- Store imported conversations as raw memory first, then extract structured facts after review.
+- Prefer squash merges for iterative Codex PRs unless commits are intentionally structured for long-term history.
+- Use a personal runtime node before web-scale microservices for always-on schedulers, generated agents, and notification dispatch.
+
+## [0.0.0] - 2026-06-30
+
+### Added
+
+- Initial research artifact for the first 20 Setup OS component choices.
+

@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Setup OS monochrome mark</title>
+  <desc id="desc">A monochrome half system gear opening into a terminal prompt and circuit graph.</desc>
+  <rect width="512" height="512" rx="112" fill="#0B0F14"/>
+  <path d="M232 88h-54l-9 45a134 134 0 0 0-28 12l-38-25-38 38 25 38a134 134 0 0 0-12 28l-45 9v54l45 9a134 134 0 0 0 12 28l-25 38 38 38 38-25a134 134 0 0 0 28 12l9 45h54v-70a104 104 0 0 1 0-208V88Z" fill="#EAF2F4"/>
+  <path d="M232 88h-54l-9 45a134 134 0 0 0-28 12l-38-25-38 38 25 38a134 134 0 0 0-12 28l-45 9v54l45 9a134 134 0 0 0 12 28l-25 38 38 38 38-25a134 134 0 0 0 28 12l9 45h54" stroke="#EAF2F4" stroke-width="20" stroke-linejoin="round"/>
+  <path d="M232 154a104 104 0 0 0 0 208M232 204a54 54 0 0 0 0 108" stroke="#0B0F14" stroke-width="20" stroke-linecap="round"/>
+  <path d="M238 162h44v44h-44z" fill="#0B0F14" stroke="#EAF2F4" stroke-width="14" stroke-linejoin="round"/>
+  <path d="m249 177 12 7-12 7" stroke="#EAF2F4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M238 256h140M282 184h72v-44h44M282 328h72v44h44M306 216h86v-36h46M306 296h86v36h46" stroke="#EAF2F4" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="416" cy="140" r="28" fill="#0B0F14" stroke="#EAF2F4" stroke-width="16"/>
+  <circle cx="456" cy="180" r="28" fill="#0B0F14" stroke="#EAF2F4" stroke-width="16"/>
+  <circle cx="456" cy="332" r="28" fill="#0B0F14" stroke="#EAF2F4" stroke-width="16"/>
+  <circle cx="416" cy="372" r="28" fill="#0B0F14" stroke="#EAF2F4" stroke-width="16"/>
+  <circle cx="406" cy="256" r="30" fill="#0B0F14" stroke="#EAF2F4" stroke-width="16"/>
+</svg>
