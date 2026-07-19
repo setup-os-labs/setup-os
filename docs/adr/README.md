@@ -13,6 +13,7 @@ Setup OS keeps architecture decisions in this folder so product direction does n
 | [0005: Docs Site Timing](0005-docs-site-timing.md) | Accepted | Keep repository-native Markdown as canonical docs through MVP and add a docs site only when it reduces contributor or launch friction. |
 | [0006: Personal Runtime Node And Always-On Notifications](0006-personal-runtime-node.md) | Accepted | Use a local/personal always-on runtime node for schedulers, generated agents, and notification dispatch before adding web-scale microservices. |
 | [0007: Self-Evolving Extraction Engine](0007-self-evolving-extraction-engine.md) | Accepted | Treat functional extractor improvement as a separate, approval-gated evolution path from memory updates. |
+| [0008: Local-First Observability](0008-local-first-observability.md) | Accepted | Use readable local action logs and structured JSONL as the default, with optional OSS observability adapters later. |
 
 ## Convention
 

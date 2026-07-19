@@ -40,6 +40,7 @@ Work surfaces should be decision-first. Review surfaces should be evidence-first
 - Show the selected workspace before deeper controls.
 - Keep CLI output available, but do not make it the first impression.
 - Keep diagnostics and release checks outside the daily work path.
+- Make logs and diagnostics readable by a normal local user before exporting them to any external tool.
 - Keep reset/archive actions visually quieter and clearly separated.
 - Use plain labels that match local user jobs: create, import, review, handoff, health, runtime.
 - Use tabs, panels, and drilldowns to reveal depth only when the user asks for it.
