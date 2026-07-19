@@ -12,7 +12,6 @@ import {
   Play,
   RefreshCcw,
   Route,
-  Settings2,
   Stethoscope,
   ShieldCheck,
 } from "lucide-react";
@@ -85,35 +84,8 @@ type PortfolioDashboard = {
   drafts: string;
 };
 
-type SurfaceId = "work" | "review" | "operator";
 type PrimaryNavId = "agents" | "imports" | "proposals" | "inbox";
 type GuideId = "start" | "how" | "use";
-
-const surfaces: Array<{
-  id: SurfaceId;
-  label: string;
-  description: string;
-  icon: ReactNode;
-}> = [
-  {
-    id: "work",
-    label: "Work",
-    description: "Create or open the local Portfolio OS loop.",
-    icon: <LayoutDashboard size={17} />,
-  },
-  {
-    id: "review",
-    label: "Review",
-    description: "Inspect reports, memory drafts, handoff, and inbox state.",
-    icon: <ClipboardCheck size={17} />,
-  },
-  {
-    id: "operator",
-    label: "Operator",
-    description: "Run diagnostics, release checks, smoke tests, and logs.",
-    icon: <Settings2 size={17} />,
-  },
-];
 
 const guides: Array<{ id: GuideId; label: string; icon: ReactNode }> = [
   { id: "start", label: "Start", icon: <Play size={16} /> },
@@ -126,7 +98,6 @@ const primaryNav: Array<{
   label: string;
   title: string;
   description: string;
-  surface: SurfaceId;
   icon: ReactNode;
 }> = [
   {
@@ -134,7 +105,6 @@ const primaryNav: Array<{
     label: "Agents",
     title: "Agents",
     description: "Create or run local vertical systems.",
-    surface: "work",
     icon: <Bot size={18} />,
   },
   {
@@ -142,7 +112,6 @@ const primaryNav: Array<{
     label: "Imports",
     title: "Imports",
     description: "Choose local conversations and CSV snapshots.",
-    surface: "work",
     icon: <FolderInput size={18} />,
   },
   {
@@ -150,7 +119,6 @@ const primaryNav: Array<{
     label: "Proposals",
     title: "Proposals",
     description: "Review reports, memory drafts, evolution packets, and rollback readiness.",
-    surface: "review",
     icon: <FileText size={18} />,
   },
   {
@@ -158,7 +126,6 @@ const primaryNav: Array<{
     label: "Inbox",
     title: "Inbox",
     description: "Inspect notifications, handoff guidance, runtime logs, and release diagnostics.",
-    surface: "operator",
     icon: <Bell size={18} />,
   },
 ];
@@ -246,7 +213,6 @@ export function App() {
     notifications: "Unknown",
     drafts: "Unknown",
   });
-  const [activeSurface, setActiveSurface] = useState<SurfaceId>("work");
   const [activePrimaryNav, setActivePrimaryNav] = useState<PrimaryNavId>("agents");
   const [activeGuide, setActiveGuide] = useState<GuideId>("start");
 
@@ -287,13 +253,6 @@ export function App() {
 
   function openPrimaryNav(item: (typeof primaryNav)[number]) {
     setActivePrimaryNav(item.id);
-    setActiveSurface(item.surface);
-  }
-
-  function openSurface(surface: SurfaceId) {
-    setActiveSurface(surface);
-    const fallbackNav = surface === "work" ? "agents" : surface === "review" ? "proposals" : "inbox";
-    setActivePrimaryNav(fallbackNav);
   }
 
   async function checkCli() {
@@ -797,7 +756,8 @@ export function App() {
         <header className="topbar">
           <div>
             <p className="eyebrow">Setup OS</p>
-            <h2>Portfolio OS</h2>
+            <h2>Portfolio OS: {currentPrimaryView.title}</h2>
+            <p className="topbar-subtitle">{currentPrimaryView.description}</p>
           </div>
           <div className="topbar-actions">
             <button className="primary" type="button" onClick={runFullPortfolioFlow}>
@@ -809,143 +769,124 @@ export function App() {
           </div>
         </header>
 
-        <section className="onboarding-shell" aria-label="Setup OS onboarding">
-          <div className="onboarding-main">
-            <div className="guide-tabs" aria-label="Onboarding views">
-              {guides.map((guide) => (
-                <button
-                  className={activeGuide === guide.id ? "guide-tab active" : "guide-tab"}
-                  key={guide.id}
-                  type="button"
-                  onClick={() => setActiveGuide(guide.id)}
-                >
-                  {guide.icon}
-                  {guide.label}
-                </button>
-              ))}
-            </div>
-
-            {activeGuide === "start" && (
-              <div className="guide-panel">
-                <div>
-                  <p className="eyebrow">Start here</p>
-                  <h3>{actionStatus === "Ready" ? "Create a local Portfolio OS" : actionStatus}</h3>
-                </div>
-                <div className="step-grid">
-                  {onboardingSteps.map((step, index) => (
-                    <article className="step-card" key={step.label}>
-                      <span>{index + 1}</span>
-                      <strong>{step.label}</strong>
-                      <small>{step.detail}</small>
-                    </article>
-                  ))}
-                </div>
-                <div className="guide-actions">
-                  <button className="primary" type="button" onClick={runFullPortfolioFlow}>
-                    <ArrowRight size={18} /> Continue
-                  </button>
-                  <button className="secondary" type="button" onClick={previewPortfolioConversationFromPath}>
-                    <FileText size={17} /> Preview input
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {activeGuide === "how" && (
-              <div className="guide-panel">
-                <div>
-                  <p className="eyebrow">How it works</p>
-                  <h3>Conversation becomes a local system</h3>
-                </div>
-                <div className="flow-map" aria-label="Setup OS system flow">
-                  {systemFlow.map((item, index) => (
-                    <div className="flow-node" key={item}>
-                      <span>{item}</span>
-                      {index < systemFlow.length - 1 && <ArrowRight size={16} />}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeGuide === "use" && (
-              <div className="guide-panel">
-                <div>
-                  <p className="eyebrow">How to use</p>
-                  <h3>One low-risk loop</h3>
-                </div>
-                <div className="use-list">
-                  {useSteps.map((step, index) => (
+          {activePrimaryNav === "agents" && (
+            <section className="onboarding-shell" aria-label="Setup OS onboarding">
+              <div className="onboarding-main">
+                <div className="guide-tabs" aria-label="Onboarding views">
+                  {guides.map((guide) => (
                     <button
-                      className={index === 0 ? "use-step active" : "use-step"}
-                      key={step}
+                      className={activeGuide === guide.id ? "guide-tab active" : "guide-tab"}
+                      key={guide.id}
                       type="button"
-                      onClick={index === 0 ? runFullPortfolioFlow : undefined}
+                      onClick={() => setActiveGuide(guide.id)}
                     >
-                      <span>{index + 1}</span>
-                      {step}
+                      {guide.icon}
+                      {guide.label}
                     </button>
                   ))}
                 </div>
+
+                {activeGuide === "start" && (
+                  <div className="guide-panel">
+                    <div>
+                      <p className="eyebrow">Start here</p>
+                      <h3>{actionStatus === "Ready" ? "Create a local Portfolio OS" : actionStatus}</h3>
+                    </div>
+                    <div className="step-grid">
+                      {onboardingSteps.map((step, index) => (
+                        <article className="step-card" key={step.label}>
+                          <span>{index + 1}</span>
+                          <strong>{step.label}</strong>
+                          <small>{step.detail}</small>
+                        </article>
+                      ))}
+                    </div>
+                    <div className="guide-actions">
+                      <button className="primary" type="button" onClick={runFullPortfolioFlow}>
+                        <ArrowRight size={18} /> Continue
+                      </button>
+                      <button className="secondary" type="button" onClick={previewPortfolioConversationFromPath}>
+                        <FileText size={17} /> Preview input
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {activeGuide === "how" && (
+                  <div className="guide-panel">
+                    <div>
+                      <p className="eyebrow">How it works</p>
+                      <h3>Conversation becomes a local system</h3>
+                    </div>
+                    <div className="flow-map" aria-label="Setup OS system flow">
+                      {systemFlow.map((item, index) => (
+                        <div className="flow-node" key={item}>
+                          <span>{item}</span>
+                          {index < systemFlow.length - 1 && <ArrowRight size={16} />}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeGuide === "use" && (
+                  <div className="guide-panel">
+                    <div>
+                      <p className="eyebrow">How to use</p>
+                      <h3>One low-risk loop</h3>
+                    </div>
+                    <div className="use-list">
+                      {useSteps.map((step, index) => (
+                        <button
+                          className={index === 0 ? "use-step active" : "use-step"}
+                          key={step}
+                          type="button"
+                          onClick={index === 0 ? runFullPortfolioFlow : undefined}
+                        >
+                          <span>{index + 1}</span>
+                          {step}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          <aside className="state-panel" aria-label="Current workspace state">
-            <p className="eyebrow">Current state</p>
-            <StatusTile label="Engine" value={cliStatus} icon={<CheckCircle2 size={18} />} />
-            <StatusTile label="Workspace" value={portfolioDashboard.workspace} icon={<LayoutDashboard size={18} />} />
-            <StatusTile label="Report" value={portfolioDashboard.report} icon={<FileText size={18} />} />
-            <button className="secondary state-button" type="button" onClick={loadPortfolioSummary}>
-              <RefreshCcw size={16} /> Refresh
-            </button>
-          </aside>
-        </section>
+              <aside className="state-panel" aria-label="Current workspace state">
+                <p className="eyebrow">Current state</p>
+                <StatusTile label="Engine" value={cliStatus} icon={<CheckCircle2 size={18} />} />
+                <StatusTile label="Workspace" value={portfolioDashboard.workspace} icon={<LayoutDashboard size={18} />} />
+                <StatusTile label="Report" value={portfolioDashboard.report} icon={<FileText size={18} />} />
+                <button className="secondary state-button" type="button" onClick={loadPortfolioSummary}>
+                  <RefreshCcw size={16} /> Refresh
+                </button>
+              </aside>
+            </section>
+          )}
 
-        <section className="details-drawer" aria-label="Workspace details">
-          <details>
-            <summary>Workspace details</summary>
-            <div className="dashboard-grid">
-              <DashboardCard label="Health" value={portfolioDashboard.health} />
-              <DashboardCard label="Handoff" value={portfolioDashboard.handoff} />
-              <DashboardCard label="Notifications" value={portfolioDashboard.notifications} />
-              <DashboardCard label="Memory drafts" value={portfolioDashboard.drafts} />
+          {activePrimaryNav === "agents" && (
+            <section className="details-drawer" aria-label="Workspace details">
+              <details>
+                <summary>Workspace details</summary>
+                <div className="dashboard-grid">
+                  <DashboardCard label="Health" value={portfolioDashboard.health} />
+                  <DashboardCard label="Handoff" value={portfolioDashboard.handoff} />
+                  <DashboardCard label="Notifications" value={portfolioDashboard.notifications} />
+                  <DashboardCard label="Memory drafts" value={portfolioDashboard.drafts} />
+                </div>
+              </details>
+            </section>
+          )}
+
+          <section className="primary-view-heading" aria-live="polite">
+            <div>
+              <p className="eyebrow">Current view</p>
+              <h3>{currentPrimaryView.title}</h3>
             </div>
-          </details>
-        </section>
+            <p>{currentPrimaryView.description}</p>
+          </section>
 
-        <section className="action-output" aria-live="polite" aria-label="Latest action output">
-          <div>
-            <p className="eyebrow">Latest action</p>
-            <h3>{actionStatus}</h3>
-          </div>
-          <pre>{cliOutput || "Click an action to see status and output here."}</pre>
-        </section>
-
-        <section className="surface-tabs" aria-label="Workspace modes">
-          {surfaces.map((surface) => (
-            <button
-              className={activeSurface === surface.id ? "surface-tab active" : "surface-tab"}
-              key={surface.id}
-              type="button"
-              title={surface.description}
-              onClick={() => openSurface(surface.id)}
-            >
-              {surface.icon}
-              <span>{surface.label}</span>
-            </button>
-          ))}
-        </section>
-
-        <section className="primary-view-heading" aria-live="polite">
-          <div>
-            <p className="eyebrow">Current view</p>
-            <h3>{currentPrimaryView.title}</h3>
-          </div>
-          <p>{currentPrimaryView.description}</p>
-        </section>
-
-        <section className="content-band">
+          <section className="content-band">
           {activePrimaryNav === "agents" && (
             <div className="surface-grid">
               <section className="panel action-panel">
@@ -1213,6 +1154,14 @@ export function App() {
               </section>
             </div>
           )}
+          </section>
+
+        <section className="action-output" aria-live="polite" aria-label="Latest action output">
+          <div>
+            <p className="eyebrow">Latest action</p>
+            <h3>{actionStatus}</h3>
+          </div>
+          <pre>{cliOutput || "Click an action to see status and output here."}</pre>
         </section>
 
         <section className="details-drawer output-drawer" aria-label="Engine output">
